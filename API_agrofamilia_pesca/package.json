@@ -15,5 +15,8 @@
     "url": "https://github.com/rn-cantanhede/grupo-b-sozinho/issues"
   },
   "homepage": "https://github.com/rn-cantanhede/grupo-b-sozinho#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
 }
