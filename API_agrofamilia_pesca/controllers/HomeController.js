@@ -1,6 +1,6 @@
 class HomeController {
     async index(req, res){
-        res.send("Servidor funcionando");
+        res.json({Msn: "Servidor funcionando"});
     };
 };
 
