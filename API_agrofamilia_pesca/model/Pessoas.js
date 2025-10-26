@@ -1,26 +1,10 @@
 const knex = require("../database/connection");
+const { findAll, views } = require("../database/dbUtils");
 
-async function findAll(table) {
-    try {
-        const result = await knex
-            .select("")
-            .table(table);
-
-        return result;
-    } catch (error) {
-        console.log(error);
-        return resizeBy.status(500).json({ Error: "Erro interno no servidor" });
-    };
-};
-
-class Users {
+class Pessoas {
     async findAllPessoas() {
         return findAll("pessoa");
     };
-    
-    async findeAllAssociacao(){
-        return findAll("associacao");
-    };
 };
 
-module.exports = new Users();
+module.exports = new Pessoas();
