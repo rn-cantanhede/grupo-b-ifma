@@ -10,6 +10,6 @@ router.get("/pessoas", PessoasController.Pessoas);
 router.get("/associacoes", AssociacoesController.Associacoes);
 router.get("/secretarias", SecretariasController.Secretarias);
 
-router.get("/associado", AssociadosController.Associados);
+router.get("/associados", AssociadosController.Associados);
 
 module.exports = router;

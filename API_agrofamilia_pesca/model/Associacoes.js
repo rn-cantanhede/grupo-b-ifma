@@ -1,9 +1,9 @@
 const knex = require("../database/connection");
-const { findAll } = require("../database/dbUtils");
+const { views } = require("../Utils/dbUtils");
 
 class Associacoes {
-    async findeAllAssociacao(){
-        return findAll("associacao");
+    async findeAssociacoes(){
+        return views("view_associacoes");
     };
 };
 

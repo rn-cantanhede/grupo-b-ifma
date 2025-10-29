@@ -1,4 +1,4 @@
-const knex = require("./connection");
+const knex = require("../database/connection");
 
 async function findAll(table) {
     return await knex.select("").table(table);
