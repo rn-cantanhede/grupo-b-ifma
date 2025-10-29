@@ -1,4 +1,3 @@
-const knex = require("../database/connection");
 const { views } = require("../Utils/dbUtils");
 
 class Associacoes {

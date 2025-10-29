@@ -1,4 +1,3 @@
-const knex = require("../database/connection");
 const { findAll } = require("../Utils/dbUtils");
 
 class LocalizacaoBeneficiado {
