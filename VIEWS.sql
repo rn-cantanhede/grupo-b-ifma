@@ -10,3 +10,10 @@ SELECT ac.ID, ac.NOME, cat.NOME AS CATEGORIA, sec.NOME AS SECRETARIA
 FROM associacao ac
 JOIN categoria cat ON cat.ID = ac.ID_CATEGORIA
 JOIN secretaria sec ON sec.ID = ac.ID_SECRETARIA;
+
+CREATE OR REPLACE VIEW view_localizacao_beneficiado AS
+SELECT loc.ID, ps.NOME, assoc.NOME AS ASSOCIACAO, loc.LATITUDE, loc.LONGITUDE, loc.TITULO, loc.DESCRICAO
+FROM localizacao_beneficiada loc
+JOIN associado asso ON asso.ID_PESSOA = loc.ID_ASSOCIADO
+JOIN pessoa ps ON ps.ID = asso.ID_PESSOA
+JOIN associacao assoc ON assoc.ID = asso.ID_ASSOCIACAO;
