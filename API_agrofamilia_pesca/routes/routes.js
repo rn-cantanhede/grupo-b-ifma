@@ -11,6 +11,7 @@ const CategoriasController = require("../controllers/CategoriasController");
 
 
 router.get("/pessoas", PessoasController.Pessoas);
+router.get("/pessoas/:id", PessoasController.findById);
 router.get("/associacoes", AssociacoesController.Associacoes);
 router.get("/secretarias", SecretariasController.Secretarias);
 
