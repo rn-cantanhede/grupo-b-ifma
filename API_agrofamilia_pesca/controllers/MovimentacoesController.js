@@ -1,5 +1,4 @@
 const Movimentacoes = require("../model/Movimentacoes");
-const { erros } = require("../Utils/dbUtils");
 
 class MovimentacoesController {
     async AllMovimentacoes(req, res){
