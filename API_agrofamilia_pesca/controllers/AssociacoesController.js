@@ -1,7 +1,7 @@
 const Associacoes = require("../model/Associacoes");
 
 class AssociacoesController {
-    async Associacoes(req, res) {
+    async AllAssociacoes(req, res) {
         try {
             const associacoes = await Associacoes.findeAssociacoes();
             return res.status(200).json(associacoes);

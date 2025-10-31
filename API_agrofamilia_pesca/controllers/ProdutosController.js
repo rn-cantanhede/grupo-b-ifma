@@ -1,7 +1,7 @@
 const Produtos = require("../model/Produtos");
 
 class ProdutosController {
-    async findAllProdutos(req, res){
+    async AllProdutos(req, res){
         try {
             const produtos = await Produtos.findAllProdutos();
             res.status(200).json(produtos);

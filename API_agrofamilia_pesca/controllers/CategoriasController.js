@@ -1,7 +1,7 @@
 const Categorias = require("../model/Categorias");
 
 class CategoriasController {
-    async Categorias(req, res){
+    async AllCategorias(req, res){
         try {
             const categorias = await Categorias.findCategorias();
             res.status(200).json(categorias);

@@ -1,7 +1,7 @@
 const Associados = require("../model/Associados");
 
 class AssociadosController {
-    async Associados(req, res) {
+    async AllAssociados(req, res) {
         try {
             const view = await Associados.findAssociados();
             return res.status(200).json(view);

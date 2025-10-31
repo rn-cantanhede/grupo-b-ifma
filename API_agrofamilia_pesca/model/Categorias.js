@@ -1,7 +1,7 @@
 const { findAll } = require("../Utils/dbUtils");
 
 class Categorias {
-    async findCategorias(){
+    async findAllCategorias(){
         return findAll("categoria");
     };
 };

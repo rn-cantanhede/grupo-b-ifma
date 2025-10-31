@@ -1,7 +1,7 @@
 const { findAll } = require("../Utils/dbUtils");
 
 class Associados {
-    async findAssociados() {
+    async findAllAssociados() {
         return findAll("view_pessoas"); 
     };
 };
