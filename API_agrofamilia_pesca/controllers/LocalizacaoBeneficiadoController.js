@@ -1,7 +1,7 @@
 const LocalizacaoBeneficiado = require("../model/LocalizacaoBeneficiado");
 
 class LocalizacaoBeneficiadoController {
-    async Localizacoes(req, res) {
+    async AllLocalizacoes(req, res) {
         try {
             const localizacoes = await LocalizacaoBeneficiado.findLocalizacao();
             return res.status(200).json(localizacoes);

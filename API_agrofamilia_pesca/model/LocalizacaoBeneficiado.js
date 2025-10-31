@@ -1,7 +1,7 @@
 const { findAll } = require("../Utils/dbUtils");
 
 class LocalizacaoBeneficiado {
-    async findLocalizacao(){
+    async findAllLocalizacao(){
         return findAll("view_localizacao_beneficiado");
     };  
 };

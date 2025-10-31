@@ -9,16 +9,17 @@ const AssociadosController = require("../controllers/AssociadosController");
 const LocalizacaoBeneficiadoController = require("../controllers/LocalizacaoBeneficiadoController");
 const CategoriasController = require("../controllers/CategoriasController");
 const ProdutosController = require("../controllers/ProdutosController");
+const MovimentacoesController = require("../controllers/MovimentacoesController");
 
 
-router.get("/pessoas", PessoasController.Pessoas);
-router.get("/pessoas/:id", PessoasController.findById);
-router.get("/associacoes", AssociacoesController.Associacoes);
-router.get("/secretarias", SecretariasController.Secretarias);
-router.get("/produtos", ProdutosController.findAllProdutos)
-router.get("/associados", AssociadosController.Associados);
-router.get("/localizacoes-dos-beneficiados", LocalizacaoBeneficiadoController.Localizacoes);
-router.get("/categorias", CategoriasController.Categorias);
-// router.get
+router.get("/associacoes", AssociacoesController.AllAssociacoes);
+router.get("/associados", AssociadosController.AllAssociados);
+router.get("/categorias", CategoriasController.AllCategorias);
+router.get("/localizacoes-dos-beneficiados", LocalizacaoBeneficiadoController.AllLocalizacoes);
+router.get("/pessoas", PessoasController.AllPessoas);
+router.get("/pessoas/:id", PessoasController.findByIdPessoa);
+router.get("/produtos", ProdutosController.AllProdutos);
+router.get("/movimentacoes", MovimentacoesController.AllMovimentacoes);
+router.get("/secretarias", SecretariasController.AllSecretarias);
 
 module.exports = router;
