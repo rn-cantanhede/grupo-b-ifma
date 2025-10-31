@@ -17,3 +17,17 @@ FROM localizacao_beneficiada loc
 JOIN associado asso ON asso.ID_PESSOA = loc.ID_ASSOCIADO
 JOIN pessoa ps ON ps.ID = asso.ID_PESSOA
 JOIN associacao assoc ON assoc.ID = asso.ID_ASSOCIACAO;
+
+CREATE OR REPLACE VIEW view_produtos AS
+SELECT pro.ID, pro.NOME, tipro.NOME AS TIPO_DO_PRODUTO
+FROM produto pro
+JOIN tipo_produto tipro ON tipro.ID = pro.ID_TIPO_PRODUTO;
+
+CREATE OR REPLACE VIEW view_produto_movimentacao AS
+SELECT movi.ID, agri.DAP, pro.NOME AS PRODUTO, movi.QNT_PRODUZIDA, movi.VLR_UNITARIO, 
+movi.DATA_MOVIMENTACAO, loca.LATITUDE, loca.LONGITUDE
+FROM produto_movimentacao movi
+JOIN agricultura_familiar agri ON agri.ID = movi.ID_AGRICULTURA_FAMILIAR
+JOIN produto pro ON pro.ID = movi.ID_PRODUTO
+JOIN localizacao_beneficiada loca ON loca.ID = movi.ID_LOCAL;
+
