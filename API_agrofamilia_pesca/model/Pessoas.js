@@ -1,4 +1,4 @@
-const { findAll, views, findBy } = require("../Utils/dbUtils");
+const { findAll, findBy } = require("../Utils/dbUtils");
 
 class Pessoas {
     async findAllPessoas() {

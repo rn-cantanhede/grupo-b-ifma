@@ -4,10 +4,6 @@ async function findAll(table) {
     return await knex.select("").table(table);
 };
 
-async function views(view) {
-    return await knex.select("").table(view);
-};
-
 async function findBy(field, value, multiple = false, table) {
     const result = await knex.select("").from(table).where({ [field]: value });
 
@@ -22,4 +18,4 @@ async function findBy(field, value, multiple = false, table) {
     };
 };
 
-module.exports = { findAll, views, findBy };
+module.exports = { findAll, findBy };
