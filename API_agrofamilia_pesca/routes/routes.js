@@ -10,8 +10,9 @@ const LocalizacaoBeneficiadoController = require("../controllers/LocalizacaoBene
 const CategoriasController = require("../controllers/CategoriasController");
 const ProdutosController = require("../controllers/ProdutosController");
 const MovimentacoesController = require("../controllers/MovimentacoesController");
+const AgriculturaFamiliarController = require("../controllers/AgriculturaFamiliarController");
 
-
+router.get("/agricultura-familiar", AgriculturaFamiliarController.AllAgriculturaFamiliar)
 router.get("/associacoes", AssociacoesController.AllAssociacoes);
 router.get("/associados", AssociadosController.AllAssociados);
 router.get("/categorias", CategoriasController.AllCategorias);
