@@ -36,3 +36,10 @@ SELECT prog.ID, prog.NOME, prog.DESCRICAO, prog.DATA_INICIO, prog.DATA_FIM,
 prog.ORIGEM_RECURSO, prog.VLR_REPASSE, sec.NOME AS SECRETARIA, sec.ESTADO
 FROM progRama prog
 JOIN secretaria sec ON sec.ID = prog.ID_SECRETARIA;
+
+CREATE OR REPLACE VIEW view_agricultura_familiar AS
+SELECT pe.NOME, asso.CAF, prog.NOME AS PROGRAMA, agri.DAP
+FROM agricultura_familiar agri
+JOIN associado asso ON asso.ID = agri.ID_ASSOCIADO
+JOIN pessoa pe ON asso.ID_PESSOA = pe.ID
+JOIN programa prog ON prog.ID = agri.ID_PROGRAMA;
