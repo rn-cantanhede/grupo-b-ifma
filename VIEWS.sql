@@ -31,3 +31,8 @@ JOIN agricultura_familiar agri ON agri.ID = movi.ID_AGRICULTURA_FAMILIAR
 JOIN produto pro ON pro.ID = movi.ID_PRODUTO
 JOIN localizacao_beneficiada loca ON loca.ID = movi.ID_LOCAL;
 
+CREATE OR REPLACE VIEW view_programas AS
+SELECT prog.ID, prog.NOME, prog.DESCRICAO, prog.DATA_INICIO, prog.DATA_FIM,
+prog.ORIGEM_RECURSO, prog.VLR_REPASSE, sec.NOME AS SECRETARIA, sec.ESTADO
+FROM progRama prog
+JOIN secretaria sec ON sec.ID = prog.ID_SECRETARIA;
