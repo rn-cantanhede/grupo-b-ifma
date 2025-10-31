@@ -17,7 +17,7 @@ router.get("/associados", AssociadosController.AllAssociados);
 router.get("/categorias", CategoriasController.AllCategorias);
 router.get("/localizacoes-dos-beneficiados", LocalizacaoBeneficiadoController.AllLocalizacoes);
 router.get("/pessoas", PessoasController.AllPessoas);
-router.get("/pessoas/:id", PessoasController.findByIdPessoa);
+router.get("/pessoa/:id", PessoasController.findByIdPessoa);
 router.get("/produtos", ProdutosController.AllProdutos);
 router.get("/movimentacoes", MovimentacoesController.AllMovimentacoes);
 router.get("/secretarias", SecretariasController.AllSecretarias);
