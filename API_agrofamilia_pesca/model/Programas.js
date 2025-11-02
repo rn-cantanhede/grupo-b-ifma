@@ -1,12 +1,16 @@
 const { findAll, findBy } = require("../Utils/dbUtils");
 
 class Programas {
-    async findAllProgramas(){
+    async findAllProgramas() {
         return findAll("view_programas");
     };
 
-    async findById(id){
+    async findById(id) {
         return findBy("ID", id, false, "view_programas");
+    };
+
+    async findByName(name) {
+        return findBy("NOME", name, true, "view_programas");
     };
 };
 

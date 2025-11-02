@@ -8,6 +8,10 @@ class Produtos {
     async findById(id){
         return findBy("ID", id, false, "view_produtos");
     };
+
+    async findByName(name) {
+        return findBy("NOME", name, true, "view_produtos");
+    };
 };
 
 module.exports = new Produtos();

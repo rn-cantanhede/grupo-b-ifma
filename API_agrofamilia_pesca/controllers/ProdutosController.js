@@ -20,6 +20,15 @@ class ProdutosController {
             return res.status(500).json({ Error: "Erro interno no servidor" });
         };
     };
+
+    async findByNameProdutos(req, res) {
+        try {
+            Find.findAndVerify(res, Find.convertString(req.params.name), Produtos.findByName);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ Error: "Erro interno no servidor" });
+        };
+    };
 };
 
 module.exports = new ProdutosController();

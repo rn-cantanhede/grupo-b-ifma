@@ -8,6 +8,10 @@ class Associados {
     async findById(id){
         return findBy("ID", id, false, "view_pessoas");
     };
+
+    async findByName(name){
+        return findBy("NOME", name, true, "view_pessoas");
+    };
 };
 
 module.exports = new Associados();

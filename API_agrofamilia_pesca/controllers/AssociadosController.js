@@ -20,6 +20,15 @@ class AssociadosController {
             return res.status(500).json({ Error: "Erro interno no servidor" });
         };
     };
+
+    async findByNameAssociados(req, res) {
+        try {
+            Find.findAndVerify(res, Find.convertString(req.params.name), Associados.findByName);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ Error: "Erro interno no servidor" });
+        };
+    };
 };
 
 module.exports = new AssociadosController();

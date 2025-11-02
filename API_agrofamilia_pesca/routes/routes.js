@@ -19,33 +19,42 @@ router.get("/agricultura-familiar/:id", AgriculturaFamiliarController.findByIdAg
 
 router.get("/associacoes", AssociacoesController.AllAssociacoes);
 router.get("/associacao/:id", AssociacoesController.findByIdAssociacoes);
+router.get("/associacao/nome/:name", AssociacoesController.findByNameAssociacoes);
 
 
 router.get("/associados", AssociadosController.AllAssociados);
 router.get("/associado/:id", AssociadosController.findByIdAssociados);
+router.get("/associado/nome/:name", AssociadosController.findByNameAssociados);
 
 router.get("/categorias", CategoriasController.AllCategorias);
 router.get("/categoria/:id", CategoriasController.findByIdCategorias);
+router.get("/categoria/nome/:name", CategoriasController.findByNameCategorias);
 
 router.get("/localizacoes-dos-beneficiados", LocalizacaoBeneficiadoController.AllLocalizacoes);
 router.get("/localizacao-do-beneficiado/:id", LocalizacaoBeneficiadoController.findByIdLocalizacoes);
+router.get("/localizacao-do-beneficiado/nome/:name", LocalizacaoBeneficiadoController.findByNameLocalizacoes);
 
 router.get("/pessoas", PessoasController.AllPessoas);
 router.get("/pessoa/:id", PessoasController.findByIdPessoa);
+router.get("/pessoa/nome/:name", PessoasController.findByNamePessoa);
 
 router.get("/produtos", ProdutosController.AllProdutos);
 router.get("/produto/:id", ProdutosController.findByIdProdutos);
+router.get("/produto/nome/:name", ProdutosController.findByNameProdutos);
 
 router.get("/movimentacoes", MovimentacoesController.AllMovimentacoes);
 router.get("/movimentacao/:id", MovimentacoesController.findByIdMovimentacoes);
 
 router.get("/programas", ProgramasController.AllProgramas);
 router.get("/programa/:id", ProgramasController.findByIdProgramas);
+router.get("/programa/nome/:name", ProgramasController.findByNameProgramas);
 
 router.get("/secretarias", SecretariasController.AllSecretarias);
 router.get("/secretaria/:id", SecretariasController.finByIdecretarias);
+router.get("/secretaria/nome/:name", SecretariasController.findByNameSecretarias);
 
 router.get("/tipos-produtos", TipoProdutoController.AllTipoProduto);
 router.get("/tipo-produto/:id", TipoProdutoController.finByIdTipoProduto);
+router.get("/tipo-produto/nome/:name", TipoProdutoController.findByNameTipoProduto);
 
 module.exports = router;

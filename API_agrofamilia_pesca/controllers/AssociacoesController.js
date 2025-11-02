@@ -18,6 +18,14 @@ class AssociacoesController {
         } catch (error) {
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });
+        };
+    };
+    async findByNameAssociacoes(req, res) {
+        try {
+            Find.findAndVerify(res, Find.convertString(req.params.name), Associacoes.findByName);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ Error: "Erro interno no servidor" });
         }
     };
 };
