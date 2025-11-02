@@ -21,6 +21,14 @@ class TipoProdutoController {
         };
     };
 
+    async findByNameTipoProduto(req, res) {
+        try {
+            Find.findAndVerify(res, Find.convertString(req.params.name), TipoProduto.findByName);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ Error: "Erro interno no servidor" });
+        };
+    };
 };
 
 module.exports = new TipoProdutoController();

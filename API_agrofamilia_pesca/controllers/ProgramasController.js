@@ -20,6 +20,15 @@ class ProgramasController {
             return res.status(500).json({ Error: "Erro interno no servidor" });
         };
     };
+
+    async findByNameProgramas(req, res) {
+        try {
+            Find.findAndVerify(res, Find.convertString(req.params.name), Programas.findByName);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ Error: "Erro interno no servidor" });
+        };
+    };
 };
 
 module.exports = new ProgramasController();

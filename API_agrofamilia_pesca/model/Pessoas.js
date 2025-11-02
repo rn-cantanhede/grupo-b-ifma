@@ -5,9 +5,13 @@ class Pessoas {
         return findAll("pessoa");
     };
 
-    async findById(id){
+    async findById(id) {
         return findBy("ID", id, false, "pessoa");
-    }
+    };
+
+    async findByName(name) {
+        return findBy("NOME", name, true, "pessoa");
+    };
 };
 
 module.exports = new Pessoas();

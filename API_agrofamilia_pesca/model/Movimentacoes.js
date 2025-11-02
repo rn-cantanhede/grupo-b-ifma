@@ -1,11 +1,11 @@
 const { findAll, findBy } = require("../Utils/dbUtils");
 
 class Movimentacoes {
-    async findAllMovimentacoes(){
+    async findAllMovimentacoes() {
         return findAll("view_produto_movimentacao");
     };
 
-    async findById(id){
+    async findById(id) {
         return findBy("ID", id, false, "view_produto_movimentacao");
     };
 };

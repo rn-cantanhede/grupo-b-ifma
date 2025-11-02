@@ -20,6 +20,14 @@ class CategoriasController {
             return res.status(500).json({ Error: "Erro interno no servidor" });
         };
     };
+    async findByNameCategorias(req, res) {
+        try {
+            Find.findAndVerify(res, Find.convertString(req.params.name), Categorias.findByName);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ Error: "Erro interno no servidor" });
+        };
+    };
 };
 
 module.exports = new CategoriasController();

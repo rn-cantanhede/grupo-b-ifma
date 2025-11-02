@@ -20,6 +20,15 @@ class LocalizacaoBeneficiadoController {
             return res.status(500).json({ Error: "Erro interno no servidor" });
         };
     };
+
+    async findByNameLocalizacoes(req, res) {
+        try {
+            Find.findAndVerify(res, Find.convertString(req.params.name), LocalizacaoBeneficiado.findByName);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ Error: "Erro interno no servidor" });
+        };
+    };
 };
 
 module.exports = new LocalizacaoBeneficiadoController();
