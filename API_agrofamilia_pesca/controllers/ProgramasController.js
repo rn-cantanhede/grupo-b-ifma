@@ -1,19 +1,20 @@
-const Pessoas = require("../model/Pessoas");
+const Programas = require("../model/Programas");
 const Find = require("../Utils/findUtils");
 
-class PessoasController {
-    async AllPessoas(req, res) {
+class ProgramasController {
+    async AllProgramas(req, res) {
         try {
-            const pessoas = await Pessoas.findAllPessoas();
-            return res.status(200).json(pessoas);
+            const programas = await Programas.findAllProgramas();
+            return res.status(200).json(programas);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });
         };
     };
-    findByIdPessoa(req, res) {
+
+    async findByIdProgramas(req, res) {
         try {
-            Find.findAndVerify(res, req.params.id, Pessoas.findById);
+            Find.findAndVerify(res, req.params.id, Programas.findById);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });
@@ -21,4 +22,4 @@ class PessoasController {
     };
 };
 
-module.exports = new PessoasController();
+module.exports = new ProgramasController();
