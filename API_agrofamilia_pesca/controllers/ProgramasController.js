@@ -14,8 +14,7 @@ class ProgramasController {
 
     async findProgramas(req, res) {
         try {
-            const progamas = Find.NumberOrString(req.params.value);
-            Find.findAndVerify(res, progamas, Programas.findByIdAndName);
+            Find.findAndVerify(res, Find.NumberOrString(req.params.value), Programas.findByIdAndName);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });

@@ -14,8 +14,7 @@ class LocalizacaoBeneficiadoController {
 
     async findLocalizacao(req, res) {
         try {
-            const localizacao = Find.NumberOrString(req.params.value);
-            Find.findAndVerify(res, localizacao, LocalizacaoBeneficiado.findByIdAndName);
+            Find.findAndVerify(res, Find.NumberOrString(req.params.value), LocalizacaoBeneficiado.findByIdAndName);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });

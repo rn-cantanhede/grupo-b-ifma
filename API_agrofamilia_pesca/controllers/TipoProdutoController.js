@@ -14,7 +14,7 @@ class TipoProdutoController {
 
     async findTipoProduto(req, res) {
         try {
-            Find.findAndVerify(res, req.params.value, TipoProduto.findByIdAndName);
+            Find.findAndVerify(res, Find.NumberOrString(req.params.value), TipoProduto.findByIdAndName);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });
