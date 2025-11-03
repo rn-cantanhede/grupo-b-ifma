@@ -14,8 +14,7 @@ class AssociadosController {
 
     async findAssociado(req, res) {
         try {
-            const associado = Find.NumberOrString(req.params.value);
-            Find.findAndVerify(res, associado, Associados.findByIdAndName);
+            Find.findAndVerify(res, Find.NumberOrString(req.params.value), Associados.findByIdAndName);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });

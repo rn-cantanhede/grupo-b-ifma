@@ -14,8 +14,7 @@ class SecretariasController {
 
     async findSecretarias(req, res) {
         try {
-            const secretarias = Find.NumberOrString(req.params.value);
-            Find.findAndVerify(res, secretarias, Secretarias.findByIdAndName);
+            Find.findAndVerify(res, Find.NumberOrString(req.params.value), Secretarias.findByIdAndName);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });

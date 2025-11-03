@@ -14,8 +14,7 @@ class AgriculturaFamiliarController {
 
     async findAgriculturaFamiliar(req, res) {
         try {
-            const result = Find.NumberOrString(req.params.value);
-            Find.findAndVerify(res, result, AgriculturaFamiliar.findByIdAndName);
+            Find.findAndVerify(res, Find.NumberOrString(req.params.value), AgriculturaFamiliar.findByIdAndName);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });

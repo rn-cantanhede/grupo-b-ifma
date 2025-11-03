@@ -14,8 +14,7 @@ class ProdutosController {
 
     async findProdutos(req, res) {
         try {
-            const produto = Find.NumberOrString(req.params.value);
-            Find.findAndVerify(res, produto, Produtos.findByIdAndName);
+            Find.findAndVerify(res, Find.NumberOrString(req.params.value), Produtos.findByIdAndName);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });

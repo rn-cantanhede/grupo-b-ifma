@@ -14,8 +14,7 @@ class CategoriasController {
 
     async findAssociacao(req, res) {
         try {
-            const associacao = Find.NumberOrString(req.params.value);
-            Find.findAndVerify(res, associacao, Categorias.findByIdAndName);
+            Find.findAndVerify(res, Find.NumberOrString(req.params.value), Categorias.findByIdAndName);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });
