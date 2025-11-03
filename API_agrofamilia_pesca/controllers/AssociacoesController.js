@@ -12,21 +12,14 @@ class AssociacoesController {
         };
     };
 
-    async findByIdAssociacoes(req, res) {
+    async findAssociacao(req, res) {
         try {
-            Find.findAndVerify(res, req.params.id, Associacoes.findById);
+            const associacao = Find.NumberOrString(req.params.value);
+            Find.findAndVerify(res, associacao, Associacoes.findByIdAndName);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });
         };
-    };
-    async findByNameAssociacoes(req, res) {
-        try {
-            Find.findAndVerify(res, Find.convertString(req.params.name), Associacoes.findByName);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({ Error: "Erro interno no servidor" });
-        }
     };
 };
 

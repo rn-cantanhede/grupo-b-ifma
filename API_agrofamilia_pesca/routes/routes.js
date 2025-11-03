@@ -15,46 +15,36 @@ const ProgramasController = require("../controllers/ProgramasController");
 const TipoProdutoController = require("../controllers/TipoProdutoController");
 
 router.get("/agricultura-familiar", AgriculturaFamiliarController.AllAgriculturaFamiliar)
-router.get("/agricultura-familiar/:id", AgriculturaFamiliarController.findByIdAgriculturaFamiliar);
+router.get("/agricultura-familiar/:value", AgriculturaFamiliarController.findAgriculturaFamiliar);
 
 router.get("/associacoes", AssociacoesController.AllAssociacoes);
-router.get("/associacao/:id", AssociacoesController.findByIdAssociacoes);
-router.get("/associacao/nome/:name", AssociacoesController.findByNameAssociacoes);
-
+router.get("/associacao/:value", AssociacoesController.findAssociacao);
 
 router.get("/associados", AssociadosController.AllAssociados);
-router.get("/associado/:id", AssociadosController.findByIdAssociados);
-router.get("/associado/nome/:name", AssociadosController.findByNameAssociados);
+router.get("/associado/:value", AssociadosController.findAssociado);
 
 router.get("/categorias", CategoriasController.AllCategorias);
-router.get("/categoria/:id", CategoriasController.findByIdCategorias);
-router.get("/categoria/nome/:name", CategoriasController.findByNameCategorias);
+router.get("/categoria/:value", CategoriasController.findAssociacao);
 
 router.get("/localizacoes-dos-beneficiados", LocalizacaoBeneficiadoController.AllLocalizacoes);
-router.get("/localizacao-do-beneficiado/:id", LocalizacaoBeneficiadoController.findByIdLocalizacoes);
-router.get("/localizacao-do-beneficiado/nome/:name", LocalizacaoBeneficiadoController.findByNameLocalizacoes);
+router.get("/localizacao-do-beneficiado/:value", LocalizacaoBeneficiadoController.findLocalizacao);
 
 router.get("/pessoas", PessoasController.AllPessoas);
-router.get("/pessoa/:id", PessoasController.findByIdPessoa);
-router.get("/pessoa/nome/:name", PessoasController.findByNamePessoa);
+router.get("/pessoa/:value", PessoasController.findPessoa);
 
 router.get("/produtos", ProdutosController.AllProdutos);
-router.get("/produto/:id", ProdutosController.findByIdProdutos);
-router.get("/produto/nome/:name", ProdutosController.findByNameProdutos);
+router.get("/produto/:value", ProdutosController.findProdutos);
 
 router.get("/movimentacoes", MovimentacoesController.AllMovimentacoes);
 router.get("/movimentacao/:id", MovimentacoesController.findByIdMovimentacoes);
 
 router.get("/programas", ProgramasController.AllProgramas);
-router.get("/programa/:id", ProgramasController.findByIdProgramas);
-router.get("/programa/nome/:name", ProgramasController.findByNameProgramas);
+router.get("/programa/:value", ProgramasController.findProgramas);
 
 router.get("/secretarias", SecretariasController.AllSecretarias);
-router.get("/secretaria/:id", SecretariasController.finByIdecretarias);
-router.get("/secretaria/nome/:name", SecretariasController.findByNameSecretarias);
+router.get("/secretaria/:value", SecretariasController.findSecretarias);
 
 router.get("/tipos-produtos", TipoProdutoController.AllTipoProduto);
-router.get("/tipo-produto/:id", TipoProdutoController.finByIdTipoProduto);
-router.get("/tipo-produto/nome/:name", TipoProdutoController.findByNameTipoProduto);
+router.get("/tipo-produto/:value", TipoProdutoController.findTipoProduto);
 
 module.exports = router;

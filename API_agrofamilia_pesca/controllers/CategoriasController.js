@@ -12,17 +12,10 @@ class CategoriasController {
         };
     };
 
-    async findByIdCategorias(req, res) {
+    async findAssociacao(req, res) {
         try {
-            Find.findAndVerify(res, req.params.id, Categorias.findById);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({ Error: "Erro interno no servidor" });
-        };
-    };
-    async findByNameCategorias(req, res) {
-        try {
-            Find.findAndVerify(res, Find.convertString(req.params.name), Categorias.findByName);
+            const associacao = Find.NumberOrString(req.params.value);
+            Find.findAndVerify(res, associacao, Categorias.findByIdAndName);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });

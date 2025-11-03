@@ -12,18 +12,10 @@ class SecretariasController {
         };
     };
 
-    async finByIdecretarias(req, res) {
+    async findSecretarias(req, res) {
         try {
-            Find.findAndVerify(res, req.params.id, Secretarias.findById);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({ Error: "Erro interno no servidor" });
-        };
-    };
-
-    async findByNameSecretarias(req, res) {
-        try {
-            Find.findAndVerify(res, Find.convertString(req.params.name), Secretarias.findByName);
+            const secretarias = Find.NumberOrString(req.params.value);
+            Find.findAndVerify(res, secretarias, Secretarias.findByIdAndName);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });

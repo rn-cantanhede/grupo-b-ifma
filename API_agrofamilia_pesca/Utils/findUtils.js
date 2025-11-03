@@ -9,10 +9,18 @@ class Find {
         return res.status(200).json(result);
     };
 
-    convertString(value){
+    convertString(value) {
         const string = value.split("-");
         const convertedString = string.join(" ");
         return convertedString;
+    };
+
+    NumberOrString(value) {
+        if (isNaN(value)) {
+            return this.convertString(value);
+        } else {
+            return value;
+        };
     };
 };
 

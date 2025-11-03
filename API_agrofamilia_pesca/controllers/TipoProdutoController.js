@@ -12,18 +12,9 @@ class TipoProdutoController {
         };
     };
 
-    async finByIdTipoProduto(req, res) {
+    async findTipoProduto(req, res) {
         try {
-            Find.findAndVerify(res, req.params.id, TipoProduto.findById);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({ Error: "Erro interno no servidor" });
-        };
-    };
-
-    async findByNameTipoProduto(req, res) {
-        try {
-            Find.findAndVerify(res, Find.convertString(req.params.name), TipoProduto.findByName);
+            Find.findAndVerify(res, req.params.value, TipoProduto.findByIdAndName);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });

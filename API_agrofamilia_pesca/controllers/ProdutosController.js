@@ -12,18 +12,10 @@ class ProdutosController {
         };
     };
 
-    async findByIdProdutos(req, res) {
+    async findProdutos(req, res) {
         try {
-            Find.findAndVerify(res, req.params.id, Produtos.findById);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({ Error: "Erro interno no servidor" });
-        };
-    };
-
-    async findByNameProdutos(req, res) {
-        try {
-            Find.findAndVerify(res, Find.convertString(req.params.name), Produtos.findByName);
+            const produto = Find.NumberOrString(req.params.value);
+            Find.findAndVerify(res, produto, Produtos.findByIdAndName);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });

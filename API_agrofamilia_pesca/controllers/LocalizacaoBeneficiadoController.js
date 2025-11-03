@@ -12,18 +12,10 @@ class LocalizacaoBeneficiadoController {
         };
     };
 
-    async findByIdLocalizacoes(req, res) {
+    async findLocalizacao(req, res) {
         try {
-            Find.findAndVerify(res, req.params.id, LocalizacaoBeneficiado.findByid);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({ Error: "Erro interno no servidor" });
-        };
-    };
-
-    async findByNameLocalizacoes(req, res) {
-        try {
-            Find.findAndVerify(res, Find.convertString(req.params.name), LocalizacaoBeneficiado.findByName);
+            const localizacao = Find.NumberOrString(req.params.value);
+            Find.findAndVerify(res, localizacao, LocalizacaoBeneficiado.findByIdAndName);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });
