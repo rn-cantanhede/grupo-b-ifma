@@ -12,13 +12,14 @@ class AgriculturaFamiliarController {
         };
     };
 
-    async findByIdAgriculturaFamiliar(req, res) {
+    async findAgriculturaFamiliar(req, res) {
         try {
-            Find.findAndVerify(res, req.params.id, AgriculturaFamiliar.findById);
+            const result = Find.NumberOrString(req.params.value);
+            Find.findAndVerify(res, result, AgriculturaFamiliar.findByIdAndName);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });
-        }
+        };
     };
 };
 

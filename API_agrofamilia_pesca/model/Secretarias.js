@@ -1,16 +1,17 @@
 const { findAll, findBy } = require("../Utils/dbUtils");
+const table = "secretaria";
 
 class Secretarias {
     async findAllSecretarias() {
-        return findAll("secretaria");
+        return findAll(table);
     };
 
-    async findById(id) {
-        return findBy("ID", id, false, "secretaria");
-    };
-
-    async findByName(name) {
-        return findBy("NOME", name, true, "secretaria");
+    async findByIdAndName(value) {
+        if (isNaN(value)) {
+            return findBy("NOME", value, true, table);
+        } else {
+            return findBy("ID", value, false, table);
+        };
     };
 };
 

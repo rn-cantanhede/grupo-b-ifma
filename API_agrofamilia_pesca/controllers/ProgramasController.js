@@ -12,18 +12,10 @@ class ProgramasController {
         };
     };
 
-    async findByIdProgramas(req, res) {
+    async findProgramas(req, res) {
         try {
-            Find.findAndVerify(res, req.params.id, Programas.findById);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({ Error: "Erro interno no servidor" });
-        };
-    };
-
-    async findByNameProgramas(req, res) {
-        try {
-            Find.findAndVerify(res, Find.convertString(req.params.name), Programas.findByName);
+            const progamas = Find.NumberOrString(req.params.value);
+            Find.findAndVerify(res, progamas, Programas.findByIdAndName);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });
