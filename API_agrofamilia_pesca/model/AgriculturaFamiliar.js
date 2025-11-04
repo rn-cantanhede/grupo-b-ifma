@@ -6,6 +6,10 @@ class AgriculturaFamiliar {
         return findAll(table);
     };
 
+    async findbyCaf(caf){
+        return findBy("CAF", caf, false, table);
+    };
+
     async findByIdAndName(value) {
         if (isNaN(value)) {
             return findBy("NOME", value, true, table);

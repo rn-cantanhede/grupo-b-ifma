@@ -13,12 +13,11 @@ class AssociadosController {
     };
 
     async findAssociado(req, res) {
-        try {
-            Find.findAndVerify(res, Find.NumberOrString(req.params.value), Associados.findByIdAndName);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({ Error: "Erro interno no servidor" });
-        };
+        Find.findAndVerify(res, Find.NumberOrString(req.params.value), Associados.findByIdAndName);
+    };
+
+    async findCafAssociado(req, res) {
+        Find.findAndVerify(res, req.params.caf, Associados.findbyCaf);
     };
 };
 
