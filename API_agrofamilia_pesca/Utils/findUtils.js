@@ -2,11 +2,16 @@ const Verify = require("./verifyUtils");
 
 class Find {
     async findAndVerify(res, value, method) {
-        const result = await method(value);
+        try {
+            const result = await method(value);
 
-        Verify.notFound(res, result);
+            Verify.notFound(res, result);
 
-        return res.status(200).json(result);
+            return res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ Error: "Erro interno no servidor" });
+        };
     };
 
     convertString(value) {

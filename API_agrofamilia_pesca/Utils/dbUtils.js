@@ -5,7 +5,7 @@ async function findAll(table) {
 };
 
 async function findBy(field, value, multiple = false, table) {
-    const result = await knex.select("").from(table).where({ [field]: value });
+    const result = await knex.select("").from(table).where( field, "like", `%${value}%` );
 
     if (result.length) {
         if (multiple) {
