@@ -17,6 +17,7 @@ const TipoProdutoController = require("../controllers/TipoProdutoController");
 router.get("/agricultura-familiar", AgriculturaFamiliarController.AllAgriculturaFamiliar)
 router.get("/agricultura-familiar/:value", AgriculturaFamiliarController.findAgriculturaFamiliar);
 router.get("/agricultura-familiar/caf/:caf", AgriculturaFamiliarController.findCafAgriculturaFamiliar);
+router.get("/agricultura-familiar/dap/:dap", AgriculturaFamiliarController.findDapAgriculturaFamiliar);
 
 router.get("/associacoes", AssociacoesController.AllAssociacoes);
 router.get("/associacao/:value", AssociacoesController.findAssociacao);
@@ -24,6 +25,7 @@ router.get("/associacao/:value", AssociacoesController.findAssociacao);
 router.get("/associados", AssociadosController.AllAssociados);
 router.get("/associado/:value", AssociadosController.findAssociado);
 router.get("/associado/caf/:caf", AssociadosController.findCafAssociado);
+router.get("/associado/dap/:dap", AssociadosController.findDapAssociado);
 
 router.get("/categorias", CategoriasController.AllCategorias);
 router.get("/categoria/:value", CategoriasController.findAssociacao);

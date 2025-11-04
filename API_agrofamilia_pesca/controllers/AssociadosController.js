@@ -19,6 +19,10 @@ class AssociadosController {
     async findCafAssociado(req, res) {
         Find.findAndVerify(res, req.params.caf, Associados.findbyCaf);
     };
+
+    async findDapAssociado(req, res) {
+        Find.findAndVerify(res, req.params.dap, Associados.findbyDap);
+    };
 };
 
 module.exports = new AssociadosController();

@@ -10,6 +10,10 @@ class Associados {
         return findBy("CAF", caf, false, table);
     };
 
+    async findbyDap(dap) {
+        return findBy("DAP", dap, false, table);
+    };
+
     async findByIdAndName(value) {
         if (isNaN(value)) {
             return findBy("NOME", value, true, table);
