@@ -1,4 +1,4 @@
-const { findAll, findBy } = require("../Utils/dbUtils");
+const { findAll, findBy, findByInterval } = require("../Utils/dbUtils");
 const table = "view_pessoas";
 
 class Associados {
@@ -12,6 +12,18 @@ class Associados {
 
     async findbyDap(dap) {
         return findBy("DAP", dap, false, table);
+    };
+
+    async findbyAssociacao(associacao) {
+        return findBy("ASSOCIACAO", associacao, true, table);
+    };
+
+    async findbyData(data) {
+        return findBy("VALIDADE_CAF", data, true, table);
+    };
+
+    async findByInicioFim(inicio, fim){
+        return findByInterval("VALIDADE_CAF", inicio, fim, table);
     };
 
     async findByIdAndName(value) {

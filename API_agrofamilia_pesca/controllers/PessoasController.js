@@ -13,12 +13,20 @@ class PessoasController {
     };
 
     async findPessoa(req, res) {
-        try {
-            Find.findAndVerify(res, Find.NumberOrString(req.params.value), Pessoas.findByIdAndName);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({ Error: "Erro interno no servidor" });
-        };
+        Find.findAndVerify(res, Find.NumberOrString(req.params.value), Pessoas.findByIdAndName);
+
+    };
+
+    async findGeneroPessoa(req, res) {
+        Find.findAndVerify(res, Find.NumberOrString(req.params.genero), Pessoas.findbyGenero);
+    };
+
+    async findDataPessoa(req, res) {
+        Find.findAndVerify(res, req.params.data, Pessoas.findbyData);
+    };
+
+    async findInicioFimPessoa(req, res) {
+        Find.findAndVerifyInterval(res, req.params.inicio, req.params.fim, Pessoas.findByInicioFim);
     };
 };
 

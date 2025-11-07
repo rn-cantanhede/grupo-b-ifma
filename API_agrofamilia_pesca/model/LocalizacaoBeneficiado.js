@@ -6,6 +6,10 @@ class LocalizacaoBeneficiado {
         return findAll(table);
     };
 
+    async findbyAssociacao(associacao) {
+        return findBy("ASSOCIACAO", associacao, true, table);
+    };
+
     async findByIdAndName(value) {
         if (isNaN(value)) {
             return findBy("NOME", value, true, table);

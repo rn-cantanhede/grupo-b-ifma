@@ -23,6 +23,18 @@ class AssociadosController {
     async findDapAssociado(req, res) {
         Find.findAndVerify(res, req.params.dap, Associados.findbyDap);
     };
+    
+    async findAssociacaoAssociado(req, res) {
+        Find.findAndVerify(res, Find.NumberOrString(req.params.associacao), Associados.findbyAssociacao);
+    };
+
+    async findDataAssociado(req, res) {
+        Find.findAndVerify(res, req.params.data, Associados.findbyData);
+    };
+    
+    async findInicioFimAssociado(req, res) {
+        Find.findAndVerifyInterval(res, req.params.inicio, req.params.fim, Associados.findByInicioFim);
+    };
 };
 
 module.exports = new AssociadosController();

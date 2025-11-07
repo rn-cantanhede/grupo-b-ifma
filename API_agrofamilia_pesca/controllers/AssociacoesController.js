@@ -13,12 +13,15 @@ class AssociacoesController {
     };
 
     async findAssociacao(req, res) {
-        try {
-            Find.findAndVerify(res, Find.NumberOrString(req.params.value), Associacoes.findByIdAndName);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({ Error: "Erro interno no servidor" });
-        };
+        Find.findAndVerify(res, Find.NumberOrString(req.params.value), Associacoes.findByIdAndName);
+    };
+
+    async findCategoriaAssociacao(req, res) {
+        Find.findAndVerify(res, Find.NumberOrString(req.params.categoria), Associacoes.findbyCategoria);
+    };
+
+    async findCSecretariaAssociacao(req, res) {
+        Find.findAndVerify(res, Find.NumberOrString(req.params.secretaria), Associacoes.findbySecretaria);
     };
 };
 
