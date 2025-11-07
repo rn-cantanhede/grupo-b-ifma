@@ -5,7 +5,7 @@ class Categorias {
     async findAllCategorias() {
         return findAll(table);
     };
-
+    
     async findByIdAndName(value) {
         if (isNaN(value)) {
             return findBy("NOME", value, true, table);

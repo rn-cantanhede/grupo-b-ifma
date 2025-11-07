@@ -13,6 +13,10 @@ class AgriculturaFamiliar {
     async findbyDap(dap){
         return findBy("DAP", dap, false, table);
     };
+    
+    async findbyPrograma(programa){
+        return findBy("PROGRAMA", programa, true, table);
+    };
 
     async findByIdAndName(value) {
         if (isNaN(value)) {

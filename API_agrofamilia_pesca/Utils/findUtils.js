@@ -13,6 +13,17 @@ class Find {
             return res.status(500).json({ Error: "Erro interno no servidor" });
         };
     };
+    
+    async findAndVerifyInterval(res, inicio, fim, method) {
+        try {
+            const result = await method(inicio, fim);
+
+            return res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ Error: "Erro interno no servidor" });
+        };
+    };
 
     convertString(value) {
         const string = value.split("-");

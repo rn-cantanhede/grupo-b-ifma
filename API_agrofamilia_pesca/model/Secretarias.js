@@ -6,6 +6,14 @@ class Secretarias {
         return findAll(table);
     };
 
+    async findbyEstado(estado) {
+        return findBy("ESTADO", estado, true, table);
+    };
+    
+    async findbyCidade(cidade) {
+        return findBy("CIDADE", cidade, true, table);
+    };
+
     async findByIdAndName(value) {
         if (isNaN(value)) {
             return findBy("NOME", value, true, table);

@@ -20,6 +20,26 @@ class ProgramasController {
             return res.status(500).json({ Error: "Erro interno no servidor" });
         };
     };
+
+    async findSecretariaPrograma(req, res) {
+        Find.findAndVerify(res, Find.NumberOrString(req.params.secretaria), Programas.findbySecretaria);
+    };
+
+    async findEstadoPrograma(req, res) {
+        Find.findAndVerify(res, Find.NumberOrString(req.params.estado), Programas.findbyEstado);
+    };
+
+    async findOrigemRecursoPrograma(req, res) {
+        Find.findAndVerify(res, Find.NumberOrString(req.params.recurso), Programas.findbyOrigemRecurso);
+    };
+
+    async findDataInicioPrograma(req, res) {
+        Find.findAndVerify(res, req.params.data, Programas.findbyDataInicio);
+    };
+    
+    async findDataFimPrograma(req, res) {
+        Find.findAndVerify(res, req.params.data, Programas.findbyDataFim);
+    };
 };
 
 module.exports = new ProgramasController();

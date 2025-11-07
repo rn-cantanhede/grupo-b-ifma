@@ -20,6 +20,22 @@ class MovimentacoesController {
             return res.status(500).json({ Error: "Erro interno no servidor" });
         };
     };
+
+    async findDapMovimentacoes(req, res) {
+        Find.findAndVerify(res, req.params.dap, Movimentacoes.findbyDap);
+    };
+
+    async findProdutoMovimentacoes(req, res) {
+        Find.findAndVerify(res, Find.NumberOrString(req.params.produto), Movimentacoes.findbyProduto);
+    };
+
+    async findDataMovimentacoes(req, res) {
+        Find.findAndVerify(res, req.params.data, Movimentacoes.findbyData);
+    };
+
+    async findInicioFimMovimentacoes(req, res) {
+        Find.findAndVerifyInterval(res, req.params.inicio, req.params.fim, Movimentacoes.findByInicioFim);
+    };
 };
 
 module.exports = new MovimentacoesController();

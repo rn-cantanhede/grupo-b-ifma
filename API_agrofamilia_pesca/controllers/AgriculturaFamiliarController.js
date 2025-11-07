@@ -23,6 +23,10 @@ class AgriculturaFamiliarController {
     async findDapAgriculturaFamiliar(req, res) {
         Find.findAndVerify(res, req.params.dap, AgriculturaFamiliar.findbyDap);
     };
+    
+    async findProgramaAgriculturaFamiliar(req, res) {
+        Find.findAndVerify(res, Find.NumberOrString(req.params.programa), AgriculturaFamiliar.findbyPrograma);
+    };
 };
 
 module.exports = new AgriculturaFamiliarController();
