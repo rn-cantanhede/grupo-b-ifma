@@ -1,5 +1,7 @@
 const url = `http://localhost:3000/`;
 
+getPessoas();
+
 async function getMethode(router) {
     const link = `${url}${router}`;
     const res = await axios.get(link);
