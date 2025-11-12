@@ -33,6 +33,18 @@ async function getAssociacoes() {
     return createTable("associacoes", columns);
 };
 
+async function getProdutos() {
+    setActiveTab("produdos");
+    
+    const columns = [
+        { key: "ID", formatter: null },
+        { key: "NOME", formatter: null },
+        { key: "TIPO_DO_PRODUTO", formatter: null },
+    ];
+
+    return createTable("produtos", columns);
+};
+
 async function createTable(endpoint, columns) {
     try {
         const data = await getMethode(endpoint);
@@ -102,7 +114,7 @@ function createCell(tag, value, header = false, tbody = false) {
 };
 
 function setActiveTab(activeTab) {
-    const tabs = ["pessoas", "associacoes"];
+    const tabs = ["pessoas", "associacoes", "produdos"];
 
     tabs.forEach(tab => {
         const tabElement = document.getElementById(tab);
