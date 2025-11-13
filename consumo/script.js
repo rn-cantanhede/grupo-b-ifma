@@ -189,7 +189,7 @@ async function createTable(endpoint, columns) {
         const body = document.createElement("tbody");
 
         data.forEach(item => {
-            const row = createRow(item, columns);
+            const row = createRow(item, columns, endpoint);
             body.appendChild(row);
         });
 
@@ -204,7 +204,7 @@ function createHead(columns) {
     const row = document.createElement("tr");
 
     columns.forEach(column => {
-        const cell = createCell("th", column.key, false, true);
+        const cell = createCell("th", column.key, true, false);
         row.appendChild(cell);
     });
 
@@ -225,14 +225,14 @@ function createRow(data, columns) {
                 value = column.formatter(value);
             };
 
-            const cell = createCell("td", value);
+            const cell = createCell("td", value, false, true, data.ID);
             row.appendChild(cell);
         });
     };
     return row;
 };
 
-function createCell(tag, value, header = false, tbody = false) {
+function createCell(tag, value, header = false, tbody = false, id) {
     const cell = document.createElement(tag);
     const link = document.createElement("a");
 
@@ -244,17 +244,17 @@ function createCell(tag, value, header = false, tbody = false) {
         cell.setAttribute("scope", "col");
     };
 
-    //Faze de testes
-    // if (tag == "td") {
-    //     console.log(tag);
-    //     cell.appendChild(link);
-    //     link.setAttribute("href", `${url}agricultura-familiar/${value}`);
-    //     link.textContent = value;
-    // } else {
-    //     cell.textContent = value;
-    // };
+    // Faze de testes
+    if (tag == "td") {
+        cell.appendChild(link);
+        
+        link.setAttribute("href", `pessoa.html?id=${value}`);
+        link.textContent = value;
+    } else {
+        cell.textContent = value;
+    };
 
-    cell.textContent = value;
+    // cell.textContent = value;
 
     return cell;
 };
