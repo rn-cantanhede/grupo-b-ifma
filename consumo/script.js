@@ -1,11 +1,25 @@
 const url = `http://localhost:3000/`;
 
-getPessoas();
+getAgriculturaFamiliar();
 
 async function getMethode(router) {
     const link = `${url}${router}`;
     const res = await axios.get(link);
     return res.data;
+};
+
+async function getAgriculturaFamiliar() {
+    setActiveTab("agricultura-familiar");
+
+    const columns = [
+        { key: "ID", formatter: null },
+        { key: "NOME", formatter: null },
+        { key: "CAF", formatter: null },
+        { key: "PROGRAMA", formatter: null },
+        { key: "DAP", formatter: null },
+    ];
+    
+    return createTable("agricultura-familiar", columns);
 };
 
 async function getPessoas() {
@@ -35,6 +49,98 @@ async function getAssociacoes() {
     return createTable("associacoes", columns);
 };
 
+async function getAssociados() {
+    setActiveTab("associados");
+    
+    const columns = [
+        { key: "ID", formatter: null },
+        { key: "NOME", formatter: null },
+        { key: "CPF", formatter: null },
+        { key: "CAF", formatter: null },
+        { key: "VALIDADE_CAF", formatter: value => value.split("T")[0] },
+        { key: "ASSOCIACAO", formatter: null },
+        { key: "DAP", formatter: null },
+    ];
+
+    return createTable("associados", columns);
+};
+
+async function getCategorias(){
+    setActiveTab("categorias");
+
+    const columns = [
+        { key: "ID", formatter: null },
+        { key: "NOME", formatter: null },
+    ];
+
+    return createTable("categorias", columns);
+};
+
+async function getLocalizacoes() {
+    setActiveTab("localizacoes");
+    
+    const columns = [
+        { key: "ID", formatter: null },
+        { key: "NOME", formatter: null },
+        { key: "ASSOCIACAO", formatter: null },
+        { key: "LATITUDE", formatter: null },
+        { key: "LONGITUDE", formatter: null },
+        { key: "TITULO", formatter: null },
+        { key: "DESCRICAO", formatter: null },
+    ];
+
+    return createTable("localizacoes-dos-beneficiados", columns);
+};
+
+async function getMovimentacoes() {
+    setActiveTab("movimentacoes");
+    
+    const columns = [
+        { key: "ID", formatter: null },
+        { key: "DAP", formatter: null },
+        { key: "PRODUTO", formatter: null },
+        { key: "QNT_PRODUZIDA", formatter: null },
+        { key: "VLR_UNITARIO", formatter: null },
+        { key: "DATA_MOVIMENTACAO", formatter: value => value.split("T")[0] },
+        { key: "LATITUDE", formatter: null },
+        { key: "LONGITUDE", formatter: null },
+    ];
+
+    return createTable("movimentacoes", columns);
+};
+
+async function getProgramas() {
+    setActiveTab("programas");
+
+    const columns = [
+        { key: "ID", formatter: null },
+        { key: "NOME", formatter: null },
+        { key: "DESCRICAO", formatter: null },
+        { key: "DATA_INICIO", formatter: value => value.split("T")[0] },
+        { key: "DATA_FIM", formatter: value => value.split("T")[0] },
+        { key: "ORIGEM_RECURSO", formatter: null },
+        { key: "VLR_REPASSE", formatter: null },
+        { key: "SECRETARIA", formatter: null },
+        { key: "ESTADO", formatter: null },
+    ];
+
+    return createTable("programas", columns);
+};
+
+async function getSecretarias() {
+    setActiveTab("secretarias");
+    
+    const columns = [
+        { key: "ID", formatter: null },
+        { key: "NOME", formatter: null },
+        { key: "CIDADE", formatter: null },
+        { key: "ESTADO", formatter: null },
+        { key: "ENDERECO", formatter: null },
+    ];
+
+    return createTable("secretarias", columns);
+};
+
 async function getProdutos() {
     setActiveTab("produdos");
     
@@ -45,6 +151,17 @@ async function getProdutos() {
     ];
 
     return createTable("produtos", columns);
+};
+
+async function getTiposProduto() {
+    setActiveTab("tipos-produtos");
+
+    const columns = [
+        { key: "ID", formatter: null },
+        { key: "NOME", formatter: null },
+    ];
+
+    return createTable("tipos-produtos", columns);
 };
 
 async function createTable(endpoint, columns) {
@@ -116,7 +233,9 @@ function createCell(tag, value, header = false, tbody = false) {
 };
 
 function setActiveTab(activeTab) {
-    const tabs = ["pessoas", "associacoes", "produdos"];
+    const tabs = ["agricultura-familiar", "pessoas", "associacoes", 
+                 "associados", "categorias","localizacoes", "movimentacoes", 
+                 "produdos", "programas", "secretarias", "tipos-produtos"];
 
     tabs.forEach(tab => {
         const tabElement = document.getElementById(tab);
