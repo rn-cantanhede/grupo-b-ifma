@@ -258,3 +258,48 @@ function createCell(tag, value, header = false, tbody = false) {
 
     return cell;
 };
+
+
+// </script>
+
+
+// PG - 2
+
+
+// <h2>Detalhes do Usuário</h2>
+
+// <table id="tabelaDetalhes">
+//   <tr><th>Campo</th><th>Valor</th></tr>
+// </table>
+
+// <script>
+// const API_URL = "https://suaapi.com/usuarios";
+
+// // Pega o ID da URL (ex: ?id=3)
+// const params = new URLSearchParams(window.location.search);
+// const id = params.get("id");
+
+// async function carregarDetalhes() {
+//   if (!id) {
+//     document.getElementById("tabelaDetalhes").innerHTML = `
+//       <tr><td colspan="2">Nenhum ID informado.</td></tr>
+//     `;
+//     return;
+//   }
+
+//   const res = await fetch(`${API_URL}/${id}`);
+//   const usuario = await res.json();
+
+//   const tabela = document.getElementById("tabelaDetalhes");
+//   tabela.innerHTML = `
+//     <tr><th>Campo</th><th>Valor</th></tr>
+//     <tr><td>ID</td><td>${usuario.id}</td></tr>
+//     <tr><td>Nome</td><td>${usuario.nome}</td></tr>
+//     <tr><td>Email</td><td>${usuario.email}</td></tr>
+//     <tr><td>Cargo</td><td>${usuario.cargo ?? "—"}</td></tr>
+//     <tr><td>Data de criação</td><td>${usuario.data_criacao ?? "—"}</td></tr>
+//   `;
+// }
+
+// carregarDetalhes();
+// </script>
