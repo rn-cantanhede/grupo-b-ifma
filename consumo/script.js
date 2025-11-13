@@ -245,16 +245,14 @@ function createCell(tag, value, header = false, tbody = false, id) {
     };
 
     // Faze de testes
-    if (tag == "td") {
+    if (tag != "td") {
         cell.appendChild(link);
-        
+        link.setAttribute("class", "nav-link");
         link.setAttribute("href", `pessoa.html?id=${value}`);
         link.textContent = value;
     } else {
         cell.textContent = value;
     };
-
-    // cell.textContent = value;
 
     return cell;
 };
