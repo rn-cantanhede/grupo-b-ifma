@@ -1,0 +1,33 @@
+<h2>Detalhes do Usuário</h2>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="script.js"></script>
+
+<!-- <script src="script.js"></script> -->
+<script>
+    const oci = `http://localhost:3000/`;
+    
+    async function getMethode(router) {
+        const link = `${oci}${router}`;
+        const res = await axios.get(link);
+        return res.data;
+    };
+
+    async function getPessoa() {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+
+        try {
+            const data = await getMethode(`pessoa/${id}`);
+            const teste = data[0];
+            console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+        
+    };
+
+    getPessoa();
+</script>
