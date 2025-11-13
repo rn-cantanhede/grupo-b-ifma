@@ -18,7 +18,7 @@ async function getAgriculturaFamiliar() {
         { key: "PROGRAMA", formatter: null },
         { key: "DAP", formatter: null },
     ];
-    
+
     return createTable("agricultura-familiar", columns);
 };
 
@@ -51,7 +51,7 @@ async function getAssociacoes() {
 
 async function getAssociados() {
     setActiveTab("associados");
-    
+
     const columns = [
         { key: "ID", formatter: null },
         { key: "NOME", formatter: null },
@@ -65,7 +65,7 @@ async function getAssociados() {
     return createTable("associados", columns);
 };
 
-async function getCategorias(){
+async function getCategorias() {
     setActiveTab("categorias");
 
     const columns = [
@@ -78,7 +78,7 @@ async function getCategorias(){
 
 async function getLocalizacoes() {
     setActiveTab("localizacoes");
-    
+
     const columns = [
         { key: "ID", formatter: null },
         { key: "NOME", formatter: null },
@@ -94,7 +94,7 @@ async function getLocalizacoes() {
 
 async function getMovimentacoes() {
     setActiveTab("movimentacoes");
-    
+
     const columns = [
         { key: "ID", formatter: null },
         { key: "DAP", formatter: null },
@@ -129,7 +129,7 @@ async function getProgramas() {
 
 async function getSecretarias() {
     setActiveTab("secretarias");
-    
+
     const columns = [
         { key: "ID", formatter: null },
         { key: "NOME", formatter: null },
@@ -143,7 +143,7 @@ async function getSecretarias() {
 
 async function getProdutos() {
     setActiveTab("produdos");
-    
+
     const columns = [
         { key: "ID", formatter: null },
         { key: "NOME", formatter: null },
@@ -162,6 +162,20 @@ async function getTiposProduto() {
     ];
 
     return createTable("tipos-produtos", columns);
+};
+
+
+function setActiveTab(activeTab) {
+    const tabs = ["agricultura-familiar", "pessoas", "associacoes",
+        "associados", "categorias", "localizacoes", "movimentacoes",
+        "produdos", "programas", "secretarias", "tipos-produtos"];
+
+    tabs.forEach(tab => {
+        const tabElement = document.getElementById(tab);
+        tabElement.classList.remove("active");
+    });
+
+    document.getElementById(activeTab).classList.add("active");
 };
 
 async function createTable(endpoint, columns) {
@@ -220,27 +234,27 @@ function createRow(data, columns) {
 
 function createCell(tag, value, header = false, tbody = false) {
     const cell = document.createElement(tag);
+    const link = document.createElement("a");
 
     if (header) {
         cell.setAttribute("scope", "row");
     };
+
     if (tbody) {
         cell.setAttribute("scope", "col");
     };
 
+    //Faze de testes
+    // if (tag == "td") {
+    //     console.log(tag);
+    //     cell.appendChild(link);
+    //     link.setAttribute("href", `${url}agricultura-familiar/${value}`);
+    //     link.textContent = value;
+    // } else {
+    //     cell.textContent = value;
+    // };
+
     cell.textContent = value;
+
     return cell;
-};
-
-function setActiveTab(activeTab) {
-    const tabs = ["agricultura-familiar", "pessoas", "associacoes", 
-                 "associados", "categorias","localizacoes", "movimentacoes", 
-                 "produdos", "programas", "secretarias", "tipos-produtos"];
-
-    tabs.forEach(tab => {
-        const tabElement = document.getElementById(tab);
-        tabElement.classList.remove("active");
-    });
-
-    document.getElementById(activeTab).classList.add("active");
 };
