@@ -31,39 +31,63 @@
     <section>
         <div class="container mt-5">
             <div class="row">
-                <div class="col-sm-4 ">
+                <div class="col-sm-4">
                     <ul class="nav nav-pills flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" id="pessoas" onclick="getPessoas()">Pessoas</a>
+                            <a class="nav-link" id="agricultura-familiar" onclick="getAgriculturaFamiliar()">Agricultura Familiar</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="associacoes" onclick="getAssociacoes()">Associacões</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" id="associados" onclick="getAssociados()">Associados</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="categorias" onclick="getCategorias()">Categorias</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="localizacoes" onclick="getLocalizacoes()">Localizações</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="pessoas" onclick="getPessoas()">Pessoas</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" id="produdos" onclick="getProdutos()">Produtos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link disabled" href="#">Disabled</a>
+                            <a class="nav-link" id="movimentacoes" onclick="getMovimentacoes()">Movimentações</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="programas" onclick="getProgramas()">Programas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="secretarias" onclick="getSecretarias()">Secretarias</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="tipos-produtos" onclick="getTiposProduto()">Tipo de Produtos</a>
+                        </li>
+                        <!-- <li class="nav-item">
+                            <a class="nav-link disabled" href="#">Disabled</a>
+                        </li> -->
                     </ul>
                     <hr class="d-sm-none">
                 </div>
-                <div class="col-sm-8 shadow-lg p-3 mb-5 rounded">
+                <div class="col-sm-8 shadow-lg p-3 mb-8 rounded text-center" style="overflow: scroll;">
                     <table class="table" id="data">
                         <thead>
 
                         </thead>
                         <tbody class="table-group-divider">
-                            
+
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </section>
-    <footer class="mt-5 p-4 text-white text-center fixed-bottom bg-primary">
+    <!-- <footer class="mt-8 p-3 text-white text-center fixed-bottom bg-primary">
         <p>Footer</p>
-    </footer>
+    </footer> -->
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
