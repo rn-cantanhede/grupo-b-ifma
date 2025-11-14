@@ -1,4 +1,4 @@
-import { ApiService } from "./api";
+import { ApiService } from "./api.js";
 
 export class Table {
     constructor(endpoint, columns) {
