@@ -1,7 +1,5 @@
 const url = `http://localhost:3000/`;
 
-getAgriculturaFamiliar();
-
 async function getMethode(router) {
     const link = `${url}${router}`;
     const res = await axios.get(link);
@@ -249,6 +247,7 @@ function createCell(tag, value, header = false, tbody = false, id) {
         cell.appendChild(link);
         link.setAttribute("class", "nav-link");
         link.setAttribute("href", `pessoa.html?id=${value}`);
+        link.setAttribute("onclick", "getPessoa");
         link.textContent = value;
     } else {
         cell.textContent = value;
@@ -258,14 +257,49 @@ function createCell(tag, value, header = false, tbody = false, id) {
 };
 
 async function getPessoa() {
+    const nome = document.getElementById("nome");
+    const cpf = document.getElementById("cpf");
+    const genero = document.getElementById("genero");
+    const nascimento = document.getElementById("nascimento");
+
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
-    console.log(id);
 
     try {
-        const data = await getMethode(`pessoa/${id}`);
+        const result = await getMethode(`pessoa/${id}`);
+        const pessoa = result[0];
+        console.log(pessoa);
+
+        nome.textContent = pessoa.NOME;
+        cpf.textContent = pessoa.CPF;
+        genero.textContent = pessoa.GENERO;
+        nascimento.textContent = pessoa.DATA_NASCIMENTO;
+
     } catch (error) {
         console.log(error);
-    }
-    console.log(data);
+    };
+};
+
+async function getAssociado() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    const associacao = document.getElementById("associacao");
+    const caf = document.getElementById("caf");
+    const dap = document.getElementById("dap");
+    const validade = document.getElementById("validade");
+
+    try {
+        const result = await getMethode(`associado/${id}`);
+        const associado = result[0];
+        console.log(associado);
+
+        associacao.textContent = associado.ASSOCIACAO;
+        caf.textContent = associado.CAF;
+        dap.textContent = associado.DAP;
+        validade.textContent = associado.VALIDADE_CAF;
+
+    } catch (error) {
+        console.log(error);
+    };
 };
