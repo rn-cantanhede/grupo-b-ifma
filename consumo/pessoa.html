@@ -31,7 +31,7 @@
     <section>
         <div class="container mt-5">
             <div class="row">
-                <table class="table">
+                <table class="table text-center">
                     <thead>
                         <tr>
                             <th scope="col">ID</th>
@@ -43,29 +43,47 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <th scope="row" id="id">1</th>
-                            <th id="nome"></th>
+                            <th scope="row" id="id"></th>
+                            <td id="nome"></td>
                             <td id="cpf"></td>
                             <td id="genero"></td>
                             <td id="nascimento"></td>
                         </tr>
                     </tbody>
                 </table>
-                <table class="table">
+                <table class="table text-center">
                     <thead>
                         <tr>
                             <th scope="col">Associação</th>
                             <th scope="col">CAF</th>
                             <th scope="col">DAP</th>
-                            <th scope="col">Validade</th>
+                            <th scope="col">Validade CAF</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <th id="associacao"></th>
+                            <td id="associacao"></td>
                             <td id="caf"></td>
                             <td id="dap"></td>
                             <td id="validade"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table text-center">
+                    <thead>
+                        <tr>
+                            <th scope="col">Produto</th>
+                            <th scope="col">Qant. Produzida</th>
+                            <th scope="col">Valor unitario</th>
+                            <th scope="col">Data da movimentação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="produdo"></td>
+                            <td id="produzida"></td>
+                            <td id="unitario"></td>
+                            <td id="movimentacao"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -81,11 +99,10 @@
     crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <!-- <script src="script.js"></script> -->
-<script src="script.js"></script>
+<script src="pessoa.js"></script>
 
 <script>
-    getPessoa();
-    getAssociado();
+    getAll();
 </script>
 
 </html>
