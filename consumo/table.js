@@ -1,9 +1,31 @@
 const url = `http://localhost:3000/`;
 
+const routeAPI = {
+    pessoas: {
+        link: true,
+        html: "pessoa.html",
+        param: "id"
+    },
+    "agricultura-familiar": {
+        link: true,
+        html: "pessoa.html",
+        param: "id"
+    },
+    "tipos-produtos": {
+        link: true,
+        html: "tipos-de-produtos.html",
+        param: "id"
+    },
+};
+
 async function getMethode(router) {
-    const link = `${url}${router}`;
-    const res = await axios.get(link);
-    return res.data;
+    try {
+        const link = `${url}${router}`;
+        const res = await axios.get(link);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    };
 };
 
 async function getAgriculturaFamiliar() {
@@ -177,24 +199,21 @@ function setActiveTab(activeTab) {
 };
 
 async function createTable(endpoint, columns) {
-    try {
-        const data = await getMethode(endpoint);
-        const list = document.getElementById("data");
-        list.textContent = "";
 
-        createHead(columns);
+    const data = await getMethode(endpoint);
+    const list = document.getElementById("data");
+    list.textContent = "";
 
-        const body = document.createElement("tbody");
+    createHead(columns);
 
-        data.forEach(item => {
-            const row = createRow(item, columns, endpoint);
-            body.appendChild(row);
-        });
+    const body = document.createElement("tbody");
 
-        list.appendChild(body);
-    } catch (error) {
-        console.log(error);
-    };
+    data.forEach(item => {
+        const row = createRow(item, columns, endpoint);
+        body.appendChild(row);
+    });
+
+    list.appendChild(body);
 };
 
 function createHead(columns) {
@@ -210,7 +229,7 @@ function createHead(columns) {
     document.getElementById("data").appendChild(head);
 };
 
-function createRow(data, columns) {
+function createRow(data, columns, endpoint) {
     const row = document.createElement("tr");
 
     if (data) {
@@ -223,32 +242,36 @@ function createRow(data, columns) {
                 value = column.formatter(value);
             };
 
-            const cell = createCell("td", value, false, true, data.ID);
+            const cell = createCell("td", value, false, true, data.ID, endpoint);
             row.appendChild(cell);
         });
     };
     return row;
 };
 
-function createCell(tag, value, header = false, tbody = false, id) {
+function createCell(tag, value, header = false, tbody = false, id, endpoint) {
     const cell = document.createElement(tag);
-    const link = document.createElement("a");
+    const route = routeAPI[endpoint];
 
     if (header) {
         cell.setAttribute("scope", "row");
+        cell.textContent = value;
+        return cell;
     };
 
     if (tbody) {
         cell.setAttribute("scope", "col");
     };
 
-    // Faze de testes
-    if (tag == "td") {
-        cell.appendChild(link);
+    if (tag == "td" && route && route.link) {
+        const link = document.createElement("a");
+        const html = route.html;
+        const param = route.param;
+
         link.setAttribute("class", "nav-link");
-        link.setAttribute("href", `pessoa.html?id=${value}`);
-        link.setAttribute("onclick", "getPessoa");
+        link.setAttribute("href", `${html}?${param}=${id}`);
         link.textContent = value;
+        cell.appendChild(link);
     } else {
         cell.textContent = value;
     };
