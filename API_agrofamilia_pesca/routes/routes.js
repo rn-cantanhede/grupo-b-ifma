@@ -48,6 +48,7 @@ router.get("/pessoa/data/intervalo/:inicio/:fim", PessoasController.findInicioFi
 
 router.get("/produtos", ProdutosController.AllProdutos);
 router.get("/produto/:value", ProdutosController.findProdutos);
+router.get("/produto/tipo/:tipo", ProdutosController.findByTipoProduto);
 
 router.get("/movimentacoes", MovimentacoesController.AllMovimentacoes);
 router.get("/movimentacao/:id", MovimentacoesController.findByIdMovimentacoes);
