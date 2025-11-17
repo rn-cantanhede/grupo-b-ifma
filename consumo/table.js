@@ -13,7 +13,7 @@ const routeAPI = {
     },
     "tipos-produtos": {
         link: true,
-        html: "tipos-de-produtos.html",
+        html: "produtos.html",
         param: "id"
     },
 };
