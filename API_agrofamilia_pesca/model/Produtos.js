@@ -13,6 +13,10 @@ class Produtos {
             return findBy("ID", value, false, table);
         };
     };
+
+    async findByTipo(tipo) {
+        return findBy("TIPO_DO_PRODUTO", tipo, true, table);  
+    };
 };
 
 module.exports = new Produtos();
