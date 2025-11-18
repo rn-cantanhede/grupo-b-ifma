@@ -36,6 +36,8 @@ router.get("/associado/data/intervalo/:inicio/:fim", AssociadosController.findIn
 router.get("/categorias", CategoriasController.AllCategorias);
 router.get("/categoria/:value", CategoriasController.findAssociacao);
 
+router.post("/categoria/new", CategoriasController.newCategoria);
+
 router.get("/localizacoes-dos-beneficiados", LocalizacaoBeneficiadoController.AllLocalizacoes);
 router.get("/localizacao-do-beneficiado/:value", LocalizacaoBeneficiadoController.findLocalizacao);
 router.get("/localizacao-do-beneficiado/associacao/:associacao", LocalizacaoBeneficiadoController.findAssociacaoLocalizacao);
