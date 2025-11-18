@@ -13,12 +13,19 @@ class TipoProdutoController {
     };
 
     async findTipoProduto(req, res) {
-        try {
-            Find.findAndVerify(res, Find.NumberOrString(req.params.value), TipoProduto.findByIdAndName);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json({ Error: "Erro interno no servidor" });
+        Find.findAndVerify(res, Find.NumberOrString(req.params.value), TipoProduto.findByIdAndName);
+    };
+
+    async newTipoProduto(req, res) {
+        const tipo = req.body;
+        const tipoVerify = req.body.NOME;
+
+        if (tipoVerify == undefined || tipoVerify == "") {
+            return res.status(403).json({ Error: `Campo destinado ao nome está vazio` });
         };
+
+        Find.findAndVerify(res, tipo, TipoProduto.newTipo);
+        return res.status(201).json({ Message: `Cadastro realizado` });
     };
 };
 
