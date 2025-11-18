@@ -46,6 +46,8 @@ router.get("/pessoa/genero/:genero", PessoasController.findGeneroPessoa);
 router.get("/pessoa/data/:data", PessoasController.findDataPessoa);
 router.get("/pessoa/data/intervalo/:inicio/:fim", PessoasController.findInicioFimPessoa);
 
+router.post("/pessoa/new", PessoasController.newPessoa);
+
 router.get("/produtos", ProdutosController.AllProdutos);
 router.get("/produto/:value", ProdutosController.findProdutos);
 router.get("/produto/tipo/:tipo", ProdutosController.findByTipoProduto);
@@ -70,11 +72,11 @@ router.get("/secretaria/:value", SecretariasController.findSecretarias);
 router.get("/secretaria/estado/:estado", SecretariasController.findEstadoSecretarias);
 router.get("/secretaria/cidade/:cidade", SecretariasController.findCidadeSecretarias);
 
-router.post("/secretaria/nova", SecretariasController.newSecretaria);
+router.post("/secretaria/new", SecretariasController.newSecretaria);
 
 router.get("/tipos-produtos", TipoProdutoController.AllTipoProduto);
 router.get("/tipo-produto/:value", TipoProdutoController.findTipoProduto);
 
-router.post("/tipo-produto/novo", TipoProdutoController.newTipoProduto);
+router.post("/tipo-produto/new", TipoProdutoController.newTipoProduto);
 
 module.exports = router;

@@ -1,4 +1,4 @@
-const { findAll, findBy, findByInterval } = require("../Utils/dbUtils");
+const { findAll, findBy, findByInterval, insertData } = require("../Utils/dbUtils");
 const table = "pessoa";
 
 class Pessoas {
@@ -24,6 +24,10 @@ class Pessoas {
         } else {
             return findBy("ID", value, false, table);
         };
+    };
+
+    async insetPessoa(data){
+        return insertData(data, table);
     };
 };
 
