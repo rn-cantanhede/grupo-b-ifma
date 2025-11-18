@@ -5,8 +5,6 @@ class Find {
         try {
             const result = await method(value);
 
-            Verify.notFound(res, result);
-
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
