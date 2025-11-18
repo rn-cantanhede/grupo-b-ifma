@@ -15,6 +15,18 @@ class CategoriasController {
     async findAssociacao(req, res) {
         Find.findAndVerify(res, Find.NumberOrString(req.params.value), Categorias.findByIdAndName);
     };
+
+    async newCategoria(req, res) {
+        const tipo = req.body;
+        const tipoVerify = req.body.NOME;
+
+        if (tipoVerify == undefined || tipoVerify == "") {
+            return res.status(403).json({ Error: `Campo destinado ao nome está vazio` });
+        };
+
+        Find.findAndVerify(res, tipo, Categorias.insertCategoria);
+        return res.status(201).json({ Message: `Cadastro realizado` });
+    };
 };
 
 module.exports = new CategoriasController();

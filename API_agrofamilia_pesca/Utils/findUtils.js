@@ -5,7 +5,7 @@ class Find {
         try {
             const result = await method(value);
 
-            return res.status(200).json(result);
+            return res.json(result);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });
