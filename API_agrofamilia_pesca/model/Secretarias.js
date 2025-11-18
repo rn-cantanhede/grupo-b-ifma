@@ -1,4 +1,4 @@
-const { findAll, findBy } = require("../Utils/dbUtils");
+const { findAll, findBy, insertData } = require("../Utils/dbUtils");
 const table = "secretaria";
 
 class Secretarias {
@@ -20,6 +20,10 @@ class Secretarias {
         } else {
             return findBy("ID", value, false, table);
         };
+    };
+
+    async newSecretaria(data){
+        return insertData(data, table);
     };
 };
 
