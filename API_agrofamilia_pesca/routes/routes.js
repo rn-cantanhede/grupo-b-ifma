@@ -70,7 +70,11 @@ router.get("/secretaria/:value", SecretariasController.findSecretarias);
 router.get("/secretaria/estado/:estado", SecretariasController.findEstadoSecretarias);
 router.get("/secretaria/cidade/:cidade", SecretariasController.findCidadeSecretarias);
 
+router.post("/secretaria/nova", SecretariasController.newSecretaria);
+
 router.get("/tipos-produtos", TipoProdutoController.AllTipoProduto);
 router.get("/tipo-produto/:value", TipoProdutoController.findTipoProduto);
+
+router.post("/tipo-produto/novo", TipoProdutoController.newTipoProduto);
 
 module.exports = router;
