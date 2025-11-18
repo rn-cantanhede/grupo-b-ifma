@@ -26,4 +26,9 @@ async function findBy(field, value, multiple = false, table) {
     };
 };
 
-module.exports = { findAll, findBy, findByInterval };
+async function insertData(value, table) {
+    const result = await knex(table).insert(value);
+    return result;
+};
+
+module.exports = { findAll, findBy, findByInterval, insertData };
