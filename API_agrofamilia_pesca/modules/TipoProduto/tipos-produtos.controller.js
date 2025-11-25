@@ -2,7 +2,7 @@ const TiposProdutosService = require("./tipos-produtos.service");
 const Find = require("../../Utils/findUtils");
 
 class TipoProdutoController {
-    async AllTipoProduto(req, res) {
+    async findallTipoProduto(req, res) {
         try {
             const tipos = await TiposProdutosService.findallTipoProduto();
             return res.status(200).json(tipos);

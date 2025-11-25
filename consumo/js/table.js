@@ -109,7 +109,7 @@ async function getLocalizacoes() {
         { key: "DESCRICAO", formatter: null },
     ];
 
-    return createTable("localizacoes-dos-beneficiados", columns);
+    return createTable("localizacoes", columns);
 };
 
 async function getMovimentacoes() {

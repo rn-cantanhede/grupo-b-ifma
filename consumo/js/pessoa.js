@@ -35,7 +35,7 @@ async function getPessoa(id) {
         { key: "DATA_NASCIMENTO", formatter: value => value.split("T")[0] },
     ];
 
-    const result = await getMethode(`pessoa/${id}`);
+    const result = await getMethode(`pessoas/${id}`);
 
     setDados(idTable, columns, result);
 
@@ -50,7 +50,7 @@ async function getAssociado(id) {
         { key: "VALIDADE_CAF", formatter: value => value.split("T")[0] },
     ];
 
-    const result = await getMethode(`associado/${id}`);
+    const result = await getMethode(`associados/${id}`);
 
     setDados(idTable, columns, result);
 
@@ -65,7 +65,7 @@ async function getMovimentacoes(dap) {
         { key: "VLR_UNITARIO", formatter: null },
         { key: "DATA_MOVIMENTACAO", formatter: value => value.split("T")[0] },
     ];
-    const result = await getMethode(`movimentacao/dap/${dap}`);
+    const result = await getMethode(`movimentacoes/dap/${dap}`);
 
     setDados(idTable, columns, result);
     total(result);
@@ -82,7 +82,7 @@ async function getLocalizacao(id) {
         { key: "TITULO", formatter: null },
         { key: "DESCRICAO", formatter: null },
     ];
-    const result = await getMethode(`localizacao-do-beneficiado/${id}`);
+    const result = await getMethode(`localizacoes/${id}`);
 
     setDados(idTable, columns, result);
 

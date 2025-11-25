@@ -47,7 +47,7 @@ async function getTipoProduto(id) {
         { key: "NOME", formatter: null },
     ];
 
-    const result = await getMethode(`tipo-produto/${id}`);
+    const result = await getMethode(`tipos-produtos/${id}`);
 
     setDados(idTable, columns, result);
 
@@ -62,7 +62,7 @@ async function getMovimentacoes(dap) {
         { key: "VLR_UNITARIO", formatter: null },
         { key: "DATA_MOVIMENTACAO", formatter: value => value.split("T")[0] },
     ];
-    const result = await getMethode(`movimentacao/dap/${dap}`);
+    const result = await getMethode(`movimentacoes/dap/${dap}`);
 
     setDados(idTable, columns, result);
     total(result);
