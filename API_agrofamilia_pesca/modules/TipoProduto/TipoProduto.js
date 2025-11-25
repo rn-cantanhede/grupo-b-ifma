@@ -1,6 +1,3 @@
-const { findAll, findBy } = require("../../Utils/dbUtils");
-const table = "tipo_produto";
-
 class TipoProduto {
     async allTipoProduto() {
         return findAll(table);
@@ -12,6 +9,10 @@ class TipoProduto {
         } else {
             return findBy("ID", value, false, table);
         };
+    };
+
+    async insertCategoria(data) {
+        return insertData(data, table);
     };
 };
 
