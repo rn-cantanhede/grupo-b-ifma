@@ -3,7 +3,7 @@ const MovimentacoesService = require("./movimentacoes.service");
 class MovimentacoesController {
     async AllMovimentacoes(req, res) {
         try {
-            const movimentacoes = await MovimentacoesService.getAll();
+            const movimentacoes = await MovimentacoesService.findAllMovimentacoes();
             return res.status(200).json(movimentacoes);
         } catch (error) {
             console.log(error);

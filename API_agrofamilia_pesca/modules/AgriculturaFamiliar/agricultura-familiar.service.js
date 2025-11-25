@@ -2,7 +2,7 @@ const Erros = require("../../shared/errors/Errors");
 const AgriculturaFamiliarRepository = require("./agricultura-familiar.repository");
 
 class AgriculturaFamiliarService {
-    async getAll() {
+    async findAllAgriculturaFamiliar() {
         const result = await AgriculturaFamiliarRepository.findAllAgriculturaFamiliar();
         return result;
     };

@@ -1,10 +1,9 @@
-const Find = require("../../Utils/findUtils");
 const LocalizacaoBeneficiadoService = require("./localizacao-beneficiado.service");
 
 class LocalizacaoBeneficiadoController {
     async AllLocalizacoes(req, res) {
         try {
-            const localizacoes = await LocalizacaoBeneficiadoService.getAll();
+            const localizacoes = await LocalizacaoBeneficiadoService.findAllLocalizacao();
             return res.status(200).json(localizacoes);
         } catch (error) {
             console.log(error);

@@ -1,11 +1,9 @@
-const Associados = require("./associados.repository");
-const Find = require("../../Utils/findUtils");
 const AssociadosService = require("./associados.service");
 
 class AssociadosController {
     async AllAssociados(req, res) {
         try {
-            const view = await Associados.findAllAssociados();
+            const view = await AssociadosService.findAllAssociados();
             return res.status(200).json(view);
         } catch (error) {
             console.log(error);

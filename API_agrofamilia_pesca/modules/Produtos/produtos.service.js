@@ -2,7 +2,7 @@ const Erros = require("../../shared/errors/Errors");
 const ProdutosRepository = require("./produtos.repository");
 
 class ProdutosService {
-    async getAll(){
+    async findAllProdutos(){
         const produtos = await ProdutosRepository.findAllProdutos();
         return produtos;
     };

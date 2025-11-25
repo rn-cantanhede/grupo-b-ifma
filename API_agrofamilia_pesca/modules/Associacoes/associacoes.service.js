@@ -2,7 +2,7 @@ const Erros = require("../../shared/errors/Errors");
 const AssociacoesRepository = require("./associacoes.repository");
 
 class AssociacoesService {
-    async getAll(){
+    async findAllAssociacoes(){
         const result = await AssociacoesRepository.findAllAssociacoes();
         return result;
     };

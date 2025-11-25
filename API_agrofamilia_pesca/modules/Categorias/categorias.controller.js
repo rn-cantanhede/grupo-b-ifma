@@ -1,10 +1,9 @@
-const Find = require("../../Utils/findUtils");
 const CategoriasService = require("./categorias.service");
 
 class CategoriasController {
     async AllCategorias(req, res) {
         try {
-            const categorias = await CategoriasService.getAll();
+            const categorias = await CategoriasService.findAllCategorias();
             res.status(200).json(categorias);
         } catch (error) {
             console.log(error);

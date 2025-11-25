@@ -2,7 +2,7 @@ const Erros = require("../../shared/errors/Errors");
 const MovimentacoesRepository = require("./movimentacoes.repository");
 
 class MovimentacoesService {
-    async getAll() {
+    async findAllMovimentacoes() {
         const result = await MovimentacoesRepository.findAllMovimentacoes();
         return result;
     };

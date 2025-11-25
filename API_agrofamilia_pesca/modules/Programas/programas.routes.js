@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const ProgramasController = require("./ProgramasController");
+const ProgramasController = require("./programas.controller");
 
 router.get("/", ProgramasController.AllProgramas);
 router.get("/:value", ProgramasController.findProgramas);

@@ -2,7 +2,7 @@ const Erros = require("../../shared/errors/Errors");
 const LocalizacaoBeneficiadoRepository = require("./localizacao-beneficiado.repository");
 
 class LocalizacaoBeneficiadoService {
-    async getAll() {
+    async findAllLocalizacao() {
         const result = await LocalizacaoBeneficiadoRepository.findAllLocalizacao();
         return result;
     };

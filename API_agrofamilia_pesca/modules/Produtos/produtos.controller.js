@@ -1,11 +1,9 @@
-const Produtos = require("./Produtos");
-const Find = require("../../Utils/findUtils");
 const ProdutosService = require("./produtos.service");
 
 class ProdutosController {
     async AllProdutos(req, res) {
         try {
-            const produtos = await ProdutosService.getAll();
+            const produtos = await ProdutosService.findAllProdutos();
             res.status(200).json(produtos);
         } catch (error) {
             console.log(error);

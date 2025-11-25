@@ -1,10 +1,10 @@
-const TipoProduto = require("./TipoProduto");
+const TiposProdutosService = require("./tipos-produtos.service");
 const Find = require("../../Utils/findUtils");
 
 class TipoProdutoController {
     async AllTipoProduto(req, res) {
         try {
-            const tipos = await TipoProduto.allTipoProduto();
+            const tipos = await TiposProdutosService.findallTipoProduto();
             return res.status(200).json(tipos);
         } catch (error) {
             console.log(error);
@@ -12,12 +12,13 @@ class TipoProdutoController {
         };
     };
 
-    async findTipoProduto(req, res) {
+    async findTipoProduto(req, res, next) {
         try {
-            Find.findAndVerify(res, Find.NumberOrString(req.params.value), TipoProduto.findByIdAndName);
+            const result = await TiposProdutosService.find(req.params.value);
+            return res.status(200).json(result);
         } catch (error) {
             console.log(error);
-            return res.status(500).json({ Error: "Erro interno no servidor" });
+            return next(error);
         };
     };
 };
