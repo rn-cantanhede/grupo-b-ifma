@@ -3,7 +3,7 @@ const AssociacoesService = require("./associacoes.service");
 class AssociacoesController {
     async AllAssociacoes(req, res) {
         try {
-            const associacoes = await AssociacoesService.getAll();
+            const associacoes = await AssociacoesService.findAllAssociacoes();
             return res.status(200).json(associacoes);
         } catch (error) {
             console.log(error);

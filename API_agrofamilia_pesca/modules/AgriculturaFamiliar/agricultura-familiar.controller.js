@@ -3,7 +3,7 @@ const AgriculturaFamiliarService = require("./agricultura-familiar.service");
 class AgriculturaFamiliarController {
     async AllAgriculturaFamiliar(req, res) {
         try {
-            const result = await AgriculturaFamiliarService.getAll();
+            const result = await AgriculturaFamiliarService.findAllAgriculturaFamiliar();
             res.status(200).json(result);
         } catch (error) {
             console.log(error);

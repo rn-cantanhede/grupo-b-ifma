@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const SecretariasController = require("./SecretariasController");
+const SecretariasController = require("./secretarias.controller");
 
 router.get("/", SecretariasController.AllSecretarias);
 router.get("/:value", SecretariasController.findSecretarias);
