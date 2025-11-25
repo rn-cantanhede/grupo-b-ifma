@@ -1,4 +1,5 @@
 const { findAll, findBy } = require("../../Utils/dbUtils");
+const table = "tipo_produto";
 
 class TiposProdutosRepository {
     findallTipoProduto() {
