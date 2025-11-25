@@ -14,7 +14,7 @@ async function findByInterval(field, inicio, fim, table) {
 
 async function findBy(field, value, multiple = false, table) {
     const result = await knex.select("").from(table).where( field, "like", `%${value}%`).orderBy(field, "asc");
-
+    
     if (result.length) {
         if (multiple) {
             return result;
