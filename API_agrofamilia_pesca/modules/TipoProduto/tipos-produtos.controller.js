@@ -1,5 +1,4 @@
 const TiposProdutosService = require("./tipos-produtos.service");
-const Find = require("../../Utils/findUtils");
 
 class TipoProdutoController {
     async findallTipoProduto(req, res) {
@@ -15,6 +14,16 @@ class TipoProdutoController {
     async findTipoProduto(req, res, next) {
         try {
             const result = await TiposProdutosService.find(req.params.value);
+            return res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
+
+    async insertCategoria(req, res, next) {
+        try {
+            const result = await TiposProdutosService.insertCategoria(req.body);
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
