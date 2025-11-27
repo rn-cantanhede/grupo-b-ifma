@@ -22,8 +22,8 @@ class TiposProdutosService {
     };
 
     async insertCategoria(data){
-        if (!data) {
-            throw new Erros("Campos vazios", 403);
+        if (data.NOME == undefined || data.NOME == "") {
+            throw new Erros("Campo NOME está vazio", 403);
         };
 
         const result = TiposProdutosRepository.insertCategoria(data);
