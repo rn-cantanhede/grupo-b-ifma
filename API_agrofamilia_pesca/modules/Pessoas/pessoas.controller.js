@@ -19,7 +19,7 @@ class PessoasController {
             console.log(error);
             return next(error);
         };
-    
+
     };
 
     async findGeneroPessoa(req, res, next) {
@@ -31,7 +31,7 @@ class PessoasController {
             return next(error);
         };
     };
-    
+
     async findDataPessoa(req, res, next) {
         try {
             const result = await PessoasService.findbyData(req.params.data);
@@ -41,10 +41,20 @@ class PessoasController {
             return next(error);
         };
     };
-    
+
     async findInicioFimPessoa(req, res, next) {
         try {
             const result = await PessoasService.findByInicioFim(req.params.inicio, req.params.fim);
+            res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
+
+    async createPessoa(req, res, next) {
+        try {
+            const result = await PessoasService.createPessoa(req.body);
             res.status(200).json(result);
         } catch (error) {
             console.log(error);

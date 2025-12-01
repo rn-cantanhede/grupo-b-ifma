@@ -30,7 +30,7 @@ class PessoasService {
         };
         return result;
     };
-    
+
     async findbyData(data) {
         const result = await PessoasRepository.findbyData(data);
 
@@ -39,13 +39,36 @@ class PessoasService {
         };
         return result;
     };
-    
+
     async findByInicioFim(inicio, fim) {
         const result = await PessoasRepository.findByInicioFim(inicio, fim);
 
         if (!result) {
             throw new Erros("Não encontrado", 404);
         };
+        return result;
+    };
+
+    async createPessoa(data) {
+        
+        if (data.NOME == undefined || data.NOME == "") {
+            throw new Erros("Campo NOME vazio", 403);
+        };
+
+        if (data.CPF == undefined || data.CPF == "") {
+            throw new Erros("Campo CPF vazio", 403);
+        };
+
+        if (data.GENERO == undefined || data.GENERO == "") {
+            throw new Erros("Campo GENERO vazio", 403);
+        };
+
+        if (data.DATA_NASCIMENTO == undefined || data.DATA_NASCIMENTO == "") {
+            throw new Erros("Campo DATA_NASCIMENTO vazio", 403);
+        };
+
+        const result = await PessoasRepository.createPessoa(data);
+
         return result;
     };
 };

@@ -8,4 +8,6 @@ router.get("/genero/:genero", PessoasController.findGeneroPessoa);
 router.get("/data/:data", PessoasController.findDataPessoa);
 router.get("/data/intervalo/:inicio/:fim", PessoasController.findInicioFimPessoa);
 
+router.post("/new", PessoasController.createPessoa);
+
 module.exports = router;
