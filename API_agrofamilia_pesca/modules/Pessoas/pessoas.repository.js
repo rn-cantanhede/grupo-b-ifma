@@ -1,4 +1,4 @@
-const { findAll, findBy, findByInterval } = require("../../Utils/dbUtils");
+const { findAll, findBy, findByInterval, insertData } = require("../../Utils/dbUtils");
 const table = "pessoa";
 
 class PessoasRepository {
@@ -24,6 +24,10 @@ class PessoasRepository {
 
     findByInicioFim(inicio, fim) {
         return findByInterval("DATA_NASCIMENTO", inicio, fim, table);
+    };
+
+    createPessoa(data) {
+        return insertData(data, table);
     };
 };
 
