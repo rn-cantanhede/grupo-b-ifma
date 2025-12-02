@@ -30,10 +30,20 @@ class SecretariasController {
             return next(error);
         };
     };
-j
+
     async findCidadeSecretarias(req, res, next) {
         try {
             const result = await SecretariasService.findbyEstado(req.params.cidade);
+            return res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
+
+    async createSecretaria(req, res, next) {
+        try {
+            const result = await SecretariasService.createSecretaria(req.body);
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
