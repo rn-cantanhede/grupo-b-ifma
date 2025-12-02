@@ -1,4 +1,4 @@
-const { findAll, findBy } = require("../../Utils/dbUtils");
+const { findAll, findBy, insertData } = require("../../Utils/dbUtils");
 const table = "categoria";
 
 class CategoriasRepository {
@@ -6,12 +6,16 @@ class CategoriasRepository {
         return findAll(table);
     };
 
-    findById(id){
+    findById(id) {
         return findBy("ID", id, false, table);
     };
 
-    findByName(name){
+    findByName(name) {
         return findBy("NOME", name, true, table);
+    };
+
+    createCategoria(categoria) {
+        return insertData(categoria, table);
     };
 };
 
