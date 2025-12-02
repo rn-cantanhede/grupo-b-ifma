@@ -7,4 +7,6 @@ router.get("/:value", SecretariasController.findSecretarias);
 router.get("/estado/:estado", SecretariasController.findEstadoSecretarias);
 router.get("/cidade/:cidade", SecretariasController.findCidadeSecretarias);
 
+router.post("/new", SecretariasController.createSecretaria);
+
 module.exports = router;

@@ -1,4 +1,4 @@
-const { findAll, findBy } = require("../../Utils/dbUtils");
+const { findAll, findBy, insertData } = require("../../Utils/dbUtils");
 const table = "secretaria";
 
 class SecretariasRepository {
@@ -20,6 +20,10 @@ class SecretariasRepository {
 
     findbyCidade(cidade) {
         return findBy("CIDADE", cidade, true, table);
+    };
+
+    createSecretaria(data) {
+        return insertData(data, table);
     };
 };
 
