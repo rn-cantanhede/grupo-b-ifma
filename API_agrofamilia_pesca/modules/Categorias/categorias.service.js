@@ -20,6 +20,15 @@ class CategoriasService {
         const result = await CategoriasRepository.findByName(value);
         return result;
     };
+
+    async createCategoria(data) {
+        if (data.NOME == undefined || data.NOME == "") {
+            throw new Erros("Campo NOME está vazio", 403);
+        };
+
+        const result = await CategoriasRepository.createCategoria(data);
+        return result;
+    };
 };
 
 module.exports = new CategoriasService();
