@@ -1,5 +1,4 @@
-const knex = require("../../database/connection");
-const { findAll, findBy } = require("../../Utils/dbUtils");
+const { findAll, findBy, insertData } = require("../../Utils/dbUtils");
 const table = "view_produtos"
 
 class ProdutoRepository {
@@ -7,12 +6,20 @@ class ProdutoRepository {
         return findAll(table);
     };
 
-    findById(id){
+    findById(id) {
         return findBy("ID", id, false, table);
     };
 
-    findByName(name){
+    findByName(name) {
         return findBy("NOME", name, true, table);
+    };
+
+    createProduto(produto) {
+        return insertData(produto, "produto");
+    };
+
+    findID_TIPO_PRODUTO(value) {
+        return findBy("ID", value, false, "tipo_produto");
     };
 };
 
