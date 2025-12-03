@@ -20,6 +20,16 @@ class ProdutosController {
             return next(error);
         };
     };
+
+    async createProduto(req, res, next) {
+        try {
+            const result = await ProdutosService.createProduto(req.body);
+            res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
 };
 
 module.exports = new ProdutosController();
