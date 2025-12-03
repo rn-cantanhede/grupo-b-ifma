@@ -1,4 +1,4 @@
-const { findAll, findBy } = require("../../Utils/dbUtils");
+const { findAll, findBy, insertData } = require("../../Utils/dbUtils");
 const table = "view_programas";
 
 class ProgramasRepository {
@@ -32,6 +32,14 @@ class ProgramasRepository {
     
     findbyDataFim(data) {
         return findBy("DATA_FIM", data, true, table);
+    };
+
+    findID_SECRETARIA(value) {
+        return findBy("ID", value, false, "secretaria");
+    };
+
+    createPrograma(programa) {
+        return insertData(programa, "programa");
     };
 };
 

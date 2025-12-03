@@ -60,10 +60,20 @@ class ProgramasController {
             return next(error);
         };
     };
-    
+
     async findDataFimPrograma(req, res, next) {
         try {
             const result = await ProgramasService.findbyDataFim(req.params.data);
+            return res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
+
+    async createPrograma(req, res, next) {
+        try {
+            const result = await ProgramasService.createPrograma(req.body);
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
