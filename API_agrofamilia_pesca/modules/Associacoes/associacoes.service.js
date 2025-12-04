@@ -43,6 +43,38 @@ class AssociacoesService {
 
         return result;
     };
+
+    async createAssociacao(associacao) {
+        if (associacao.NOME == undefined || associacao.NOME == "") {
+            throw new Erros("Campo NOME vazio", 403);
+        };
+        if (associacao.ENDERECO == undefined || associacao.ENDERECO == "") {
+            throw new Erros("Campo ENDERECO vazio", 403);
+        };
+        if (associacao.ID_SECRETARIA == undefined || associacao.ID_SECRETARIA == "") {
+            throw new Erros("Campo ID_SECRETARIA vazio", 403);
+        };
+
+        const id_secretaria = await AssociacoesRepository.findID_SECRETARIA(associacao.ID_SECRETARIA);
+
+        if (!id_secretaria) {
+            throw new Erros("ID_SECRETARIA invalido", 404);
+              
+        };
+
+        if (associacao.ID_CATEGORIA == undefined || associacao.ID_CATEGORIA == "") {
+            throw new Erros("Campo ENDERECO vazio", 403);
+        };
+
+        const id_categoria = await AssociacoesRepository.findID_SECRETARIA(associacao.ID_CATEGORIA);
+
+        if (!id_categoria) {
+            throw new Erros("ID_CATEGORIA invalido", 404);
+        };
+
+        const result = await AssociacoesRepository.createAssociacao(associacao);
+        return result;
+    };
 };
 
 module.exports = new AssociacoesService

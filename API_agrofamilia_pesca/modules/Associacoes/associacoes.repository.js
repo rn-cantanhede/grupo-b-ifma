@@ -1,4 +1,4 @@
-const { findAll, findBy } = require("../../Utils/dbUtils");
+const { findAll, findBy, insertData } = require("../../Utils/dbUtils");
 const table = "view_associacoes";
 
 class Associacoes {
@@ -10,7 +10,7 @@ class Associacoes {
         return findBy("ID", id, false, table);
     };
 
-    findByName(name){
+    findByName(name) {
         return findBy("NOME", name, false, table);
     };
 
@@ -20,6 +20,18 @@ class Associacoes {
 
     findbySecretaria(secretaria) {
         return findBy("SECRETARIA", secretaria, true, table);
+    };
+
+    findID_SECRETARIA(id) {
+        return findBy("ID", id, false, "secretaria");
+    };
+
+    findID_CATEGORIA(id) {
+        return findBy("ID", id, false, "categoria");
+    }
+
+    createAssociacao(associacao) {
+        return insertData(associacao, "associacao");
     };
 };
 

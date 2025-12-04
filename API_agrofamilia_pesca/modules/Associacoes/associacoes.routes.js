@@ -7,4 +7,6 @@ router.get("/:value", AssociacoesController.findAssociacao);
 router.get("/categoria/:categoria", AssociacoesController.findCategoriaAssociacao);
 router.get("/secretaria/:secretaria", AssociacoesController.findSecretariaAssociacao);
 
+router.post("/new", AssociacoesController.createAssociacao);
+
 module.exports = router;
