@@ -10,4 +10,6 @@ router.get("/associacao/:associacao", AssociadosController.findAssociacaoAssocia
 router.get("/data/:data", AssociadosController.findDataAssociado);
 router.get("/data/intervalo/:inicio/:fim", AssociadosController.findInicioFimAssociado);
 
+router.post("/new", AssociadosController.createAssociado);
+
 module.exports = router;
