@@ -30,6 +30,38 @@ class LocalizacaoBeneficiadoService {
 
         return result;
     };
+
+    async createlocalizacao(localizacao) {
+
+        if (localizacao.ID_ASSOCIADO == undefined || localizacao.ID_ASSOCIADO == "") {
+            throw new Erros("Campo ID_ASSOCIADO vazio", 403);
+        };
+
+        if (localizacao.LATITUDE == undefined || localizacao.LATITUDE == "") {
+            throw new Erros("Campo LATITUDE vazio", 403);
+        };
+
+        if (localizacao.LONGITUDE == undefined || localizacao.LONGITUDE == "") {
+            throw new Erros("Campo LONGITUDE vazio", 403);
+        };
+
+        if (localizacao.TITULO == undefined || localizacao.TITULO == "") {
+            throw new Erros("Campo TITULO vazio", 403);
+        };
+
+        if (localizacao.DESCRICAO == undefined || localizacao.DESCRICAO == "") {
+            throw new Erros("Campo DESCRICAO vazio", 403);
+        };
+
+        const id_associado = await LocalizacaoBeneficiadoRepository.findID_ASSOCIADO(localizacao.ID_ASSOCIADO);
+
+        if (!id_associado) {
+            throw new Erros("ID invalido", 403);
+        };
+
+        const result = await LocalizacaoBeneficiadoRepository.createLocalizacao(localizacao);
+        return result;
+    };
 };
 
 module.exports = new LocalizacaoBeneficiadoService();

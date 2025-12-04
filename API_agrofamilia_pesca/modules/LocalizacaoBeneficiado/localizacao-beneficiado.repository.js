@@ -1,4 +1,4 @@
-const { findAll, findBy } = require("../../Utils/dbUtils");
+const { findAll, findBy, insertData } = require("../../Utils/dbUtils");
 const table = "view_localizacao_beneficiado";
 
 class LocalizacaoBeneficiadoRepository {
@@ -16,6 +16,14 @@ class LocalizacaoBeneficiadoRepository {
 
     findbyAssociacao(associacao) {
         return findBy("ASSOCIACAO", associacao, true, table);
+    };
+
+    findID_ASSOCIADO(id) {
+        return findBy("ID", id, false, "associado");
+    };
+
+    createLocalizacao(localizacao) {
+        return insertData(localizacao, "localizacao_beneficiada");
     };
 };
 

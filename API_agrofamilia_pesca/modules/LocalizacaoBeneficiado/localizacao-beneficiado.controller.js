@@ -22,13 +22,24 @@ class LocalizacaoBeneficiadoController {
     };
 
     async findAssociacao(req, res, next) {
-        const result = await LocalizacaoBeneficiadoService.findAssociacao(req.params.associacao);
 
-        if (!result) {
-            throw new Erros("Não encontrado", 404);
+        try {
+            const result = await LocalizacaoBeneficiadoService.findbyAssociacao(req.params.associacao);
+            res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
         };
+    };
 
-        return result;
+    async createlocalizacao(req, res, next) {
+        try {
+            const result = await LocalizacaoBeneficiadoService.createlocalizacao(req.body);
+            res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
     };
 };
 
