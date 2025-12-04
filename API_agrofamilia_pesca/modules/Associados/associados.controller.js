@@ -61,9 +61,19 @@ class AssociadosController {
         };
     };
 
-    async findInicioFimAssociado(req, res) {
+    async findInicioFimAssociado(req, res, next) {
         try {
             const result = await AssociadosService.findByInicioFim(req.params.inicio, req.params.fim);
+            res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
+
+    async createAssociado(req, res, next) {
+        try {
+            const result = await AssociadosService.createAssociado(req.body);
             res.status(200).json(result);
         } catch (error) {
             console.log(error);

@@ -1,4 +1,4 @@
-const { findAll, findBy, findByInterval } = require("../../Utils/dbUtils");
+const { findAll, findBy, findByInterval, insertData } = require("../../Utils/dbUtils");
 const table = "view_pessoas";
 
 class AssociadosRepository {
@@ -6,11 +6,11 @@ class AssociadosRepository {
         return findAll(table);
     };
 
-    findById(id){
+    findById(id) {
         return findBy("ID", id, false, table);
     };
 
-    findByName(name){
+    findByName(name) {
         return findBy("NOME", name, true, table);
     };
 
@@ -30,8 +30,24 @@ class AssociadosRepository {
         return findBy("VALIDADE_CAF", data, true, table);
     };
 
-    findByInicioFim(inicio, fim){
+    findByInicioFim(inicio, fim) {
         return findByInterval("VALIDADE_CAF", inicio, fim, table);
+    };
+
+    findID_PESSOA(id) {
+        return findBy("ID", id, false, "pessoa");
+    };
+
+    findID_PESSOA(id) {
+        return findBy("ID", id, false, "pessoa");
+    };
+
+    findID_ASSOCIACAO(id) {
+        return findBy("ID", id, false, "associacao");
+    };
+
+    createAssociado(associado) {
+        return insertData(associado, "associado");
     };
 };
 

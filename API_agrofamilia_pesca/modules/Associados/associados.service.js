@@ -71,6 +71,37 @@ class AssociadosService {
 
         return result;
     };
+
+    async createAssociado(associado) {
+        if (associado.ID_PESSOA == undefined || associado.ID_PESSOA == "") {
+            throw new Erros("Campo ID_PESSOA vazio", 403);
+        };
+
+        const id_pessoa = await AssociadosRepository.findID_PESSOA(associado.ID_PESSOA);
+
+        if (!id_pessoa) {
+            throw new Erros("ID_PESSOA invalido", 404);
+        };
+
+        if (associado.CAF == undefined || associado.CAF == "") {
+            throw new Erros("Campo CAF vazio", 403);
+        };
+        if (associado.VALIDADE_CAF == undefined || associado.VALIDADE_CAF == "") {
+            throw new Erros("Campo VALIDADE_CAF vazio", 403);
+        };
+        if (associado.ID_ASSOCIACAO == undefined || associado.ID_ASSOCIACAO == "") {
+            throw new Erros("Campo ID_ASSOCIACAO vazio", 403);
+        };
+
+        const id_associacao = await AssociadosRepository.findID_ASSOCIACAO(associado.ID_ASSOCIACAO);
+
+        if (!id_associacao) {
+            throw new Erros("ID_ASSOCIACAO invalido", 404);
+        };
+
+        const result = await AssociadosRepository.createAssociado(associado);
+        return result;
+    };
 };
 
 module.exports = new AssociadosService();
