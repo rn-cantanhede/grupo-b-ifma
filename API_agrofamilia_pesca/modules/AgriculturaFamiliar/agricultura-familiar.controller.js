@@ -40,10 +40,20 @@ class AgriculturaFamiliarController {
             return next(error);
         };
     };
-    
+
     async findProgramaAgriculturaFamiliar(req, res, next) {
         try {
             const result = await AgriculturaFamiliarService.findbyPrograma(req.params.programa);
+            res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
+
+    async createAgriculturaFamiliar(req, res, next) {
+        try {
+            const result = await AgriculturaFamiliarService.createAgriculturaFamiliar(req.body);
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
