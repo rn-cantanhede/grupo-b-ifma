@@ -1,4 +1,4 @@
-const { findAll, findBy } = require("../../Utils/dbUtils");
+const { findAll, findBy, insertData } = require("../../Utils/dbUtils");
 const table = "view_agricultura_familiar";
 
 class AgriculturaFamiliarRepository {
@@ -23,6 +23,18 @@ class AgriculturaFamiliarRepository {
 
     findbyPrograma(programa) {
         return findBy("PROGRAMA", programa, true, table);
+    };
+
+    findID_ASSOCIADO(id) {
+        return findBy("ID", id, false, "associado");
+    };
+
+    findID_PROGRAMA(id) {
+        return findBy("ID", id, false, "programa");
+    };
+
+    createAgriculturaFamiliar(data) {
+        return insertData(data, "agricultura_familiar");
     };
 };
 

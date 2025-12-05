@@ -41,13 +41,42 @@ class AgriculturaFamiliarService {
         return result;
     };
 
-    async findbyPrograma(programa){
+    async findbyPrograma(programa) {
         const result = await AgriculturaFamiliarRepository.findbyPrograma(programa);
 
         if (!result) {
             throw new Erros("Não encontrado", 404);
         };
 
+        return result;
+    };
+
+    async createAgriculturaFamiliar(data) {
+        if (data.ID_ASSOCIADO == undefined || data.ID_ASSOCIADO == "") {
+            throw new Erros("Campo ID_ASSOCIADO vazio", 403);
+        };
+
+        const id_associado = await AgriculturaFamiliarRepository.findID_ASSOCIADO(data.ID_ASSOCIADO);
+
+        if (!id_associado) {
+            throw new Erros("ID_ASSOCIADO invalido", 404);  
+        };
+
+        if (data.ID_PROGRAMA == undefined || data.ID_PROGRAMA == "") {
+            throw new Erros("Campo ID_PROGRAMA vazio", 403);
+        };
+
+        const id_programa = await AgriculturaFamiliarRepository.findID_ASSOCIADO(ID_PROGRAMA);
+
+        if (!id_programa) {
+            throw new Erros("ID_PROGRAMA invalido", 404);  
+        };
+
+        if (data.DAP == undefined || data.DAP == "") {
+            throw new Erros("Campo ID_ASSOCIADO vazio", 403);
+        };
+
+        const result = await AgriculturaFamiliarRepository.createAgriculturaFamiliar(data);
         return result;
     };
 };

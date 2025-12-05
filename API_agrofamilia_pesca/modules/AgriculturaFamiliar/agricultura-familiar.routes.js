@@ -8,4 +8,6 @@ router.get("/caf/:caf", AgriculturaFamiliarController.findCafAgriculturaFamiliar
 router.get("/dap/:dap", AgriculturaFamiliarController.findDapAgriculturaFamiliar);
 router.get("/programa/:programa", AgriculturaFamiliarController.findProgramaAgriculturaFamiliar);
 
+router.post("/new", AgriculturaFamiliarController.createAgriculturaFamiliar);
+
 module.exports = router;
