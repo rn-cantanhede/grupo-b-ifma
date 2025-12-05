@@ -20,7 +20,7 @@ class MovimentacoesController {
             return next(error);
         };
     };
-    
+
     async findDapMovimentacoes(req, res, next) {
         try {
             const result = await MovimentacoesService.findbyDap(req.params.dap);
@@ -30,7 +30,7 @@ class MovimentacoesController {
             return next(error);
         };
     };
-    
+
     async findProdutoMovimentacoes(req, res, next) {
         try {
             const result = await MovimentacoesService.findbyProduto(req.params.produto);
@@ -40,7 +40,7 @@ class MovimentacoesController {
             return next(error);
         };
     };
-    
+
     async findDataMovimentacoes(req, res, next) {
         try {
             const result = await MovimentacoesService.findbyData(req.params.data);
@@ -50,10 +50,20 @@ class MovimentacoesController {
             return next(error);
         };
     };
-    
+
     async findInicioFimMovimentacoes(req, res, next) {
         try {
             const result = await MovimentacoesService.findByInicioFim(res, req.params.inicio, req.params.fim);
+            res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
+
+    async createMovimentacao(req, res, next) {
+        try {
+            const result = await MovimentacoesService.createMovimentacao(req.body);
             res.status(200).json(result);
         } catch (error) {
             console.log(error);

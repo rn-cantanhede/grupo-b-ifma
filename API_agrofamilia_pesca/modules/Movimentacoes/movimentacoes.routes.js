@@ -9,4 +9,6 @@ router.get("/produto/:produto", MovimentacoesController.findProdutoMovimentacoes
 router.get("/data/:data", MovimentacoesController.findDataMovimentacoes);
 router.get("/data/intervalo/:inicio/:fim", MovimentacoesController.findInicioFimMovimentacoes);
 
+router.post("/new", MovimentacoesController.createMovimentacao);
+
 module.exports = router;
