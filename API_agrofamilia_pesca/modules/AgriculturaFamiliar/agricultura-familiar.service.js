@@ -66,14 +66,14 @@ class AgriculturaFamiliarService {
             throw new Erros("Campo ID_PROGRAMA vazio", 403);
         };
 
-        const id_programa = await AgriculturaFamiliarRepository.findID_ASSOCIADO(ID_PROGRAMA);
+        const id_programa = await AgriculturaFamiliarRepository.findID_PROGRAMA(data.ID_PROGRAMA);
 
         if (!id_programa) {
             throw new Erros("ID_PROGRAMA invalido", 404);  
         };
 
         if (data.DAP == undefined || data.DAP == "") {
-            throw new Erros("Campo ID_ASSOCIADO vazio", 403);
+            throw new Erros("Campo DAP vazio", 403);
         };
 
         const result = await AgriculturaFamiliarRepository.createAgriculturaFamiliar(data);

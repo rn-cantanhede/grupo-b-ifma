@@ -66,7 +66,7 @@ class AssociacoesService {
             throw new Erros("Campo ENDERECO vazio", 403);
         };
 
-        const id_categoria = await AssociacoesRepository.findID_SECRETARIA(associacao.ID_CATEGORIA);
+        const id_categoria = await AssociacoesRepository.findID_CATEGORIA(associacao.ID_CATEGORIA);
 
         if (!id_categoria) {
             throw new Erros("ID_CATEGORIA invalido", 404);
