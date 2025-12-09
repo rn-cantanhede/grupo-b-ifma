@@ -1,4 +1,4 @@
-const { findAll, findBy, insertData } = require("../../Utils/dbUtils");
+const { findAll, findBy, insertData } = require("../../shared/Utils/dbUtils");
 const table = "view_programas";
 
 class ProgramasRepository {
@@ -29,7 +29,7 @@ class ProgramasRepository {
     findbyDataInicio(data) {
         return findBy("DATA_INICIO", data, true, table);
     };
-    
+
     findbyDataFim(data) {
         return findBy("DATA_FIM", data, true, table);
     };

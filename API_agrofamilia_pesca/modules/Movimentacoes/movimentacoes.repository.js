@@ -1,4 +1,4 @@
-const { findAll, findBy, findByInterval, insertData } = require("../../Utils/dbUtils");
+const { findAll, findBy, findByInterval, insertData } = require("../../shared/Utils/dbUtils");
 const table = "view_produto_movimentacao";
 
 class MovimentacoesRepository {

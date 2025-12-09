@@ -1,106 +1,80 @@
-const Erros = require("../../shared/errors/Errors");
+const { find, findByInterval, findByIdName } = require("../../shared/Utils/findUtils");
+const validationsUtils = require("../../shared/Utils/validationsUtils");
 const AssociadosRepository = require("./associados.repository");
 
 class AssociadosService {
+
+    /**
+     * Retorna todos os associados cadastrados.
+     */
+    
     async findAllAssociados() {
         const result = await AssociadosRepository.findAllAssociados();
         return result;
     };
 
-    async find(value) {
-        const isNumber = !isNaN(value);
-        if (isNumber) {
-            const result = await AssociadosRepository.findById(value);
-            if (!result) {
-                throw new Erros("Não encontrado", 404);
-            };
-            return result;
-        };
+    /**
+     * Busca associado por ID ou Nome, conforme o tipo de entrada.
+     */
 
-        const result = await AssociadosRepository.findByName(value);
-        return result;
+    async find(value) {
+        return findByIdName(value, AssociadosRepository.findById, AssociadosRepository.findByName);
     };
+
+    /**
+     * Busca associado pelo CAF.
+     */
 
     async findbyCaf(caf) {
-        const result = await AssociadosRepository.findbyCaf(caf);
-
-        if (!result) {
-            throw new Erros("Não encontrado", 404);
-        };
-
-        return result;
+        return find(caf, AssociadosRepository.findbyCaf);
     };
+
+    /**
+     * Busca associado pelo DAP.
+     */
 
     async findbyDap(dap) {
-        const result = await AssociadosRepository.findbyDap(dap);
-
-        if (!result) {
-            throw new Erros("Não encontrado", 404);
-        };
-
-        return result;
+        return find(dap, AssociadosRepository.findbyDap);
     };
 
+    /**
+     * Lista associados filtrando pela associação.
+     */
+    
     async findbyAssociacao(associacao) {
-        const result = await AssociadosRepository.findbyAssociacao(associacao);
-
-        if (!result) {
-            throw new Erros("Não encontrado", 404);
-        };
-
-        return result;
-
+        return find(associacao,  AssociadosRepository.findbyAssociacao);
     };
+
+    /**
+     * Busca associados pela data exata de validade do CAF.
+     */
 
     async findbyData(data) {
-        const result = await AssociadosRepository.findbyData(data);
-
-        if (!result) {
-            throw new Erros("Não encontrado", 404);
-        };
-
-        return result;
+        return find(data, AssociadosRepository.findbyData);
     };
 
+    /**
+     * Busca associados por intervalo de validade do CAF.
+     */
+    
     async findByInicioFim(inicio, fim) {
-        const result = await AssociadosRepository.findByInicioFim(inicio, fim);
-
-        if (!result) {
-            throw new Erros("Não encontrado", 404);
-        };
-
-        return result;
+        return findByInterval(inicio, fim, AssociadosRepository.findByInicioFim);
     };
+
+    /**
+     * Cria um associado após validar referências obrigatórias.
+     */
 
     async createAssociado(associado) {
-        if (associado.ID_PESSOA == undefined || associado.ID_PESSOA == "") {
-            throw new Erros("Campo ID_PESSOA vazio", 403);
-        };
+        const validations = [
+            { field: "ID_PESSOA", validation: AssociadosRepository.findID_PESSOA, errorMsg: "ID_PESSOA invalido" },
+            { field: "ID_ASSOCIACAO", validation: AssociadosRepository.findID_ASSOCIACAO, errorMsg: "ID_ASSOCIACAO invalido" },
+        ];
 
-        const id_pessoa = await AssociadosRepository.findID_PESSOA(associado.ID_PESSOA);
+        // Valida dependências antes da inserção
+        await validationsUtils.validate(associado, validations);
 
-        if (!id_pessoa) {
-            throw new Erros("ID_PESSOA invalido", 404);
-        };
-
-        if (associado.CAF == undefined || associado.CAF == "") {
-            throw new Erros("Campo CAF vazio", 403);
-        };
-        if (associado.VALIDADE_CAF == undefined || associado.VALIDADE_CAF == "") {
-            throw new Erros("Campo VALIDADE_CAF vazio", 403);
-        };
-        if (associado.ID_ASSOCIACAO == undefined || associado.ID_ASSOCIACAO == "") {
-            throw new Erros("Campo ID_ASSOCIACAO vazio", 403);
-        };
-
-        const id_associacao = await AssociadosRepository.findID_ASSOCIACAO(associado.ID_ASSOCIACAO);
-
-        if (!id_associacao) {
-            throw new Erros("ID_ASSOCIACAO invalido", 404);
-        };
-
-        const result = await AssociadosRepository.createAssociado(associado);
-        return result;
+        return await AssociadosRepository.createAssociado(associado);
     };
 };
 
