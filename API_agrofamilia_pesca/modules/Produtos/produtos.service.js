@@ -1,4 +1,5 @@
-const Erros = require("../../shared/errors/Errors");
+const { find } = require("../../shared/Utils/findUtils");
+const validationsUtils = require("../../shared/Utils/validationsUtils");
 const ProdutosRepository = require("./produtos.repository");
 
 class ProdutosService {
@@ -8,41 +9,17 @@ class ProdutosService {
     };
 
     async find(value) {
-        const isNumber = !isNaN(value);
-        if (isNumber) {
-            const produtos = await ProdutosRepository.findById(value);
-            if (!produtos) {
-                throw new Erros("Produto não encontrado", 404)
-            };
-            return produtos;
-        };
-
-        const produtos = await ProdutosRepository.findByName(value);
-        return produtos;
+        return find(value, ProdutosRepository.findById, ProdutosRepository.findByName);
     };
 
     async createProduto(produto) {
-        if (produto.NOME == undefined || produto.NOME == "") {
-            throw new Erros("Campo NOME vazio", 403);
-        };
+        const validations = [
+            { field: "ID_TIPO_PRODUTO", validation: ProdutosRepository.findID_TIPO_PRODUTO, errorMsg: "ID_TIPO_PRODUTOO invalido" },
+        ];
 
-        if (produto.ID_TIPO_PRODUTO == undefined || produto.ID_TIPO_PRODUTO == "") {
-            throw new Erros("Campo TIPO_DO_PRODUTO vazio", 403);
-        };
+        await validationsUtils(produto, validations);
 
-        if (isNaN(produto.ID_TIPO_PRODUTO)) {
-            throw new Erros("Campo ID_TIPO_PRODUTO precisa de um ID", 403);
-        };
-
-        const id_tipo = await ProdutosRepository.findID_TIPO_PRODUTO(produto.ID_TIPO_PRODUTO);
-
-        if (!id_tipo) {
-            throw new Erros("ID invalido", 403);
-        };
-
-
-        const result = await ProdutosRepository.createProduto(produto);
-        return result;
+        return await ProdutosRepository.createProduto(produto);
     };
 };
 

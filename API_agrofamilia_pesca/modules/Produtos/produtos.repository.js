@@ -1,4 +1,4 @@
-const { findAll, findBy, insertData } = require("../../Utils/dbUtils");
+const { findAll, findBy, insertData } = require("../../shared/Utils/dbUtils");
 const table = "view_produtos"
 
 class ProdutoRepository {

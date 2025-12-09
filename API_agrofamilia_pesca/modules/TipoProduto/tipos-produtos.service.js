@@ -1,4 +1,5 @@
-const Erros = require("../../shared/errors/Errors");
+const { findByIdName } = require("../../shared/Utils/findUtils");
+const validationsUtils = require("../../shared/Utils/validationsUtils");
 const TiposProdutosRepository = require("./tipos-produtos.repository");
 
 class TiposProdutosService {
@@ -8,26 +9,15 @@ class TiposProdutosService {
     };
 
     async find(value) {
-        const isNumber = !isNaN(value);
-        if (isNumber) {
-            const produtos = await TiposProdutosRepository.findById(value);
-            if (!produtos) {
-                throw new Erros("Produto não encontrado", 404);
-            };
-            return produtos;
-        };
-
-        const produtos = await TiposProdutosRepository.findByName(value);
-        return produtos;
+        return findByIdName(value, TiposProdutosRepository.findById, TiposProdutosRepository.findByName);
     };
 
-    async insertCategoria(data){
-        if (data.NOME == undefined || data.NOME == "") {
-            throw new Erros("Campo NOME está vazio", 403);
-        };
+    async insertCategoria(data) {
+        const validations = [];
 
-        const result = TiposProdutosRepository.insertCategoria(data);
-        return result;
+        await validationsUtils.validate(data, validations);
+
+        return await TiposProdutosRepository.insertCategoria(data);
     };
 };
 

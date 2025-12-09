@@ -53,7 +53,7 @@ class MovimentacoesController {
 
     async findInicioFimMovimentacoes(req, res, next) {
         try {
-            const result = await MovimentacoesService.findByInicioFim(res, req.params.inicio, req.params.fim);
+            const result = await MovimentacoesService.findByInicioFim(req.params.inicio, req.params.fim);
             res.status(200).json(result);
         } catch (error) {
             console.log(error);

@@ -1,6 +1,11 @@
 const AssociadosService = require("./associados.service");
 
 class AssociadosController {
+
+    /**
+     * Retorna todos os associados.
+     */
+    
     async AllAssociados(req, res) {
         try {
             const view = await AssociadosService.findAllAssociados();
@@ -10,6 +15,10 @@ class AssociadosController {
             return res.status(500).json({ Error: "Erro interno no servidor" });
         };
     };
+
+    /**
+     * Busca associado por ID ou Nome.
+     */
 
     async findAssociado(req, res, next) {
         try {
@@ -21,6 +30,10 @@ class AssociadosController {
         };
     };
 
+    /**
+     * Busca associado pelo CAF.
+     */
+
     async findCafAssociado(req, res, next) {
         try {
             const result = await AssociadosService.findbyCaf(req.params.caf);
@@ -30,6 +43,10 @@ class AssociadosController {
             return next(error)
         };
     };
+
+    /**
+     * Busca associado pelo DAP.
+     */
 
     async findDapAssociado(req, res, next) {
         try {
@@ -41,6 +58,10 @@ class AssociadosController {
         };
     };
 
+    /**
+     * Lista associados filtrando pela associação.
+     */
+
     async findAssociacaoAssociado(req, res, next) {
         try {
             const result = await AssociadosService.findbyAssociacao(req.params.associacao);
@@ -50,6 +71,10 @@ class AssociadosController {
             return next(error);
         };
     };
+
+    /**
+     * Busca associados pela data de validade do CAF.
+     */
 
     async findDataAssociado(req, res, next) {
         try {
@@ -61,6 +86,10 @@ class AssociadosController {
         };
     };
 
+    /**
+     * Busca associados por intervalo de validade do CAF.
+     */
+
     async findInicioFimAssociado(req, res, next) {
         try {
             const result = await AssociadosService.findByInicioFim(req.params.inicio, req.params.fim);
@@ -70,6 +99,10 @@ class AssociadosController {
             return next(error);
         };
     };
+
+    /**
+     * Cria um novo associado.
+     */
 
     async createAssociado(req, res, next) {
         try {

@@ -1,4 +1,5 @@
-const Erros = require("../../shared/errors/Errors");
+const { find } = require("../../shared/Utils/findUtils");
+const validationsUtils = require("../../shared/Utils/validationsUtils");
 const CategoriasRepository = require("./categorias.repository");
 
 class CategoriasService {
@@ -8,26 +9,15 @@ class CategoriasService {
     };
 
     async find(value) {
-        const isNumber = !isNaN(value);
-        if (isNumber) {
-            const result = await CategoriasRepository.findById(value);
-            if (!result) {
-                throw new Erros("Não encontrado", 404);
-            };
-            return result;
-        };
-
-        const result = await CategoriasRepository.findByName(value);
-        return result;
+        return find(value, CategoriasRepository.findById, CategoriasRepository.findByName);
     };
 
     async createCategoria(data) {
-        if (data.NOME == undefined || data.NOME == "") {
-            throw new Erros("Campo NOME está vazio", 403);
-        };
+        const validations = [];
+        
+        await validationsUtils.validate(data, validations);
 
-        const result = await CategoriasRepository.createCategoria(data);
-        return result;
+        return await CategoriasRepository.createCategoria(data);
     };
 };
 

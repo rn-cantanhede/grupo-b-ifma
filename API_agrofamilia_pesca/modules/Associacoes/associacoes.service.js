@@ -1,4 +1,5 @@
-const Erros = require("../../shared/errors/Errors");
+const { findByIdName, find } = require("../../shared/Utils/findUtils");
+const validationsUtils = require("../../shared/Utils/validationsUtils");
 const AssociacoesRepository = require("./associacoes.repository");
 
 class AssociacoesService {
@@ -8,72 +9,25 @@ class AssociacoesService {
     };
 
     async find(value){
-        const isNumber = !isNaN(value);
-
-        if (isNumber) {
-            const result = await AssociacoesRepository.findById(value);
-
-            if (!result) {
-                throw new Erros("Não encontrado", 404);
-            };
-
-            return result;
-        };
-
-        const result = await AssociacoesRepository.findByName(value);
-        return result;
+        return findByIdName(value, AssociacoesRepository.findById, AssociacoesRepository.findByName);
     };
 
     async findByCategoria(categoria){
-        const result = await AssociacoesRepository.findbyCategoria(categoria);
-
-        if (!result) {
-            throw new Erros("Não encontrado", 404);
-        };
-
-        return result;
+        return find(categoria, AssociacoesRepository.findbyCategoria);
     };
 
     async findbySecretaria(secretaria){
-        const result = await AssociacoesRepository.findbySecretaria(secretaria);
-
-        if (!result) {
-            throw new Erros("Não encontrado", 404);
-        };
-
-        return result;
+        return find(secretaria, AssociacoesRepository.findbySecretaria);
     };
 
     async createAssociacao(associacao) {
-        if (associacao.NOME == undefined || associacao.NOME == "") {
-            throw new Erros("Campo NOME vazio", 403);
-        };
-        if (associacao.ENDERECO == undefined || associacao.ENDERECO == "") {
-            throw new Erros("Campo ENDERECO vazio", 403);
-        };
-        if (associacao.ID_SECRETARIA == undefined || associacao.ID_SECRETARIA == "") {
-            throw new Erros("Campo ID_SECRETARIA vazio", 403);
-        };
+        const validations = [
+            { field: "ID_SECRETARIA", validation: AssociacoesRepository.findID_SECRETARIA, errorMsg: "ID_SECRETARIA invalido" },
+            { field: "ID_CATEGORIA", validation: AssociacoesRepository.findID_CATEGORIA, errorMsg: "ID_CATEGORIA invalido" },
+        ];
 
-        const id_secretaria = await AssociacoesRepository.findID_SECRETARIA(associacao.ID_SECRETARIA);
-
-        if (!id_secretaria) {
-            throw new Erros("ID_SECRETARIA invalido", 404);
-              
-        };
-
-        if (associacao.ID_CATEGORIA == undefined || associacao.ID_CATEGORIA == "") {
-            throw new Erros("Campo ENDERECO vazio", 403);
-        };
-
-        const id_categoria = await AssociacoesRepository.findID_CATEGORIA(associacao.ID_CATEGORIA);
-
-        if (!id_categoria) {
-            throw new Erros("ID_CATEGORIA invalido", 404);
-        };
-
-        const result = await AssociacoesRepository.createAssociacao(associacao);
-        return result;
+        await validationsUtils.validate(associacao, validations);
+        return await AssociacoesRepository.createAssociacao(associacao);
     };
 };
 
