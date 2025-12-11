@@ -11,4 +11,6 @@ router.get("/data/intervalo/:inicio/:fim", MovimentacoesController.findInicioFim
 
 router.post("/new", MovimentacoesController.createMovimentacao);
 
+router.post("/update/:id", MovimentacoesController.updateMovimentacao);
+
 module.exports = router;

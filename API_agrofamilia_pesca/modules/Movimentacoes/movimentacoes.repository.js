@@ -1,4 +1,4 @@
-const { findAll, findBy, findByInterval, insertData } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, findByInterval, insertData, updateData } = require("../../shared/Utils/dbUtils");
 const table = "view_produto_movimentacao";
 
 class MovimentacoesRepository {
@@ -40,6 +40,10 @@ class MovimentacoesRepository {
 
     createMovimentacao(movimentacao) {
         return insertData(movimentacao, "produto_movimentacao");
+    };
+
+    updateMovimentacao(id, movimentacao) {
+        return updateData(id, movimentacao);
     };
 };
 
