@@ -7,4 +7,6 @@ router.get("/:value", TipoProdutoController.findTipoProduto);
 
 router.post("/new", TipoProdutoController.insertCategoria);
 
+router.put("/update/:value", TipoProdutoController.updateCategoria);
+
 module.exports = router;

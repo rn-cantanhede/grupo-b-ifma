@@ -30,6 +30,16 @@ class TipoProdutoController {
             return next(error);
         };
     };
+
+    async updateCategoria(req, res, next) {
+        try {
+            const result = await TiposProdutosService.updateCategoria(req.params.value, req.body);
+            return res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
 };
 
 module.exports = new TipoProdutoController();
