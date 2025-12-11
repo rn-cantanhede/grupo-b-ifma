@@ -9,4 +9,6 @@ router.get("/cidade/:cidade", SecretariasController.findCidadeSecretarias);
 
 router.post("/new", SecretariasController.createSecretaria);
 
+router.put("/update/:id", SecretariasController.updateSecretaria);
+
 module.exports = router;

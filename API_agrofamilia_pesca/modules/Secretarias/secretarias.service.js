@@ -1,3 +1,4 @@
+const Erros = require("../../shared/errors/Errors");
 const { findByIdName, find } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const SecretariasRepository = require("./secretarias.repository");
@@ -26,6 +27,19 @@ class SecretariasService {
         await validationsUtils.validate(data, validations);
 
         return await SecretariasRepository.createSecretaria(data);
+    };
+
+    async updateSecretaria(id, secretaria) {
+        const idSecretaria = SecretariasRepository.findById(id);
+        const validations = [];
+
+        if (!idSecretaria) {
+            throw new Erros("ID invalido", 404);
+        };
+
+        await validationsUtils.validate(secretaria, validations);
+
+        return await SecretariasRepository.updateSecretaria(id, secretaria);
     };
 };
 
