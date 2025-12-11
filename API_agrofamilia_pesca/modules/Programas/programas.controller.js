@@ -80,6 +80,16 @@ class ProgramasController {
             return next(error);
         };
     };
+
+    async updatePrograma(req, res, next) {
+        try {
+            const result = await ProgramasService.updatePrograma(req.params.id, req.body);
+            return res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
 };
 
 module.exports = new ProgramasController();
