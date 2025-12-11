@@ -50,6 +50,16 @@ class SecretariasController {
             return next(error);
         };
     };
+
+    async updateSecretaria(req, res, next) {
+        try {
+            const result = await SecretariasService.updateSecretaria(req.params.id, req.body);
+            return res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
 };
 
 module.exports = new SecretariasController();
