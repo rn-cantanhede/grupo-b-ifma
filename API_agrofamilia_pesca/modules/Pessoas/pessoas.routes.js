@@ -10,4 +10,6 @@ router.get("/data/intervalo/:inicio/:fim", PessoasController.findInicioFimPessoa
 
 router.post("/new", PessoasController.createPessoa);
 
+router.post("/update/:id", PessoasController.updatePessoa);
+
 module.exports = router;
