@@ -1,3 +1,4 @@
+const Erros = require("../../shared/errors/Errors");
 const { find } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const ProdutosRepository = require("./produtos.repository");
@@ -20,6 +21,21 @@ class ProdutosService {
         await validationsUtils(produto, validations);
 
         return await ProdutosRepository.createProduto(produto);
+    };
+
+    async updateProduto(id, produto) {
+        const idProduto = ProdutosRepository.findById(id);
+        const validations = [
+            { field: "ID_TIPO_PRODUTO", validation: ProdutosRepository.findID_TIPO_PRODUTO, errorMsg: "ID_TIPO_PRODUTOO invalido" },
+        ];
+
+        if (!idProduto) {
+            throw new Erros("ID invalido", 404);
+        };
+
+        await validationsUtils.validate(produto, validations);
+
+        return await ProdutosRepository.updateProduto(id, produto);
     };
 };
 
