@@ -1,4 +1,4 @@
-const { findAll, findBy, insertData } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, insertData, updateData } = require("../../shared/Utils/dbUtils");
 const table = "view_programas";
 
 class ProgramasRepository {
@@ -40,6 +40,10 @@ class ProgramasRepository {
 
     createPrograma(programa) {
         return insertData(programa, "programa");
+    };
+
+    updatePrograma(id, programa) {
+        return updateData(id, programa, "programa");
     };
 };
 
