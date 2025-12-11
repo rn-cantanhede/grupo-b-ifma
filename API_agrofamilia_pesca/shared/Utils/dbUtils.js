@@ -50,4 +50,14 @@ async function insertData(value, table) {
     return value;
 };
 
-module.exports = { findAll, findBy, findByInterval, insertData };
+/**
+ * Modifica dados na tabela informada.
+ * Retorna o payload recebido após a operação.
+ */
+
+async function updateData(id, value, table) {
+    const result = await knex(table).where({ ID: id }).update(value);
+    return value;
+};
+
+module.exports = { findAll, findBy, findByInterval, insertData, updateData };
