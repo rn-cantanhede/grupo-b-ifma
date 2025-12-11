@@ -1,4 +1,4 @@
-const { findAll, findBy, findByInterval, insertData } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, findByInterval, insertData, updateData } = require("../../shared/Utils/dbUtils");
 const table = "pessoa";
 
 class PessoasRepository {
@@ -28,6 +28,10 @@ class PessoasRepository {
 
     createPessoa(data) {
         return insertData(data, table);
+    };
+
+    updatePessoa(id, pessoa) {
+        return updateData(id, pessoa, table);
     };
 };
 
