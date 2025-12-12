@@ -8,4 +8,6 @@ router.get("/associacao/:associacao", LocalizacaoBeneficiadoController.findAssoc
 
 router.post("/new", LocalizacaoBeneficiadoController.createlocalizacao);
 
+router.put("/update/:id", LocalizacaoBeneficiadoController.updateLocalizacao);
+
 module.exports = router;

@@ -1,4 +1,4 @@
-const { findAll, findBy, insertData } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, insertData, updateData } = require("../../shared/Utils/dbUtils");
 const table = "view_localizacao_beneficiado";
 
 class LocalizacaoBeneficiadoRepository {
@@ -24,6 +24,10 @@ class LocalizacaoBeneficiadoRepository {
 
     createLocalizacao(localizacao) {
         return insertData(localizacao, "localizacao_beneficiada");
+    };
+
+    updateLocalizacao(id, localizacao) {
+        return updateData(id, localizacao, "localizacao_beneficiada");
     };
 };
 
