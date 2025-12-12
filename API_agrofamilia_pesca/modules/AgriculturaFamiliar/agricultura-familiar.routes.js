@@ -10,4 +10,6 @@ router.get("/programa/:programa", AgriculturaFamiliarController.findProgramaAgri
 
 router.post("/new", AgriculturaFamiliarController.createAgriculturaFamiliar);
 
+router.put("/update/:id", AgriculturaFamiliarController.updateAgriculturaFamiliar);
+
 module.exports = router;

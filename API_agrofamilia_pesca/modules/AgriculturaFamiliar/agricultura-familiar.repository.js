@@ -1,4 +1,4 @@
-const { findAll, findBy, insertData } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, insertData, updateData } = require("../../shared/Utils/dbUtils");
 const table = "view_agricultura_familiar";
 
 class AgriculturaFamiliarRepository {
@@ -35,6 +35,10 @@ class AgriculturaFamiliarRepository {
 
     createAgriculturaFamiliar(data) {
         return insertData(data, "agricultura_familiar");
+    };
+
+    updateAgriculturaFamiliar(id, data) {
+        return updateData(id, data, "agricultura_familiar");
     };
 };
 
