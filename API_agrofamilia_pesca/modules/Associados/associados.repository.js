@@ -1,4 +1,4 @@
-const { findAll, findBy, findByInterval, insertData } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, findByInterval, insertData, updateData } = require("../../shared/Utils/dbUtils");
 const table = "view_pessoas";
 
 class AssociadosRepository {
@@ -86,9 +86,17 @@ class AssociadosRepository {
     /**
      * Insere um novo associado na tabela correspondente.
      */
-    
+
     createAssociado(associado) {
         return insertData(associado, "associado");
+    };
+
+    /**
+     * Modifica um associado na tabela correspondente.
+     */
+
+    updateAssociado(id, associado) {
+        return updateData(id, associado, "associado");
     };
 };
 

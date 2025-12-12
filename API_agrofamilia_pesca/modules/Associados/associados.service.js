@@ -1,3 +1,4 @@
+const Erros = require("../../shared/errors/Errors");
 const { find, findByInterval, findByIdName } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const AssociadosRepository = require("./associados.repository");
@@ -7,7 +8,7 @@ class AssociadosService {
     /**
      * Retorna todos os associados cadastrados.
      */
-    
+
     async findAllAssociados() {
         const result = await AssociadosRepository.findAllAssociados();
         return result;
@@ -40,9 +41,9 @@ class AssociadosService {
     /**
      * Lista associados filtrando pela associação.
      */
-    
+
     async findbyAssociacao(associacao) {
-        return find(associacao,  AssociadosRepository.findbyAssociacao);
+        return find(associacao, AssociadosRepository.findbyAssociacao);
     };
 
     /**
@@ -56,7 +57,7 @@ class AssociadosService {
     /**
      * Busca associados por intervalo de validade do CAF.
      */
-    
+
     async findByInicioFim(inicio, fim) {
         return findByInterval(inicio, fim, AssociadosRepository.findByInicioFim);
     };
@@ -75,6 +76,28 @@ class AssociadosService {
         await validationsUtils.validate(associado, validations);
 
         return await AssociadosRepository.createAssociado(associado);
+    };
+
+    /**
+     * Modifica um associado após validar referências obrigatórias.
+     */
+
+    async updateAssociado(id, associado) {
+        const idAssociado = await AssociadosRepository.findById(id);
+
+        if (!idAssociado) {
+            throw new Erros("ID invalido", 404);
+        };
+
+        const validations = [
+            { field: "ID_PESSOA", validation: AssociadosRepository.findID_PESSOA, errorMsg: "ID_PESSOA invalido" },
+            { field: "ID_ASSOCIACAO", validation: AssociadosRepository.findID_ASSOCIACAO, errorMsg: "ID_ASSOCIACAO invalido" },
+        ];
+
+        // Valida dependências antes da inserção
+        await validationsUtils.validate(associado, validations);
+
+        return await AssociadosRepository.updateAssociado(id, associado);
     };
 };
 
