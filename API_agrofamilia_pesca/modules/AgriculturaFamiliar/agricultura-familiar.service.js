@@ -1,3 +1,4 @@
+const Erros = require("../../shared/errors/Errors");
 const { findByIdName, find } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const AgriculturaFamiliarRepository = require("./agricultura-familiar.repository");
@@ -33,6 +34,23 @@ class AgriculturaFamiliarService {
         await validationsUtils.validate(data, validations);
         
         return await AgriculturaFamiliarRepository.createAgriculturaFamiliar(data);
+    };
+
+    async updateAgriculturaFamiliar(id, data) {
+        const idAgri = AgriculturaFamiliarRepository.findById(id);
+
+        if (!idAgri) {
+            throw new Erros("ID invalido", 404);
+        };
+
+        const validations = [
+            { field: "ID_ASSOCIADO", validation: AgriculturaFamiliarRepository.findID_ASSOCIADO, errorMsg: "ID_ASSOCIADO invalido"},
+            { field: "ID_PROGRAMA", validation: AgriculturaFamiliarRepository.findID_PROGRAMA, errorMsg: "ID_PROGRAMA invalido"},
+        ];
+
+        await validationsUtils.validate(data, validations);
+
+        return await AgriculturaFamiliarRepository.updateAgriculturaFamiliar(id, data);
     };
 };
 
