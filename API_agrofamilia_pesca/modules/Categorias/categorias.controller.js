@@ -30,6 +30,16 @@ class CategoriasController {
             return next(error);
         };
     };
+
+    async updateCategoria(req, res, next) {
+        try {
+            const result = await CategoriasService.updateCategoria(req.params.id, req.body);
+            res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
 };
 
 module.exports = new CategoriasController();

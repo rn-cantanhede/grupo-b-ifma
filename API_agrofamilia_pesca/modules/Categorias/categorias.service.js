@@ -19,6 +19,15 @@ class CategoriasService {
 
         return await CategoriasRepository.createCategoria(data);
     };
+
+    async updateCategoria(id, categoria) {
+        const idCategoria = CategoriasRepository.findById(id);
+        const validations = [];
+
+        await validationsUtils.validate(categoria, validations);
+
+        return await CategoriasRepository.updateCategoria(id, categoria);
+    };
 };
 
 module.exports = new CategoriasService();
