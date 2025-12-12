@@ -1,3 +1,4 @@
+const Erros = require("../../shared/errors/Errors");
 const { findByIdName, find } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const LocalizacaoBeneficiadoRepository = require("./localizacao-beneficiado.repository");
@@ -24,6 +25,21 @@ class LocalizacaoBeneficiadoService {
         await validationsUtils.validate(localizacao, validations);
 
         return await LocalizacaoBeneficiadoRepository.createLocalizacao(localizacao);
+    };
+
+    async updateLocalizacao(id, localizacao) {
+        const idLocalizacao = LocalizacaoBeneficiadoRepository.findById(id);
+        const validations = [
+            { field: "ID_ASSOCIADO", validation: LocalizacaoBeneficiadoRepository.findID_ASSOCIADO, errorMsg: "ID_ASSOCIADO invalido" },
+        ];
+
+        if (!idLocalizacao) {
+            throw new Erros("ID invalido", 404);
+        };
+
+        await validationsUtils.validate(localizacao, validations);
+
+        return await LocalizacaoBeneficiadoRepository.updateLocalizacao(id, localizacao)
     };
 };
 
