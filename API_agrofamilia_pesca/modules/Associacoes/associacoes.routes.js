@@ -9,4 +9,6 @@ router.get("/secretaria/:secretaria", AssociacoesController.findSecretariaAssoci
 
 router.post("/new", AssociacoesController.createAssociacao);
 
+router.put("/update/:id", AssociacoesController.updateAssociacao);
+
 module.exports = router;
