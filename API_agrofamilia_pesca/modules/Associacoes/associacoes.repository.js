@@ -1,4 +1,4 @@
-const { findAll, findBy, insertData } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, insertData, updateData } = require("../../shared/Utils/dbUtils");
 const table = "view_associacoes";
 
 class Associacoes {
@@ -32,6 +32,10 @@ class Associacoes {
 
     createAssociacao(associacao) {
         return insertData(associacao, "associacao");
+    };
+
+    updateAssociacao(id, associacao) {
+        return updateData(id, associacao, "associacao");
     };
 };
 
