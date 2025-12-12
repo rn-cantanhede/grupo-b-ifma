@@ -113,6 +113,20 @@ class AssociadosController {
             return next(error);
         };
     };
+
+    /**
+     * Modifica um associado.
+     */
+
+    async updateAssociado(req, res, next) {
+        try {
+            const result = await AssociadosService.updateAssociado(req.params.id, req.body);
+            res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
 };
 
 module.exports = new AssociadosController();

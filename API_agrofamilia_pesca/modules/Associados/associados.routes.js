@@ -12,4 +12,6 @@ router.get("/data/intervalo/:inicio/:fim", AssociadosController.findInicioFimAss
 
 router.post("/new", AssociadosController.createAssociado);
 
+router.put("/update/:id", AssociadosController.updateAssociado);
+
 module.exports = router;
