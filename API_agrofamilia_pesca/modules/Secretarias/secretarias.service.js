@@ -30,12 +30,13 @@ class SecretariasService {
     };
 
     async updateSecretaria(id, secretaria) {
-        const idSecretaria = SecretariasRepository.findById(id);
-        const validations = [];
+        const idSecretaria = await SecretariasRepository.findById(id);
 
         if (!idSecretaria) {
             throw new Erros("ID invalido", 404);
         };
+
+        const validations = [];
 
         await validationsUtils.validate(secretaria, validations);
 

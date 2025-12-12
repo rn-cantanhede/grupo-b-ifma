@@ -42,12 +42,17 @@ class MovimentacoesService {
         ];
 
         await validationsUtils.validate(movimentacao, validations);
-        
+
         return await MovimentacoesRepository.createMovimentacao(movimentacao);
     };
 
     async updateMovimentacao(id, movimentacao) {
-        const idMovimentacao = MovimentacoesRepository.findById(id);
+        const idMovimentacao = await MovimentacoesRepository.findById(id);
+
+        if (!idMovimentacao) {
+            throw new Erros("ID invalido", 404);
+        };
+
         const validations = [
             { field: "ID_LOCAL", validation: MovimentacoesRepository.findID_LOCAL, errorMsg: "ID_LOCAL invalido" },
             { field: "ID_AGRICULTURA_FAMILIAR", validation: MovimentacoesRepository.findID_AGRICULTURA_FAMILIAR, errorMsg: "ID_AGRICULTURA_FAMILIAR invalido" },
@@ -55,10 +60,6 @@ class MovimentacoesService {
             // { field: 'NOME', validationFn: (val) => val.length > 0, errorMessage: 'Nome do cliente é obrigatório' },
             // { field: 'EMAIL', validationFn: (val) => /\S+@\S+\.\S+/.test(val), errorMessage: 'Email inválido' },
         ];
-
-        if (!idMovimentacao) {
-            throw new Erros("ID invalido", 404);
-        };
 
         await validationsUtils.validate(movimentacao, validations);
 

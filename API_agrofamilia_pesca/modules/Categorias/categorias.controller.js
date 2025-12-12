@@ -24,7 +24,7 @@ class CategoriasController {
     async createCategoria(req, res, next) {
         try {
             const result = await CategoriasService.createCategoria(req.body);
-            res.status(200).json(result);
+            res.status(201).json(result);
         } catch (error) {
             console.log(error);
             return next(error);

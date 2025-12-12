@@ -44,7 +44,7 @@ class SecretariasController {
     async createSecretaria(req, res, next) {
         try {
             const result = await SecretariasService.createSecretaria(req.body);
-            return res.status(200).json(result);
+            return res.status(201).json(result);
         } catch (error) {
             console.log(error);
             return next(error);

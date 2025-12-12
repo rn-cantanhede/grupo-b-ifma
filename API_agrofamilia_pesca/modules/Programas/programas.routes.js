@@ -12,6 +12,6 @@ router.get("/data-fim/:data", ProgramasController.findDataFimPrograma);
 
 router.post("/new", ProgramasController.createPrograma);
 
-router.post("/update/:id", ProgramasController.updatePrograma);
+router.put("/update/:id", ProgramasController.updatePrograma);
 
 module.exports = router;

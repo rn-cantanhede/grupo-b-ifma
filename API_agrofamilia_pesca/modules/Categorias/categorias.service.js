@@ -1,3 +1,4 @@
+const Erros = require("../../shared/errors/Errors");
 const { find } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const CategoriasRepository = require("./categorias.repository");
@@ -21,7 +22,12 @@ class CategoriasService {
     };
 
     async updateCategoria(id, categoria) {
-        const idCategoria = CategoriasRepository.findById(id);
+        const idCategoria = await CategoriasRepository.findById(id);
+
+        if (!idCategoria) {
+            throw new Erros("ID invalido", 404);
+        };
+
         const validations = [];
 
         await validationsUtils.validate(categoria, validations);

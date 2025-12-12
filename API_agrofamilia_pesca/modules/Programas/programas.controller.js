@@ -74,7 +74,7 @@ class ProgramasController {
     async createPrograma(req, res, next) {
         try {
             const result = await ProgramasService.createPrograma(req.body);
-            return res.status(200).json(result);
+            return res.status(201).json(result);
         } catch (error) {
             console.log(error);
             return next(error);

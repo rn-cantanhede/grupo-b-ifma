@@ -43,7 +43,7 @@ class MovimentacoesRepository {
     };
 
     updateMovimentacao(id, movimentacao) {
-        return updateData(id, movimentacao);
+        return updateData(id, movimentacao, "produto_movimentacao");
     };
 };
 

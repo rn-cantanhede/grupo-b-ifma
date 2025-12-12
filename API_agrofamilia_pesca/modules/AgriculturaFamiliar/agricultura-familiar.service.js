@@ -37,7 +37,7 @@ class AgriculturaFamiliarService {
     };
 
     async updateAgriculturaFamiliar(id, data) {
-        const idAgri = AgriculturaFamiliarRepository.findById(id);
+        const idAgri = await AgriculturaFamiliarRepository.findById(id);
 
         if (!idAgri) {
             throw new Erros("ID invalido", 404);
