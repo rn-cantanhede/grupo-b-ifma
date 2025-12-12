@@ -14,16 +14,16 @@ class ProdutoRepository {
         return findBy("NOME", name, true, table);
     };
 
-    createProduto(produto) {
-        return insertData(produto, "produto");
-    };
-
     findID_TIPO_PRODUTO(value) {
         return findBy("ID", value, false, "tipo_produto");
     };
 
+    createProduto(produto) {
+        return insertData(produto, "produto");
+    };
+
     updateProduto(id, produto) {
-        return updateData(id, produto);
+        return updateData(id, produto, "produto");
     };
 };
 

@@ -27,19 +27,20 @@ class PessoasService {
 
     async createPessoa(data) {
         const validations = [];
-        
+
         await validationsUtils.validate(data, validations);
 
         return await PessoasRepository.createPessoa(data);
     };
 
     async updatePessoa(id, pessoa) {
-        const idPessoa = PessoasRepository.findById(id);
-        const validations = [];
+        const idPessoa = await PessoasRepository.findById(id);
 
         if (!idPessoa) {
             throw new Erros("ID invalido", 404);
         };
+
+        const validations = [];
 
         await validationsUtils.validate(pessoa, validations);
 

@@ -32,7 +32,7 @@ class AssociacoesService {
     };
 
     async updateAssociacao(id, associacao) {
-        const idAssociacao = AssociacoesRepository.findById(id);
+        const idAssociacao = await AssociacoesRepository.findById(id);
 
         if (!idAssociacao) {
             throw new Erros("ID invalido", 404);
@@ -49,4 +49,4 @@ class AssociacoesService {
     };
 };
 
-module.exports = new AssociacoesService
+module.exports = new AssociacoesService();

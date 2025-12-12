@@ -10,7 +10,7 @@ class validationsUtils {
 
         // Validação de campos obrigatórios
         for (const field of Object.keys(data)) {
-            if (data[field] == undefined || data[field] == "") {
+            if (data[field] == undefined || data[field] == "" || data[field] == " ") {
                 throw new Erros(`Campo ${field} vazio`, 403);
             };
         };

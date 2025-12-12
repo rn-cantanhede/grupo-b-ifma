@@ -24,14 +24,15 @@ class ProdutosService {
     };
 
     async updateProduto(id, produto) {
-        const idProduto = ProdutosRepository.findById(id);
-        const validations = [
-            { field: "ID_TIPO_PRODUTO", validation: ProdutosRepository.findID_TIPO_PRODUTO, errorMsg: "ID_TIPO_PRODUTOO invalido" },
-        ];
+        const idProduto = await ProdutosRepository.findById(id);
 
         if (!idProduto) {
             throw new Erros("ID invalido", 404);
         };
+
+        const validations = [
+            { field: "ID_TIPO_PRODUTO", validation: ProdutosRepository.findID_TIPO_PRODUTO, errorMsg: "ID_TIPO_PRODUTOO invalido" },
+        ];
 
         await validationsUtils.validate(produto, validations);
 

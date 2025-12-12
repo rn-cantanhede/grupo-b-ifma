@@ -28,14 +28,15 @@ class LocalizacaoBeneficiadoService {
     };
 
     async updateLocalizacao(id, localizacao) {
-        const idLocalizacao = LocalizacaoBeneficiadoRepository.findById(id);
-        const validations = [
-            { field: "ID_ASSOCIADO", validation: LocalizacaoBeneficiadoRepository.findID_ASSOCIADO, errorMsg: "ID_ASSOCIADO invalido" },
-        ];
+        const idLocalizacao = await LocalizacaoBeneficiadoRepository.findById(id);
 
         if (!idLocalizacao) {
             throw new Erros("ID invalido", 404);
         };
+
+        const validations = [
+            { field: "ID_ASSOCIADO", validation: LocalizacaoBeneficiadoRepository.findID_ASSOCIADO, errorMsg: "ID_ASSOCIADO invalido" },
+        ];
 
         await validationsUtils.validate(localizacao, validations);
 

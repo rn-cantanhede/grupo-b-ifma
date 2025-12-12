@@ -24,7 +24,7 @@ class TipoProdutoController {
     async insertCategoria(req, res, next) {
         try {
             const result = await TiposProdutosService.insertCategoria(req.body);
-            return res.status(200).json(result);
+            return res.status(201).json(result);
         } catch (error) {
             console.log(error);
             return next(error);

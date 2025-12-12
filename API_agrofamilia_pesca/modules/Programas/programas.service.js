@@ -44,14 +44,15 @@ class ProgramasService {
     };
 
     async updatePrograma(id, programa) {
-        const idPrograma = ProgramasRepository.findById(id);
-        const validations = [
-            { field: "ID_SECRETARIA", validation: ProgramasRepository.findID_SECRETARIA, errorMsg: "ID_SECRETARIA invalido" },
-        ];
+        const idPrograma = await ProgramasRepository.findById(id);
 
         if (!idPrograma) {
             throw new Erros("ID invalido", 404);
         };
+
+        const validations = [
+            { field: "ID_SECRETARIA", validation: ProgramasRepository.findID_SECRETARIA, errorMsg: "ID_SECRETARIA invalido" },
+        ];
 
         await validationsUtils.validate(programa, validations);
 
