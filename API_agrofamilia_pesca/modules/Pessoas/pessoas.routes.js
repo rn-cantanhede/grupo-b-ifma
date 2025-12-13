@@ -12,4 +12,6 @@ router.post("/new", PessoasController.createPessoa);
 
 router.put("/update/:id", PessoasController.updatePessoa);
 
+router.delete("/delete/:id", PessoasController.deletePessoa);
+
 module.exports = router;

@@ -71,6 +71,16 @@ class PessoasController {
             return next(error);
         };
     };
+
+    async deletePessoa(req, res, next) {
+        try {
+            const result = await PessoasService.deletePessoa(req.params.id);
+            res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
 };
 
 module.exports = new PessoasController();
