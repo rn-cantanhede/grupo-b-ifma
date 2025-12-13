@@ -7,6 +7,8 @@ router.get("/:value", TipoProdutoController.findTipoProduto);
 
 router.post("/new", TipoProdutoController.insertCategoria);
 
-router.put("/update/:value", TipoProdutoController.updateCategoria);
+router.put("/update/:id", TipoProdutoController.updateCategoria);
+
+router.delete("/delete/:id", TipoProdutoController.deleteTipoProduto);
 
 module.exports = router;

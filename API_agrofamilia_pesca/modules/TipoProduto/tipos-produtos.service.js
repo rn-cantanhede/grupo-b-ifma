@@ -34,6 +34,16 @@ class TiposProdutosService {
 
         return await TiposProdutosRepository.updateCategoria(id, data);
     };
+
+    async deleteTipoProduto(id) {
+        const idProduto = await TiposProdutosRepository.findById(id);
+
+        if (!idProduto) {
+            throw new Erros("ID invalido", 404);
+        };
+
+        return await TiposProdutosRepository.deleteTipoProduto(id);
+    };
 };
 
 module.exports = new TiposProdutosService();
