@@ -65,6 +65,16 @@ class MovimentacoesService {
 
         return await MovimentacoesRepository.updateMovimentacao(id, movimentacao);
     };
+
+    async deleteMovimentacao(id) {
+        const idMovimentacao = await MovimentacoesRepository.findByIdDelete(id);
+
+        if (!idMovimentacao) {
+            throw new Erros("ID não existente", 404);
+        };
+
+        return await MovimentacoesRepository.deleteMovimentacao(id);
+    };
 };
 
 module.exports = new MovimentacoesService();

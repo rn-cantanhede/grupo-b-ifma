@@ -13,4 +13,6 @@ router.post("/new", MovimentacoesController.createMovimentacao);
 
 router.put("/update/:id", MovimentacoesController.updateMovimentacao);
 
+router.delete("/delete/:id", MovimentacoesController.deleteMovimentacao);
+
 module.exports = router;

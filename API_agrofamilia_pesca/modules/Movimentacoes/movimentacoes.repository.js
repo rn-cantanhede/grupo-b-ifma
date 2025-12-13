@@ -1,4 +1,4 @@
-const { findAll, findBy, findByInterval, insertData, updateData } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, findByInterval, insertData, updateData, deleteData } = require("../../shared/Utils/dbUtils");
 const table = "view_produto_movimentacao";
 
 class MovimentacoesRepository {
@@ -8,6 +8,10 @@ class MovimentacoesRepository {
 
     findById(id) {
         return findBy("ID", id, false, table);
+    };
+
+    findByIdDelete(id) {
+        return findBy("ID", id, false, "produto_movimentacao");
     };
 
     findbyDap(dap) {
@@ -44,6 +48,10 @@ class MovimentacoesRepository {
 
     updateMovimentacao(id, movimentacao) {
         return updateData(id, movimentacao, "produto_movimentacao");
+    };
+
+    deleteMovimentacao(id) {
+        return deleteData(id, "produto_movimentacao");
     };
 };
 

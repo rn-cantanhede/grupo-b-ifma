@@ -80,6 +80,16 @@ class MovimentacoesController {
             return next(error);
         };
     };
+
+    async deleteMovimentacao(req, res, next) {
+        try {
+            const result = await MovimentacoesService.deleteMovimentacao(req.params.id);
+            res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
 };
 
 module.exports = new MovimentacoesController();
