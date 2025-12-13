@@ -58,6 +58,16 @@ class ProgramasService {
 
         return await ProgramasRepository.updatePrograma(id, programa);
     };
+
+    async deletePrograma(id) {
+        const idPrograma = await ProgramasRepository.findByIdDelete(id);
+
+        if (!idPrograma) {
+            throw new Erros("ID não existe", 404);
+        };
+
+        return await ProgramasRepository.deletePrograma(id);
+    };
 };
 
 module.exports = new ProgramasService();

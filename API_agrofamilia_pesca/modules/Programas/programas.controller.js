@@ -90,6 +90,16 @@ class ProgramasController {
             return next(error);
         };
     };
+
+    async deletePrograma(req, res, next) {
+        try {
+            const result = await ProgramasService.deletePrograma(req.params.id);
+            return res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
 };
 
 module.exports = new ProgramasController();

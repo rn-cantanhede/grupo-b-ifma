@@ -1,4 +1,4 @@
-const { findAll, findBy, insertData, updateData } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, insertData, updateData, deleteData } = require("../../shared/Utils/dbUtils");
 const table = "view_programas";
 
 class ProgramasRepository {
@@ -8,6 +8,10 @@ class ProgramasRepository {
 
     findById(id) {
         return findBy("ID", id, false, table);
+    };
+
+    findByIdDelete(id) {
+        return findBy("ID", id, false, "programa");
     };
 
     findByName(name) {
@@ -44,6 +48,10 @@ class ProgramasRepository {
 
     updatePrograma(id, programa) {
         return updateData(id, programa, "programa");
+    };
+
+    deletePrograma(id) {
+        return deleteData(id, "programa");
     };
 };
 

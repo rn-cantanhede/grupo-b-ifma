@@ -14,4 +14,6 @@ router.post("/new", ProgramasController.createPrograma);
 
 router.put("/update/:id", ProgramasController.updatePrograma);
 
+router.delete("/delete/:id", ProgramasController.deletePrograma);
+
 module.exports = router;
