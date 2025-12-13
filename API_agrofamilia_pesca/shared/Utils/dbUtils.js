@@ -60,4 +60,15 @@ async function updateData(id, value, table) {
     return value;
 };
 
-module.exports = { findAll, findBy, findByInterval, insertData, updateData };
+/**
+ * Deleta dados na tabela informada.
+ * Retorna o id e a tabela após a operação.
+ */
+
+async function deleteData(id, table) {
+    const result = await knex(table).where({ ID: id }).delete();
+    // return `Registro de ID: ${id} da tabela ${table} foi deletado`;
+    return result;
+};
+
+module.exports = { findAll, findBy, findByInterval, insertData, updateData, deleteData };

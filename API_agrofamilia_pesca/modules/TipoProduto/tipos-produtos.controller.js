@@ -33,7 +33,17 @@ class TipoProdutoController {
 
     async updateCategoria(req, res, next) {
         try {
-            const result = await TiposProdutosService.updateCategoria(req.params.value, req.body);
+            const result = await TiposProdutosService.updateCategoria(req.params.id, req.body);
+            return res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
+
+    async deleteTipoProduto(req, res, next) {
+        try {
+            const result = await TiposProdutosService.deleteTipoProduto(req.params.id);
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
