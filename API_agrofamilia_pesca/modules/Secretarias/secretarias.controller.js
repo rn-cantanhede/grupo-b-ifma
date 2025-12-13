@@ -60,6 +60,16 @@ class SecretariasController {
             return next(error);
         };
     };
+
+    async deleteSecretaria(req, res, next) {
+        try {
+            const result = await SecretariasService.deleteSecretaria(req.params.id);
+            return res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
 };
 
 module.exports = new SecretariasController();
