@@ -38,6 +38,16 @@ class ProdutosService {
 
         return await ProdutosRepository.updateProduto(id, produto);
     };
+
+    async deleteProduto(id) {
+        const idProduto = await ProdutosRepository.findById(id);
+
+        if (!idProduto) {
+            throw new Erros("ID não existe", 404);
+        };
+
+        return await ProdutosRepository.deleteProduto(id);
+    };
 };
 
 module.exports = new ProdutosService();
