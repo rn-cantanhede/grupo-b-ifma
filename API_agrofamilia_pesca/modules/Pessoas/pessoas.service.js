@@ -46,6 +46,17 @@ class PessoasService {
 
         return await PessoasRepository.updatePessoa(id, pessoa);
     };
+
+    async deletePessoa(id) {
+        const idPessoa = await PessoasRepository.findById(id);
+
+        if (!idPessoa) {
+            throw new Erros("ID não existe", 404);
+              
+        };
+
+        return await PessoasRepository.deletePessoa(id);
+    };
 };
 
 module.exports = new PessoasService();
