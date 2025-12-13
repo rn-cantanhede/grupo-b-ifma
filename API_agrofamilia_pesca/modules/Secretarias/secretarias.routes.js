@@ -11,4 +11,6 @@ router.post("/new", SecretariasController.createSecretaria);
 
 router.put("/update/:id", SecretariasController.updateSecretaria);
 
+router.delete("/delete/:id", SecretariasController.deleteSecretaria);
+
 module.exports = router;

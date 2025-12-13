@@ -1,4 +1,4 @@
-const { findAll, findBy, insertData, updateData } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, insertData, updateData, deleteData } = require("../../shared/Utils/dbUtils");
 const table = "secretaria";
 
 class SecretariasRepository {
@@ -28,6 +28,10 @@ class SecretariasRepository {
 
     updateSecretaria(id, secretaria) {
         return updateData(id, secretaria, table);
+    };
+
+    deleteSecretaria(id) {
+        return deleteData(id, table);
     };
 };
 

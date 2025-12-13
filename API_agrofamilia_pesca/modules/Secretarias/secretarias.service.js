@@ -42,6 +42,16 @@ class SecretariasService {
 
         return await SecretariasRepository.updateSecretaria(id, secretaria);
     };
+
+    async deleteSecretaria(id) {
+        const idSecretaria = await SecretariasRepository.findById(id);
+
+        if (!idSecretaria) {
+            throw new Erros("ID invalido", 404);
+        };
+
+        return await SecretariasRepository.deleteSecretaria(id);
+    };
 };
 
 module.exports = new SecretariasService();
