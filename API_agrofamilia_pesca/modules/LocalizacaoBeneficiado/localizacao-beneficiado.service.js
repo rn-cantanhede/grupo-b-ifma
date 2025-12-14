@@ -42,6 +42,16 @@ class LocalizacaoBeneficiadoService {
 
         return await LocalizacaoBeneficiadoRepository.updateLocalizacao(id, localizacao)
     };
+
+    async deleteLocalizacao(id) {
+        const idLocalizacao = await LocalizacaoBeneficiadoRepository.findByIdDelete(id);
+
+        if (!idLocalizacao) {
+            throw new Erros("ID não existente", 404);
+        };
+
+        return await LocalizacaoBeneficiadoRepository.deleteLocalizacao(id);
+    };
 };
 
 module.exports = new LocalizacaoBeneficiadoService();

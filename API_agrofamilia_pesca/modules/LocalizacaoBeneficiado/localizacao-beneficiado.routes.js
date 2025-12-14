@@ -10,4 +10,6 @@ router.post("/new", LocalizacaoBeneficiadoController.createlocalizacao);
 
 router.put("/update/:id", LocalizacaoBeneficiadoController.updateLocalizacao);
 
+router.delete("/delete/:id", LocalizacaoBeneficiadoController.deleteLocalizacao);
+
 module.exports = router;

@@ -51,6 +51,16 @@ class LocalizacaoBeneficiadoController {
             return next(error);
         };
     };
+
+    async deleteLocalizacao(req, res, next) {
+        try {
+            const result = await LocalizacaoBeneficiadoService.deleteLocalizacao(req.params.id);
+            res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
 };
 
 module.exports = new LocalizacaoBeneficiadoController();
