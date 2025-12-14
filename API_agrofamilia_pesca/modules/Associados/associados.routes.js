@@ -14,4 +14,6 @@ router.post("/new", AssociadosController.createAssociado);
 
 router.put("/update/:id", AssociadosController.updateAssociado);
 
+router.delete("/delete/:id", AssociadosController.deleteAssociado);
+
 module.exports = router;
