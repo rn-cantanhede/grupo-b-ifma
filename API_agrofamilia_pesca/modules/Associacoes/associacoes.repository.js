@@ -1,4 +1,4 @@
-const { findAll, findBy, insertData, updateData } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, insertData, updateData, deleteData } = require("../../shared/Utils/dbUtils");
 const table = "view_associacoes";
 
 class Associacoes {
@@ -8,6 +8,10 @@ class Associacoes {
 
     findById(id) {
         return findBy("ID", id, false, table);
+    };
+
+    findByIdDelete(id) {
+        return findBy("ID", id, false, "associacao");
     };
 
     findByName(name) {
@@ -36,6 +40,10 @@ class Associacoes {
 
     updateAssociacao(id, associacao) {
         return updateData(id, associacao, "associacao");
+    };
+
+    deleteAssociacao(id) {
+        return deleteData(id, "associacao");
     };
 };
 
