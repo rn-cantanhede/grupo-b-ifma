@@ -1,4 +1,4 @@
-const { findAll, findBy, insertData, updateData } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, insertData, updateData, deleteData } = require("../../shared/Utils/dbUtils");
 const table = "view_localizacao_beneficiado";
 
 class LocalizacaoBeneficiadoRepository {
@@ -7,6 +7,10 @@ class LocalizacaoBeneficiadoRepository {
     };
 
     findById(id) {
+        return findBy("ID", id, false, table);
+    };
+
+    findByIdDelete(id) {
         return findBy("ID", id, false, table);
     };
 
@@ -28,6 +32,10 @@ class LocalizacaoBeneficiadoRepository {
 
     updateLocalizacao(id, localizacao) {
         return updateData(id, localizacao, "localizacao_beneficiada");
+    };
+
+    deleteLocalizacao(id) {
+        return deleteData(id, "localizacao_beneficiada");
     };
 };
 
