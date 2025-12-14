@@ -47,6 +47,16 @@ class AssociacoesService {
 
         return await AssociacoesRepository.updateAssociacao(id, associacao);
     };
+
+    async deleteAssociacao(id) {
+        const idAssociacao = await AssociacoesRepository.findByIdDelete(id);
+
+        if (!idAssociacao) {
+            throw new Erros("ID invalido", 404);
+        };
+
+        return await AssociacoesRepository.deleteAssociacao(id);
+    };
 };
 
 module.exports = new AssociacoesService();

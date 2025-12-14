@@ -11,4 +11,6 @@ router.post("/new", AssociacoesController.createAssociacao);
 
 router.put("/update/:id", AssociacoesController.updateAssociacao);
 
+router.delete("/delete/:id", AssociacoesController.deleteAssociacao);
+
 module.exports = router;

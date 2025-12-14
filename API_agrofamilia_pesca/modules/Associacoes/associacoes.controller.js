@@ -60,6 +60,16 @@ class AssociacoesController {
             return next(error);
         };
     };
+
+    async deleteAssociacao(req, res, next) {
+        try {
+            const result = await AssociacoesService.deleteAssociacao(req.params.id);
+            res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
 };
 
 module.exports = new AssociacoesController();
