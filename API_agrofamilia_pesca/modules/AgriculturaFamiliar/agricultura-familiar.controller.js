@@ -70,6 +70,16 @@ class AgriculturaFamiliarController {
             return next(error);
         };
     };
+
+    async deleteAgriculturaFamiliar(req, res, next) {
+        try {
+            const result = await AgriculturaFamiliarService.deleteAgriculturaFamiliar(req.params.id);
+            res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
 };
 
 module.exports = new AgriculturaFamiliarController();

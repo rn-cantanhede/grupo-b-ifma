@@ -12,4 +12,6 @@ router.post("/new", AgriculturaFamiliarController.createAgriculturaFamiliar);
 
 router.put("/update/:id", AgriculturaFamiliarController.updateAgriculturaFamiliar);
 
+router.delete("/delete/:id", AgriculturaFamiliarController.deleteAgriculturaFamiliar);
+
 module.exports = router;

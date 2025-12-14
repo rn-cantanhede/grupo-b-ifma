@@ -52,6 +52,16 @@ class AgriculturaFamiliarService {
 
         return await AgriculturaFamiliarRepository.updateAgriculturaFamiliar(id, data);
     };
+
+    async deleteAgriculturaFamiliar(id) {
+        const idAgri = await AgriculturaFamiliarRepository.findByIdDelete(id);
+
+        if (!idAgri) {
+            throw new Erros("ID invalido", 404);
+        };
+
+        return await AgriculturaFamiliarRepository.deleteAgriculturaFamiliar(id);
+    };
 };
 
 module.exports = new AgriculturaFamiliarService();
