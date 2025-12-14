@@ -1,12 +1,17 @@
-const { findAll, findBy, insertData, updateData } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, insertData, updateData, deleteData } = require("../../shared/Utils/dbUtils");
 const table = "view_agricultura_familiar";
 
 class AgriculturaFamiliarRepository {
     findAllAgriculturaFamiliar() {
         return findAll(table);
     };
+
     findById(id) {
         return findBy("ID", id, false, table);
+    };
+
+    findByIdDelete(id) {
+        return findBy("ID", id, false, "agricultura_familiar");
     };
 
     findByName(name) {
@@ -39,6 +44,10 @@ class AgriculturaFamiliarRepository {
 
     updateAgriculturaFamiliar(id, data) {
         return updateData(id, data, "agricultura_familiar");
+    };
+
+    deleteAgriculturaFamiliar(id) {
+        return deleteData(id, "agricultura_familiar");
     };
 };
 
