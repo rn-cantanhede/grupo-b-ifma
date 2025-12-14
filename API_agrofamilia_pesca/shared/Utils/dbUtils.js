@@ -66,9 +66,8 @@ async function updateData(id, value, table) {
  */
 
 async function deleteData(id, table) {
-    const result = await knex(table).where({ ID: id }).delete();
-    // return `Registro de ID: ${id} da tabela ${table} foi deletado`;
-    return result;
+    await knex(table).where({ ID: id }).delete();
+    return `Registro de ID: ${id} da tabela ${table} foi deletado`;
 };
 
 module.exports = { findAll, findBy, findByInterval, insertData, updateData, deleteData };
