@@ -99,6 +99,20 @@ class AssociadosService {
 
         return await AssociadosRepository.updateAssociado(id, associado);
     };
+
+    /**
+     * Deleta um associado após validar o id.
+     */
+
+    async deleteAssociado(id) {
+        const idAssociado = await AssociadosRepository.findByIdDelete(id);
+
+        if (!idAssociado) {
+            throw new Erros("ID invalido", 404);
+        };
+
+        return await AssociadosRepository.deleteAssociado(id);
+    };
 };
 
 module.exports = new AssociadosService();

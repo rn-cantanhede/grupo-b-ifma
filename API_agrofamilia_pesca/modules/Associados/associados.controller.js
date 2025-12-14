@@ -127,6 +127,20 @@ class AssociadosController {
             return next(error);
         };
     };
+
+    /**
+     * Deleta um associado.
+     */
+
+    async deleteAssociado(req, res, next) {
+        try {
+            const result = await AssociadosService.deleteAssociado(req.params.id);
+            res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
 };
 
 module.exports = new AssociadosController();

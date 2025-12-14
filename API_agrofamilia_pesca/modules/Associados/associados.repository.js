@@ -1,4 +1,4 @@
-const { findAll, findBy, findByInterval, insertData, updateData } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, findByInterval, insertData, updateData, deleteData } = require("../../shared/Utils/dbUtils");
 const table = "view_pessoas";
 
 class AssociadosRepository {
@@ -17,6 +17,14 @@ class AssociadosRepository {
 
     findById(id) {
         return findBy("ID", id, false, table);
+    };
+
+    /**
+     * Consulta associado pelo ID na tabela principal.
+     */
+
+    findByIdDelete(id) {
+        return findBy("ID", id, false, "associado");
     };
 
     /**
@@ -97,6 +105,14 @@ class AssociadosRepository {
 
     updateAssociado(id, associado) {
         return updateData(id, associado, "associado");
+    };
+
+    /**
+     * Deleta um associado na tabela correspondente.
+     */
+
+    deleteAssociado(id) {
+        return deleteData(id, "associado");
     };
 };
 
