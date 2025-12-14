@@ -25,7 +25,7 @@ class CategoriasService {
         const idCategoria = await CategoriasRepository.findById(id);
 
         if (!idCategoria) {
-            throw new Erros("ID invalido", 404);
+            throw new Erros("ID não existente", 404);
         };
 
         const validations = [];
@@ -33,6 +33,15 @@ class CategoriasService {
         await validationsUtils.validate(categoria, validations);
 
         return await CategoriasRepository.updateCategoria(id, categoria);
+    };
+
+    async deleteCategoria(id) {
+        const idCategoria = await CategoriasRepository.findById(id);
+
+        if (!idCategoria) {
+            throw new Erros("ID não existente", 404);
+        };
+        return await CategoriasRepository.deleteCategoria(id);
     };
 };
 

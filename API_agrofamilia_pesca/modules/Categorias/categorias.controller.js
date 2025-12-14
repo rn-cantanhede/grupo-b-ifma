@@ -40,6 +40,16 @@ class CategoriasController {
             return next(error);
         };
     };
+
+    async deleteCategoria(req, res, next) {
+        try {
+            const result = await CategoriasService.deleteCategoria(req.params.id);
+            res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
 };
 
 module.exports = new CategoriasController();
