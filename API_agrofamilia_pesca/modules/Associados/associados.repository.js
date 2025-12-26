@@ -1,5 +1,15 @@
+// Importa as funções utilitárias responsáveis pelas operações básicas no banco de dados.
+// padronizando as operações de CRUD na aplicação.
 const { findAll, findBy, findByInterval, insertData, updateData, deleteData } = require("../../shared/Utils/dbUtils");
 const table = "view_pessoas";
+
+/**
+ * Repositório responsável pelas operações de acesso a dados
+ * relacionadas à localização dos beneficiados.
+ *
+ * Centraliza todas as consultas, inserções, atualizações
+ * e remoções referentes à localização.
+ */
 
 class AssociadosRepository {
 

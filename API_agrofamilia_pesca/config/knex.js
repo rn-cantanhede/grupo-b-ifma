@@ -2,6 +2,11 @@ require("dotenv").config();
 
 const environment = process.env.NODE_ENV;
 
+/**
+ * Configurações de conexão com o banco de dados
+ * organizadas por ambiente de execução.
+ */
+
 const configs = {
     development: {
         client: "mysql2",

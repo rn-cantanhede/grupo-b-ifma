@@ -1,6 +1,15 @@
 const AssociacoesService = require("./associacoes.service");
 
+/**
+ * Controller responsável por receber as requisições HTTP
+ * relacionadas as Associações e repassar para a camada de Service.
+ * Aqui não há regra de negócio, apenas controle de fluxo e resposta HTTP.
+ */
 class AssociacoesController {
+
+    /**
+     * Retorna todas as associações cadastradas.
+     */
     async AllAssociacoes(req, res) {
         try {
             const associacoes = await AssociacoesService.findAllAssociacoes();
@@ -11,6 +20,9 @@ class AssociacoesController {
         };
     };
 
+    /**
+     * Busca uma associação específica.
+     */
     async findAssociacao(req, res, next) {
         try {
             const result = await AssociacoesService.find(req.params.value);
@@ -21,7 +33,10 @@ class AssociacoesController {
         };
     };
 
-    async findCategoriaAssociacao(req, res) {
+    /**
+     * Busca associações filtradas por categoria.
+     */
+    async findCategoriaAssociacao(req, res, next) {
         try {
             const result = await AssociacoesService.findByCategoria(req.params.categoria);
             res.status(200).json(result);
@@ -31,7 +46,10 @@ class AssociacoesController {
         };
     };
 
-    async findSecretariaAssociacao(req, res) {
+    /**
+     * Busca associações filtradas por secretaria.
+     */
+    async findSecretariaAssociacao(req, res, next) {
         try {
             const result = await AssociacoesService.findbySecretaria(req.params.secretaria);
             res.status(200).json(result);
@@ -41,6 +59,9 @@ class AssociacoesController {
         };
     };
 
+    /**
+     * Cria uma nova associação.
+     */
     async createAssociacao(req, res, next) {
         try {
             const result = await AssociacoesService.createAssociacao(req.body);
@@ -51,6 +72,9 @@ class AssociacoesController {
         };
     };
 
+    /**
+     * Atualiza uma associação existente.
+     */
     async updateAssociacao(req, res, next) {
         try {
             const result = await AssociacoesService.updateAssociacao(req.params.id, req.body);
@@ -61,6 +85,9 @@ class AssociacoesController {
         };
     };
 
+    /**
+     * Remove uma associação do sistema.
+     */
     async deleteAssociacao(req, res, next) {
         try {
             const result = await AssociacoesService.deleteAssociacao(req.params.id);

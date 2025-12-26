@@ -3,6 +3,14 @@ const { find, findByInterval, findByIdName } = require("../../shared/Utils/findU
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const AssociadosRepository = require("./associados.repository");
 
+/**
+ * Camada de serviço responsável pela regra de negócio
+ * relacionada à entidade Associado.
+ *
+ * Atua como intermediária entre o Controller e o Repository,
+ * aplicando validações, consistência de dados e regras
+ * antes de qualquer operação de persistência.
+ */
 class AssociadosService {
 
     /**
@@ -19,7 +27,10 @@ class AssociadosService {
      */
 
     async find(value) {
-        return findByIdName(value, AssociadosRepository.findById, AssociadosRepository.findByName);
+        return findByIdName(value, 
+            AssociadosRepository.findById, 
+            AssociadosRepository.findByName
+        );
     };
 
     /**
@@ -67,6 +78,8 @@ class AssociadosService {
      */
 
     async createAssociado(associado) {
+
+        // Lista de validações que devem ser aplicadas antes da inserção
         const validations = [
             { field: "ID_PESSOA", validation: AssociadosRepository.findID_PESSOA, errorMsg: "ID_PESSOA invalido" },
             { field: "ID_ASSOCIACAO", validation: AssociadosRepository.findID_ASSOCIACAO, errorMsg: "ID_ASSOCIACAO invalido" },
@@ -75,6 +88,7 @@ class AssociadosService {
         // Valida dependências antes da inserção
         await validationsUtils.validate(associado, validations);
 
+        // Insere no banco de dados
         return await AssociadosRepository.createAssociado(associado);
     };
 
@@ -83,12 +97,15 @@ class AssociadosService {
      */
 
     async updateAssociado(id, associado) {
+
+        // Verifica se existe antes de atualizar
         const idAssociado = await AssociadosRepository.findById(id);
 
         if (!idAssociado) {
             throw new Erros("ID invalido", 404);
         };
 
+        // Lista de validações que devem ser aplicadas
         const validations = [
             { field: "ID_PESSOA", validation: AssociadosRepository.findID_PESSOA, errorMsg: "ID_PESSOA invalido" },
             { field: "ID_ASSOCIACAO", validation: AssociadosRepository.findID_ASSOCIACAO, errorMsg: "ID_ASSOCIACAO invalido" },
@@ -97,6 +114,7 @@ class AssociadosService {
         // Valida dependências antes da inserção
         await validationsUtils.validate(associado, validations);
 
+        // Aplica a atualização no banco de dados
         return await AssociadosRepository.updateAssociado(id, associado);
     };
 
@@ -105,12 +123,15 @@ class AssociadosService {
      */
 
     async deleteAssociado(id) {
+
+        // Verifica se existe na tabela real antes de excluir
         const idAssociado = await AssociadosRepository.findByIdDelete(id);
 
         if (!idAssociado) {
             throw new Erros("ID invalido", 404);
         };
 
+        // Remove definitivamente
         return await AssociadosRepository.deleteAssociado(id);
     };
 };

@@ -1,6 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
+/**
+ * Importação dos módulos de rotas da aplicação,
+ * organizados por domínio funcional.
+ */
+
 const agricultura_familiarRoutes = require("../modules/AgriculturaFamiliar/agricultura-familiar.routes");
 const associacoesRoutes = require("../modules/Associacoes/associacoes.routes");
 const associadosRoutes = require("../modules/Associados/associados.routes");
@@ -12,6 +17,10 @@ const movimentacoesRoutes = require("../modules/Movimentacoes/movimentacoes.rout
 const programasRoutes = require("../modules/Programas/programas.routes");
 const secretariasRoutes = require("../modules/Secretarias/secretarias.routes");
 const tipos_produtosRoutes = require("../modules/TipoProduto/tipos-produtos.routes");
+
+/**
+ * Registro das rotas da API por contexto de domínio.
+ */
 
 router.use("/agricultura-familiar", agricultura_familiarRoutes);
 router.use("/associacoes", associacoesRoutes);

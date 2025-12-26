@@ -1,5 +1,10 @@
 const AssociadosService = require("./associados.service");
 
+/**
+ * Controller responsável por receber as requisições HTTP
+ * relacionadas as Categorias e repassar para a camada de Service.
+ * Aqui não há regra de negócio, apenas controle de fluxo e resposta HTTP.
+ */
 class AssociadosController {
 
     /**

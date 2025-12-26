@@ -1,6 +1,17 @@
 const ProgramasService = require("./programas.service");
 
+/**
+ * Controller responsável por receber as requisições HTTP
+ * relacionadas aos Programas e repassar para a camada de Service.
+ * Aqui não há regra de negócio, apenas controle de fluxo e resposta HTTP.
+ */
+
 class ProgramasController {
+
+    /**
+     * Retorna todos os programas cadastrados.
+     */
+
     async AllProgramas(req, res) {
         try {
             const programas = await ProgramasService.getAll();
@@ -10,6 +21,11 @@ class ProgramasController {
             return res.status(500).json({ Error: "Erro interno no servidor" });
         };
     };
+
+    /**
+     * Busca programas por ID ou nome,
+     * de acordo com o valor passado na URL.
+     */
 
     async findProgramas(req, res, next) {
         try {
@@ -21,7 +37,11 @@ class ProgramasController {
         };
     };
 
-    async findSecretariaPrograma(req, res) {
+    /**
+     * Busca programas vinculados a uma secretaria específica.
+     */
+
+    async findSecretariaPrograma(req, res, next) {
         try {
             const result = await ProgramasService.findbySecretaria(req.params.secretaria);
             return res.status(200).json(result);
@@ -31,7 +51,11 @@ class ProgramasController {
         };
     };
 
-    async findEstadoPrograma(req, res) {
+    /**
+     * Busca programas filtrando pelo estado.
+     */
+
+    async findEstadoPrograma(req, res, next) {
         try {
             const result = await ProgramasService.findbyEstado(req.params.estado);
             return res.status(200).json(result);
@@ -41,7 +65,11 @@ class ProgramasController {
         };
     };
 
-    async findOrigemRecursoPrograma(req, res) {
+    /**
+     * Busca programas pela origem do recurso financeiro.
+     */
+
+    async findOrigemRecursoPrograma(req, res, next) {
         try {
             const result = await ProgramasService.findbyOrigemRecurso(req.params.recurso);
             return res.status(200).json(result);
@@ -51,7 +79,11 @@ class ProgramasController {
         };
     };
 
-    async findDataInicioPrograma(req, res) {
+    /**
+     * Busca programas pela data de início.
+     */
+
+    async findDataInicioPrograma(req, res, next) {
         try {
             const result = await ProgramasService.findbyDataInicio(req.params.data);
             return res.status(200).json(result);
@@ -60,6 +92,10 @@ class ProgramasController {
             return next(error);
         };
     };
+
+    /**
+     * Busca programas pela data de fim.
+     */
 
     async findDataFimPrograma(req, res, next) {
         try {
@@ -71,6 +107,10 @@ class ProgramasController {
         };
     };
 
+    /**
+     * Cria um novo programa.
+     */
+
     async createPrograma(req, res, next) {
         try {
             const result = await ProgramasService.createPrograma(req.body);
@@ -80,6 +120,10 @@ class ProgramasController {
             return next(error);
         };
     };
+
+    /**
+     * Atualiza um programa existente pelo ID.
+     */
 
     async updatePrograma(req, res, next) {
         try {
@@ -91,6 +135,10 @@ class ProgramasController {
         };
     };
 
+    /**
+     * Remove um programa pelo ID.
+     */
+    
     async deletePrograma(req, res, next) {
         try {
             const result = await ProgramasService.deletePrograma(req.params.id);
