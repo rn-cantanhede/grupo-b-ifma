@@ -1,4 +1,5 @@
 const express = require("express");
+const router = express.Router();
 const AgriculturaFamiliarController = require("./agricultura-familiar.controller");
 
 /**
