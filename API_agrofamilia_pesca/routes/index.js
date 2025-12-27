@@ -17,6 +17,7 @@ const movimentacoesRoutes = require("../modules/Movimentacoes/movimentacoes.rout
 const programasRoutes = require("../modules/Programas/programas.routes");
 const secretariasRoutes = require("../modules/Secretarias/secretarias.routes");
 const tipos_produtosRoutes = require("../modules/TipoProduto/tipos-produtos.routes");
+const usuariosRoutes = require("../modules/Usuarios/usuarios.routes");
 
 /**
  * Registro das rotas da API por contexto de domínio.
@@ -33,5 +34,6 @@ router.use("/movimentacoes", movimentacoesRoutes);
 router.use("/programas", programasRoutes);
 router.use("/secretarias", secretariasRoutes);
 router.use("/tipos-produtos", tipos_produtosRoutes);
+router.use("/usuarios", usuariosRoutes);
 
 module.exports = router;
