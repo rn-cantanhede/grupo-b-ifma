@@ -43,3 +43,9 @@ FROM agricultura_familiar agri
 JOIN associado asso ON asso.ID = agri.ID_ASSOCIADO
 JOIN pessoa pe ON asso.ID_PESSOA = pe.ID
 JOIN programa prog ON prog.ID = agri.ID_PROGRAMA;
+
+CREATE OR REPLACE VIEW view_usuarios AS
+SELECT user.ID, pe.NOME, user.NIVEL, sec.NOME AS SECRETARIA, user.LOGIN
+FROM usuario AS user
+JOIN pessoa pe ON pe.ID = user.ID_PESSOA
+JOIN secretaria sec ON sec.ID = user.ID_SECRETARIA;
