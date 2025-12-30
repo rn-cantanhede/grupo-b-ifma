@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const routers = require("./routes/index");
 const errorHandle = require("./middleware/errorHandle");
+const session = require("express-session");
 
 const app = express();
 
@@ -12,16 +13,37 @@ const app = express();
 app.use(cors());
 
 /**
- * Middleware responsável por interpretar requisições JSON.
+ * Middleware para interpretar dados enviados
+ *via application/x-www-form-urlencoded.
  */
+app.use(express.urlencoded({ extended: false }));
 
+/**
+ * Middleware para interpretar dados enviados
+ * no formato JSON no corpo da requisição.
+ */
 app.use(express.json());
+
+/**
+ * Configura o gerenciamento de sessão da aplicação.
+ */
+app.use(session({
+    name: "teste",
+    secret: "Teste",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 300000
+    }
+}));
 
 /**
  * Registro das rotas principais da aplicação.
  */
 
 app.use("/", routers);
+
+
 
 /**
  * Middleware global para tratamento centralizado de erros.
