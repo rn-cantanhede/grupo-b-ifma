@@ -70,4 +70,30 @@ async function deleteData(id, table) {
     return `Registro de ID: ${id} da tabela ${table} foi deletado`;
 };
 
-module.exports = { findAll, findBy, findByInterval, insertData, updateData, deleteData };
+/**
+ * Realiza a busca de credenciais de login no banco de dados.
+ * Utilizado no processo de autenticação.
+ */
+
+async function loginDB(login) {
+    const result = await knex("usuario")
+        .select("LOGIN", "SENHA")
+        .where({ LOGIN: login.LOGIN })
+        .first();
+
+    if (!result) {
+        return null;
+    };
+
+    return result;
+};
+
+module.exports = { 
+    findAll, 
+    findBy, 
+    findByInterval, 
+    insertData, 
+    updateData, 
+    deleteData, 
+    loginDB 
+};

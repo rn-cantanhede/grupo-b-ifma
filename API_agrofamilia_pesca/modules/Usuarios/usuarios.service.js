@@ -1,5 +1,6 @@
 const Erros = require("../../shared/errors/Errors");
-const { findByIdName, find } = require("../../shared/Utils/findUtils");
+const bcrypt = require("bcryptjs");
+const { findByIdName } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const UsuariosRepository = require("./usuarios.repository");
 
@@ -73,6 +74,11 @@ class UsuariosService {
         // Valida dependências antes da inserção
         await validationsUtils.validate(usuario, validations);
 
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(usuario.SENHA, salt);
+
+        usuario.SENHA = hash;
+
         // Insere no banco de dados
         return await UsuariosRepository.createUsuario(usuario);
     };
@@ -106,6 +112,11 @@ class UsuariosService {
         // Valida dependências antes da inserção
         await validationsUtils.validate(usuario, validations);
 
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(usuario.SENHA, salt);
+
+        usuario.SENHA = hash;
+
         // Aplica a atualização no banco de dados
         return await UsuariosRepository.updateUsuario(id, usuario);
     };
@@ -125,6 +136,28 @@ class UsuariosService {
         // Remove definitivamente
         return await UsuariosRepository.deleteUsuario(id);
     };
+
+    /**
+     * Realiza a autenticação do usuário.
+     * Valida login e senha criptografada.
+     */
+
+    async login(data) {
+        const user = await UsuariosRepository.login(data);
+
+        if (!user) {
+            return { Error: 'Login invalido' };
+        };
+
+        const senhaValida = bcrypt.compareSync(data.SENHA, user.SENHA);
+
+        if (!senhaValida) {
+            return { Error: 'Login invalido' };
+        };
+
+        return true;
+    };
+
 };
 
 module.exports = new UsuariosService();

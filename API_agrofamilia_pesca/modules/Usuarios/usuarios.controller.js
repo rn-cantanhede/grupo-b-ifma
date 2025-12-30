@@ -110,6 +110,49 @@ class UsuariosController {
             return next(error);
         };
     };
+
+    /**
+     * Realiza o processo de login do usuário.
+     * Caso seja válido, os dados são armazenados na sessão.
+     */
+
+    async login(req, res, next) {
+        try {
+            const user = await UsuariosService.login(req.body);
+
+            if (!user) {
+                return res.status(401).json({ Error: "Login invalido" });
+            };
+
+            req.session.user = user;
+
+            return res.status(200).json({ Message: "Login realizado" });
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
+
+    /**
+     * Finaliza a sessão do usuário autenticado.
+     * Remove os dados da sessão e limpa o cookie.
+     */
+    
+    async logout(req, res, next) {
+        try {
+            req.session.destroy(function (err){
+                if (err) {
+                    return next(err);
+                };
+
+                res.clearCookie("teste");
+                res.status(200).json({ Message: "Logout realizado" });
+            });
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
 };
 
 module.exports = new UsuariosController();

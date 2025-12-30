@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const UsuariosController = require("./usuarios.controller");
+const Auth = require("../../middleware/Auth");
 
 /**
  * ================================
@@ -8,20 +9,28 @@ const UsuariosController = require("./usuarios.controller");
  * ================================
  */
 
-// Retorna todos os usuarios cadastrados.
-router.get("/", UsuariosController.findAllUsuarios);
+/**
+ * ================================
+ * AUTENTIFICAÇÃO EM FASE DE TESTES
+ * ================================
+ */
 
-// Busca um usuario por um valor genérico.
-router.get("/:value", UsuariosController.findUsuarios);
+router.get("/logout", Auth, UsuariosController.logout);
 
 // Busca usuario pela secretaria.
-router.get("/secretaria/:secretaria", UsuariosController.findSecretariaUsuarios);
+router.get("/secretaria/:secretaria", Auth, UsuariosController.findSecretariaUsuarios);
 
 // Busca usuario pelo nivel.
-router.get("/nivel/:nivel", UsuariosController.findNivelUsuarios);
+router.get("/nivel/:nivel", Auth, UsuariosController.findNivelUsuarios);
 
 // Busca usuario pelo login.
-router.get("/login/:login", UsuariosController.findByLogin);
+// router.get("/login/:login", UsuariosController.findByLogin);
+
+// Retorna todos os usuarios cadastrados.
+router.get("/", Auth, UsuariosController.findAllUsuarios);
+
+// Busca um usuario por um valor genérico.
+router.get("/:value", Auth, UsuariosController.findUsuarios);
 
 /**
  * ================================
@@ -31,6 +40,8 @@ router.get("/login/:login", UsuariosController.findByLogin);
 
 // Cria um novo usuario.
 router.post("/new", UsuariosController.createUsuario);
+
+router.post("/login", UsuariosController.login);
 
 /**
  * ================================
