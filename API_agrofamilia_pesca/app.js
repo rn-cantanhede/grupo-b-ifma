@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 /**
- * Configura o gerenciamento de sessão da aplicação.
+ * Configura o gerenciamento de sessão da aplicação. 
  */
 app.use(session({
     name: "teste",
