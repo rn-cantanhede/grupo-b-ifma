@@ -18,17 +18,7 @@ function errorHandle(err, req, res, next) {
         return res.status(err.statusCode).json({ error: err.message });
     };
 
-    /**
-     * Caso não seja um erro tratado, considera como erro interno inesperado.
-     * O erro é logado no console para facilitar depuração.
-     */
-
     console.error(err);
-
-    /**
-     * Retorna resposta genérica para o cliente,
-     * evitando exposição de detalhes internos da aplicação.
-     */
 
     return res.status(500).json({ error: "Erro interno no servidor" });
 };

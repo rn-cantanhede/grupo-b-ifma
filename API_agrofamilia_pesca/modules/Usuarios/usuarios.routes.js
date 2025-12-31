@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const UsuariosController = require("./usuarios.controller");
 const Auth = require("../../middleware/Auth");
+const Authorize = require("../../middleware/Authorize");
 
 /**
  * ================================
@@ -27,7 +28,7 @@ router.get("/nivel/:nivel", Auth, UsuariosController.findNivelUsuarios);
 // router.get("/login/:login", UsuariosController.findByLogin);
 
 // Retorna todos os usuarios cadastrados.
-router.get("/", Auth, UsuariosController.findAllUsuarios);
+router.get("/", Auth, Authorize(1), UsuariosController.findAllUsuarios);
 
 // Busca um usuario por um valor genérico.
 router.get("/:value", Auth, UsuariosController.findUsuarios);

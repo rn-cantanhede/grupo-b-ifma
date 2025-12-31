@@ -126,7 +126,10 @@ class UsuariosController {
 
             req.session.user = user;
 
-            return res.status(200).json({ Message: "Login realizado" });
+            return res.status(200).json({ 
+                Message: "Login realizado",
+                APIkey: user,
+            });
         } catch (error) {
             console.log(error);
             return next(error);
@@ -137,7 +140,7 @@ class UsuariosController {
      * Finaliza a sessão do usuário autenticado.
      * Remove os dados da sessão e limpa o cookie.
      */
-    
+
     async logout(req, res, next) {
         try {
             req.session.destroy(function (err){

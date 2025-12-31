@@ -1,9 +1,11 @@
 const Erros = require("../../shared/errors/Errors");
 const bcrypt = require("bcryptjs");
-const { findByIdName } = require("../../shared/Utils/findUtils");
+const jwt = require("jsonwebtoken");
+const { findByIdName, find } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const UsuariosRepository = require("./usuarios.repository");
 
+const secret = process.env.JWT_SECRET;
 /**
  * Camada de serviço responsável pela regra de negócio
  * relacionada à entidade usuario.
@@ -155,7 +157,13 @@ class UsuariosService {
             return { Error: 'Login invalido' };
         };
 
-        return true;
+        const token = jwt.sign({ login: user.LOGIN, nivel: user.NIVEL }, secret);
+
+        if(!token) {
+            throw new Erros("Erro ao obter token", 400);
+        };
+
+        return token;
     };
 
 };

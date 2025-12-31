@@ -1,3 +1,6 @@
+const jwt = require("jsonwebtoken");
+const Erros = require("../shared/errors/Errors");
+const secret = process.env.JWT_SECRET;
 
 /**
  * Exporta um middleware de autenticação.
@@ -5,9 +8,21 @@
  * que exigem que o usuário esteja autenticado.
  */
 module.exports = function auth(req, res, next) {
-    if (!req.session.user) {
-        return res.status(401).json({ Error: "Não autentificado" });
+    const authToken = req.headers["authorization"];
+
+    if (!authToken) {
+        return next(new Erros("Token não informado", 401));
     };
 
-    next();
+    const bearer = authToken.split(" ");
+    const token = bearer[1];
+
+    try {
+        const decoded = jwt.verify(token, secret);
+        req.user = decoded;
+        return next();
+    } catch (error) {
+        console.log(error);
+        return next(new Erros("Token inválido ou expirado", 401));
+    };
 };
