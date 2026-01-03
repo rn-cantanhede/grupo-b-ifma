@@ -9,6 +9,7 @@ const secret = process.env.JWT_SECRET;
  */
 module.exports = function auth(req, res, next) {
     const authToken = req.headers["authorization"];
+    const secret = process.env.JWT_SECRET;
 
     if (!authToken) {
         return next(new Erros("Token não informado", 401));
