@@ -44,6 +44,25 @@ async function findByInterval(inicio, fim, method) {
     return result;
 };
 
+async function VerifyNivel({ user, admin, secretario, associacao, usuario }) {
+    switch (user.nivel) {
+        case 1:
+            return admin();
+
+        case 2:
+            return secretario();
+
+        case 3:
+            return associacao();
+
+        case 4:
+            return usuario();
+
+        default:
+            throw new Erros("Nível de usuário inválido", 403);
+    }
+};
+
 // convertString(value) {
 //         const string = value.split("-");
 //         const convertedString = string.join(" ");
@@ -58,4 +77,4 @@ async function findByInterval(inicio, fim, method) {
 //         };
 //     };
 
-module.exports = { find, findByIdName, findByInterval };
+module.exports = { find, findByIdName, findByInterval, VerifyNivel, listUsers };
