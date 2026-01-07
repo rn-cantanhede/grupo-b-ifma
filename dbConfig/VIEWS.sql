@@ -45,7 +45,8 @@ JOIN pessoa pe ON asso.ID_PESSOA = pe.ID
 JOIN programa prog ON prog.ID = agri.ID_PROGRAMA;
 
 CREATE OR REPLACE VIEW view_usuarios AS
-SELECT user.ID, pe.NOME, user.NIVEL, sec.NOME AS SECRETARIA, user.LOGIN
+SELECT user.ID, pe.NOME, user.NIVEL, sec.NOME AS SECRETARIA, asso.NOME AS ASSOCIACAO, user.LOGIN
 FROM usuario AS user
 JOIN pessoa pe ON pe.ID = user.ID_PESSOA
-JOIN secretaria sec ON sec.ID = user.ID_SECRETARIA;
+JOIN secretaria sec ON sec.ID = user.ID_SECRETARIA
+JOIN associacao asso ON asso.ID_SECRETARIA = user.ID_SECRETARIA;
