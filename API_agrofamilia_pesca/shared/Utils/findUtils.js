@@ -44,6 +44,10 @@ async function findByInterval(inicio, fim, method) {
     return result;
 };
 
+/**
+ * Recebe um objeto do service e executa verificação de nivel.
+ * Executa conforme o nivel.
+ */
 async function VerifyNivel({ user, admin, secretario, associacao, usuario }) {
     switch (user.nivel) {
         case 1:
@@ -61,6 +65,29 @@ async function VerifyNivel({ user, admin, secretario, associacao, usuario }) {
         default:
             throw new Erros("Nível de usuário inválido", 403);
     }
+};
+
+/**
+ * Faz a verificação de secretaria e lista usuarios conforme secretaria.
+ */
+function listUsers(result, secretaria) {
+    const usuariosList = [];
+
+    for (const element of result) {
+        if (element.SECRETARIA == secretaria.NOME) {
+            usuariosList.push(element);
+        };
+    };
+
+    if (usuariosList == "") {
+        throw new Erros("Não encontrado", 404);
+    };
+
+    if (usuariosList.length > 1) {
+        return usuariosList;
+    };
+
+    return usuariosList[0];
 };
 
 // convertString(value) {
