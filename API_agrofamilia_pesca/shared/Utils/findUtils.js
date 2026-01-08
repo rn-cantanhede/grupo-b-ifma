@@ -73,29 +73,35 @@ async function VerifyNivel({ user, admin, secretario, associacao, usuario }) {
 
 /**
  * Faz a verificação para listar usuarios onde o a secretaria
- *  ou a associção seja igual a requirida.
+ * ou a associção seja igual a requirida.
  * 
  * PROVISORIO
  * 
  */
 function listUsers(usuarioObj, field, value) {
-    const usuariosList = [];
+    if (usuarioObj.length > 1) {
+        const usuariosList = [];
 
-    for (const element of usuarioObj) {
-        if (element[field] == value) {
-            usuariosList.push(element);
+        for (const element of usuarioObj) {
+            if (element[field] == value) {
+                usuariosList.push(element);
+            };
         };
-    };
 
-    if (usuariosList == "") {
-        throw new Erros("Não encontrado", 404);
-    };
+        if (usuariosList == "") {
+            throw new Erros("Não encontrado", 404);
+        };
 
-    if (usuariosList.length > 1) {
         return usuariosList;
     };
 
-    return usuariosList[0];
+    if (usuarioObj.length == 1 || usuarioObj.length == undefined) {
+        if (usuarioObj[0][field] == value || usuarioObj[field] == value) {
+            return usuarioObj;
+        };
+    } else {
+        throw new Erros("Não encontrado", 404);
+    };;
 };
 
 // convertString(value) {
