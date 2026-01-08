@@ -47,6 +47,10 @@ async function findByInterval(inicio, fim, method) {
 /**
  * Recebe um objeto do service e executa verificação de nivel.
  * Executa conforme o nivel.
+ * 
+ * PROVISORIO. Precisa sair do findUtils.
+ * Tem potencial talvez para ser um middleware
+ * 
  */
 async function VerifyNivel({ user, admin, secretario, associacao, usuario }) {
     switch (user.nivel) {
@@ -68,13 +72,17 @@ async function VerifyNivel({ user, admin, secretario, associacao, usuario }) {
 };
 
 /**
- * Faz a verificação de secretaria e lista usuarios conforme secretaria.
+ * Faz a verificação para listar usuarios onde o a secretaria
+ *  ou a associção seja igual a requirida.
+ * 
+ * PROVISORIO
+ * 
  */
-function listUsers(result, secretaria) {
+function listUsers(usuarioObj, field, value) {
     const usuariosList = [];
 
-    for (const element of result) {
-        if (element.SECRETARIA == secretaria.NOME) {
+    for (const element of usuarioObj) {
+        if (element[field] == value) {
             usuariosList.push(element);
         };
     };
