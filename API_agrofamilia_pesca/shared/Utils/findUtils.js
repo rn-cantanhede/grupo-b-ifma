@@ -1,6 +1,29 @@
 const Erros = require("../errors/Errors");
 
 /**
+ * Converte a string passada por url em um padrão acesivel 
+ * para consulta no database.
+ */
+
+function convertString(value) {
+    const string = value.split("-");
+    const convertedString = string.join(" ");
+    return convertedString;
+};
+
+/**
+ * Faz a verificação de tipo
+ */
+
+function NumberOrString(value) {
+    if (isNaN(value)) {
+        return true;
+    } else {
+        return false;
+    };
+};
+
+/**
  * Executa uma operação de busca usando o método fornecido.
  * Lança erro 404 quando o resultado não é encontrado.
  */
@@ -22,11 +45,12 @@ async function find(value, method) {
  */
 
 async function findByIdName(value, idMethod, nameMethod) {
-    if (!isNaN(value)) {
-        return find(value, idMethod);
+    if (NumberOrString(value)) {
+        const stringConverted = convertString(value);
+        return find(stringConverted, nameMethod);
     };
-
-    return find(value, nameMethod);
+    
+    return find(value, idMethod);
 };
 
 /**
@@ -95,27 +119,14 @@ function listUsers(usuarioObj, field, value) {
         return usuariosList;
     };
 
+    console.log(usuarioObj)
     if (usuarioObj.length == 1 || usuarioObj.length == undefined) {
         if (usuarioObj[0][field] == value || usuarioObj[field] == value) {
-            return usuarioObj;
+            return usuarioObj[0];
         };
     } else {
         throw new Erros("Não encontrado", 404);
     };;
 };
-
-// convertString(value) {
-//         const string = value.split("-");
-//         const convertedString = string.join(" ");
-//         return convertedString;
-//     };
-
-//     NumberOrString(value) {
-//         if (isNaN(value)) {
-//             return this.convertString(value);
-//         } else {
-//             return value;
-//         };
-//     };
 
 module.exports = { find, findByIdName, findByInterval, VerifyNivel, listUsers };
