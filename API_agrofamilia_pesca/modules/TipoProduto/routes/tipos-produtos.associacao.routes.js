@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const TipoProdutoController = require("./tipos-produtos.controller");
+const TipoProdutoController = require("../tipos-produtos.controller");
 
 /**
  * ================================
@@ -22,23 +22,5 @@ router.get("/:value", TipoProdutoController.findTipoProduto);
 
 //Cria um novo tipo de produto.
 router.post("/new", TipoProdutoController.insertCategoria);
-
-/**
- * ================================
- * ROTAS DE ATUALIZAÇÃO (PUT)
- * ================================
- */
-
-//Atualiza um tipo de produto existente.
-router.put("/update/:id", TipoProdutoController.updateCategoria);
-
-/**
- * ================================
- * ROTAS DE REMOÇÃO (DELETE)
- * ================================
- */
-
-//Remove um tipo de produto existente.
-router.delete("/delete/:id", TipoProdutoController.deleteTipoProduto);
 
 module.exports = router;

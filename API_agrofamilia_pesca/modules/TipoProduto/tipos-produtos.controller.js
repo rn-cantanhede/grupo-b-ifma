@@ -13,7 +13,7 @@ class TipoProdutoController {
 
     async findallTipoProduto(req, res) {
         try {
-            const tipos = await TiposProdutosService.findallTipoProduto();
+            const tipos = await TiposProdutosService.findallTipoProduto(req.user);
             return res.status(200).json(tipos);
         } catch (error) {
             console.log(error);
@@ -27,7 +27,7 @@ class TipoProdutoController {
 
     async findTipoProduto(req, res, next) {
         try {
-            const result = await TiposProdutosService.find(req.params.value);
+            const result = await TiposProdutosService.find(req.params.value, req.user);
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
