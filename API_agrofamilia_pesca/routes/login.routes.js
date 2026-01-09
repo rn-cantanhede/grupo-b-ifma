@@ -7,6 +7,6 @@ const Auth = require("../middleware/Auth");
 router.get("/logout", Auth, UsuariosController.logout);
 
 //Rota publica responsavel pelo login
-router.post("/login", Auth, UsuariosController.login);
+router.post("/login", UsuariosController.login);
 
 module.exports = router;
