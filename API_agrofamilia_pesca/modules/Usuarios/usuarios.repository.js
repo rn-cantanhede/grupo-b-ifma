@@ -24,7 +24,7 @@ class UsuariosRepository {
      * Consulta usuario pelo ID.
      */
     findById(id) {
-        return findBy("ID", id, false, view);
+        return findBy("ID", id, true, view);
     };
 
     /**
@@ -54,6 +54,20 @@ class UsuariosRepository {
      */
     findBySecretaria(secretaria) {
         return findBy("SECRETARIA", secretaria, true, view);
+    };
+
+    /**
+     * Consulta usuarios pelo ID da secretaria.
+     */
+    findBySecretariaId(secretaria) {
+        return findBy("ID_SECRETARIA", secretaria, true, table);
+    };
+
+    /**
+     * Consulta usuarios pela associaçao.
+     */
+    findByAssociacao(associacao) {
+        return findBy("ASSOCIACAO", associacao, true, view);
     };
 
     /**

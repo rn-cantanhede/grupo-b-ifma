@@ -1,9 +1,11 @@
 const Erros = require("../../shared/errors/Errors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { findByIdName, find } = require("../../shared/Utils/findUtils");
+const { findByIdName, find, VerifyNivel, listUsers } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const UsuariosRepository = require("./usuarios.repository");
+const secretariasService = require("../Secretarias/secretarias.service");
+const associacoesService = require("../Associacoes/associacoes.service");
 
 const secret = process.env.JWT_SECRET;
 /**
@@ -19,39 +21,153 @@ class UsuariosService {
     /**
      * Retorna todos os usuarios cadastrados.
      */
-    async findAllUsuarios() {
-        return await UsuariosRepository.findAllUsuarios();
+
+    /**
+     * O uso do VerifyNivel do jeito que está, não está otimizado
+     * modificação nas VIEWs do database resoveriam o problema.
+     */
+    async findAllUsuarios(user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return await UsuariosRepository.findAllUsuarios();
+            },
+
+            secretario: async function () {
+                const secretaria = await find(user.secretaria, secretariasService.find);
+                return await find(secretaria.NOME, UsuariosRepository.findBySecretaria);
+            },
+
+            associacao: async function () {
+                const secretaria = await find(user.secretaria, secretariasService.find);
+                const associacoes = await find(secretaria.NOME, associacoesService.findbySecretaria);
+                return await UsuariosRepository.findByAssociacao(associacoes[0].NOME);
+            },
+
+            usuario: async function () {
+                const result = await find(user.id, UsuariosRepository.findById);
+                return result[0];
+            }
+        });
     };
 
     /**
+     * Por algum motivo(provalvelmente de tipagem), o findByID só funciona
+     * com o multiple = true.
+      Precisa de correção no dbUtils com criação de finds (findBy e findBy)
+     * diretamente nele.
+     * Terá que ser ajustado em todos os repositorys na refatoração
+     */
+
+      
+    /**
      * Busca usuario por ID ou Nome, conforme o tipo de entrada.
      */
-    async find(value) {
-        return findByIdName(value,
-            UsuariosRepository.findById,
-            UsuariosRepository.findByName
-        );
+    async find(value, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return findByIdName(
+                    value,
+                    UsuariosRepository.findById,
+                    UsuariosRepository.findByName
+                );
+            },
+
+            secretario: async function () {
+                const secretaria = await find(user.secretaria, secretariasService.find);
+                const result = await findByIdName(
+                    value,
+                    UsuariosRepository.findById,
+                    UsuariosRepository.findByName
+                );
+
+                return listUsers(result, "SECRETARIA", secretaria.NOME);
+            },
+
+            associacao: async function () {
+                const secretaria = await find(user.secretaria, secretariasService.find);
+                const associacoes = await find(secretaria.NOME, associacoesService.findbySecretaria);
+                const result = await findByIdName(
+                    value,
+                    UsuariosRepository.findById,
+                    UsuariosRepository.findByName
+                );
+
+                return listUsers(result, "ASSOCIACAO", associacoes[0].NOME);
+            },
+        });
     };
 
     /**
      * Busca usuario pelo Nivel.
      */
-    async findByNivel(nivel) {
-        return find(nivel, UsuariosRepository.findByNivel);
+    async findByNivel(nivel, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(nivel, UsuariosRepository.findByNivel);
+            },
+
+            secretario: async function () {
+                const secretaria = await find(user.secretaria, secretariasService.find);
+                const result = await find(nivel, UsuariosRepository.findByNivel);
+
+                return listUsers(result, "SECRETARIA", secretaria.NOME);
+            },
+
+            associacao: async function () {
+                const secretaria = await find(user.secretaria, secretariasService.find);
+                const associacoes = await find(secretaria.NOME, associacoesService.findbySecretaria);
+                const result = await UsuariosRepository.findByNivel(nivel);
+
+                return listUsers(result, "ASSOCIACAO", associacoes[0].NOME);
+            },
+        });
     };
 
     /**
      * Busca usuario pela secretaria.
      */
     async findBySecretaria(secretaria) {
-        return find(secretaria, UsuariosRepository.findBySecretaria);
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(secretaria, UsuariosRepository.findBySecretaria);
+            },
+        });
     };
 
     /**
      * Busca usuario pelo login.
      */
-    async findByLogin(login) {
-        return find(login, UsuariosRepository.findByLogin);
+    async findByLogin(login, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(login, UsuariosRepository.findByLogin);
+            },
+
+            secretario: async function () {
+                const secretaria = await secretariasService.find(user.secretaria);
+                const result = await find(login, UsuariosRepository.findByLogin);
+
+                return listUsers(result, "SECRETARIA", secretaria.NOME);
+            },
+
+            associacao: async function () {
+                const secretaria = await find(user.secretaria, secretariasService.find);
+                const associacoes = await find(secretaria.NOME, associacoesService.findbySecretaria);
+                const result = await UsuariosRepository.findByLogin(login);
+
+                return listUsers(result, "ASSOCIACAO", associacoes[0].NOME);
+            },
+        });
     };
 
     /**
@@ -157,9 +273,15 @@ class UsuariosService {
             return { Error: 'Login invalido' };
         };
 
-        const token = jwt.sign({ login: user.LOGIN, nivel: user.NIVEL }, secret);
+        const token = jwt.sign({
+            id: user.ID_PESSOA,
+            login: user.LOGIN,
+            nivel: user.NIVEL,
+            secretaria: user.ID_SECRETARIA
 
-        if(!token) {
+        }, secret);
+
+        if (!token) {
             throw new Erros("Erro ao obter token", 400);
         };
 

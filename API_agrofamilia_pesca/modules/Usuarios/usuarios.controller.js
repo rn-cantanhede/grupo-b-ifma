@@ -12,7 +12,7 @@ class UsuariosController {
      */
     async findAllUsuarios(req, res, next) {
         try {
-            const view = await UsuariosService.findAllUsuarios();
+            const view = await UsuariosService.findAllUsuarios(req.user);
             return res.status(200).json(view);
         } catch (error) {
             console.log(error);
@@ -25,7 +25,7 @@ class UsuariosController {
      */
     async findUsuarios(req, res, next) {
         try {
-            const result = await UsuariosService.find(req.params.value);
+            const result = await UsuariosService.find(req.params.value, req.user);
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -38,7 +38,7 @@ class UsuariosController {
      */
     async findNivelUsuarios(req, res, next) {
         try {
-            const result = await UsuariosService.findByNivel(req.params.nivel);
+            const result = await UsuariosService.findByNivel(req.params.nivel, req.user);
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -64,7 +64,7 @@ class UsuariosController {
      */
     async findByLogin(req, res, next) {
         try {
-            const result = await UsuariosService.findByLogin(req.params.login);
+            const result = await UsuariosService.findByLogin(req.params.login, req.user);
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -126,7 +126,7 @@ class UsuariosController {
 
             req.session.user = user;
 
-            return res.status(200).json({ 
+            return res.status(200).json({
                 Message: "Login realizado",
                 APIkey: user,
             });
@@ -143,7 +143,7 @@ class UsuariosController {
 
     async logout(req, res, next) {
         try {
-            req.session.destroy(function (err){
+            req.session.destroy(function (err) {
                 if (err) {
                     return next(err);
                 };
