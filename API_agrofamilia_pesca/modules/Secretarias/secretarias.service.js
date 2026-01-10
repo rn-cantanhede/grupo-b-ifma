@@ -1,5 +1,5 @@
 const Erros = require("../../shared/errors/Errors");
-const { findByIdName, find } = require("../../shared/Utils/findUtils");
+const { findByIdName, find, VerifyNivel } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const SecretariasRepository = require("./secretarias.repository");
 
@@ -17,33 +17,81 @@ class SecretariasService {
      * Retorna todas as secretarias cadastradas.
      */
 
-    async findAllProgramas() {
-        const result = await SecretariasRepository.findAllSecretarias();
-        return result;
+    async findAllProgramas(user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return await SecretariasRepository.findAllSecretarias();
+            },
+
+            secretario: async function () {
+                return await find(
+                    user.secretaria,
+                    SecretariasRepository.findById
+                );
+            },
+
+            associacao: async function () {
+                return await find(
+                    user.secretaria,
+                    SecretariasRepository.findById
+                );
+            },
+
+            usuario: async function () {
+                return await find(
+                    user.secretaria,
+                    SecretariasRepository.findById
+                );
+            },
+        });
     };
 
     /**
      * Busca secretaria por ID ou Nome.
      */
 
-    async find(value) {
-        return findByIdName(value, SecretariasRepository.findById, SecretariasRepository.findByName);
+    async find(value, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return findByIdName(
+                    value,
+                    SecretariasRepository.findById,
+                    SecretariasRepository.findByName
+                );
+            },
+        });
     };
 
     /**
      * Lista secretarias filtrando pelo estado.
      */
 
-    async findbyEstado(estado) {
-        return find(estado, SecretariasRepository.findbyEstado);
+    async findbyEstado(estado, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(estado, SecretariasRepository.findbyEstado);
+            },
+        });
     };
 
     /**
      * Lista secretarias filtrando pela cidade.
      */
 
-    async findbyCidade(cidade) {
-        return find(cidade, SecretariasRepository.findbyCidade);
+    async findbyCidade(cidade, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return await SecretariasRepository.findbyCidade(cidade);
+            },
+        });
     };
 
     /**
@@ -90,7 +138,7 @@ class SecretariasService {
      * Remove uma secretaria existente.
      * Valida a existência do registro antes da exclusão.
      */
-    
+
     async deleteSecretaria(id) {
 
         // Verifica se existe na tabela real antes de excluir

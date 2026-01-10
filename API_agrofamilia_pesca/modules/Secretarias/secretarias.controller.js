@@ -13,7 +13,7 @@ class SecretariasController {
 
     async AllSecretarias(req, res) {
         try {
-            const secretarias = await SecretariasService.findAllProgramas();
+            const secretarias = await SecretariasService.findAllProgramas(req.user);
             return res.status(200).json(secretarias);
         } catch (error) {
             console.log(error);
@@ -27,7 +27,10 @@ class SecretariasController {
 
     async findSecretarias(req, res, next) {
         try {
-            const result = await SecretariasService.find(req.params.value);
+            const result = await SecretariasService.find(
+                req.params.value, 
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -41,7 +44,10 @@ class SecretariasController {
 
     async findEstadoSecretarias(req, res, next) {
         try {
-            const result = await SecretariasService.findbyEstado(req.params.estado);
+            const result = await SecretariasService.findbyEstado(
+                req.params.estado, 
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -55,7 +61,10 @@ class SecretariasController {
 
     async findCidadeSecretarias(req, res, next) {
         try {
-            const result = await SecretariasService.findbyEstado(req.params.cidade);
+            const result = await SecretariasService.findbyCidade(
+                req.params.cidade,
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -83,7 +92,10 @@ class SecretariasController {
 
     async updateSecretaria(req, res, next) {
         try {
-            const result = await SecretariasService.updateSecretaria(req.params.id, req.body);
+            const result = await SecretariasService.updateSecretaria(
+                req.params.id, 
+                req.body
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);

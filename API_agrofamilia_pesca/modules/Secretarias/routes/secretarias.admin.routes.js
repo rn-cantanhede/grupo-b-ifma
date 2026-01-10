@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const SecretariasController = require("./secretarias.controller");
+const SecretariasController = require("../secretarias.controller");
 
 /**
  * ================================
