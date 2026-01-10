@@ -1,5 +1,5 @@
 const Erros = require("../../shared/errors/Errors");
-const { find } = require("../../shared/Utils/findUtils");
+const { findByIdName, VerifyNivel } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const ProdutosRepository = require("./produtos.repository");
 
@@ -16,17 +16,69 @@ class ProdutosService {
      * Retorna a lista completa de produtos.
      */
 
-    async findAllProdutos() {
-        const produtos = await ProdutosRepository.findAllProdutos();
-        return produtos;
+    async findAllProdutos(user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return await ProdutosRepository.findAllProdutos();
+            },
+
+            secretario: async function () {
+                return await ProdutosRepository.findAllProdutos();
+            },
+
+            associacao: async function () {
+                return await ProdutosRepository.findAllProdutos();
+            },
+
+            usuario: async function () {
+                return await ProdutosRepository.findAllProdutos();
+            },
+        });
     };
 
     /**
      * Busca um produto pelo ID ou pelo nome.
      */
 
-    async find(value) {
-        return find(value, ProdutosRepository.findById, ProdutosRepository.findByName);
+    async find(value, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return findByIdName(
+                    value, 
+                    ProdutosRepository.findById, 
+                    ProdutosRepository.findByName
+                );
+            },
+
+
+            secretario: async function () {
+                return findByIdName(
+                    value, 
+                    ProdutosRepository.findById, 
+                    ProdutosRepository.findByName
+                );
+            },
+
+            associacao: async function () {
+                return findByIdName(
+                    value, 
+                    ProdutosRepository.findById, 
+                    ProdutosRepository.findByName
+                );
+            },
+
+            usuario: async function () {
+                return findByIdName(
+                    value, 
+                    ProdutosRepository.findById, 
+                    ProdutosRepository.findByName
+                );
+            },
+        });
     };
 
     /**

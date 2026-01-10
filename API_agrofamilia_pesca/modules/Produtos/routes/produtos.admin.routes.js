@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const ProdutosController = require("./produtos.controller");
+const ProdutosController = require("../produtos.controller");
 
 /**
- * ================================
+ *  
  * ROTAS DE CONSULTA (GET)
- * ================================
+ *  
  */
 
 // Retorna a lista completa de produtos.
@@ -15,18 +15,18 @@ router.get("/", ProdutosController.AllProdutos);
 router.get("/:value", ProdutosController.findProdutos);
 
 /**
- * ================================
+ *  
  * ROTAS DE CRIAÇÃO (POST)
- * ================================
+ *  
  */
 
 //Cria um novo produto.
 router.post("/new", ProdutosController.createProduto);
 
 /**
- * ================================
+ *  
  * ROTAS DE ATUALIZAÇÃO (PUT)
- * ================================
+ *  
  */
 
 
@@ -34,9 +34,9 @@ router.post("/new", ProdutosController.createProduto);
 router.put("/update/:id", ProdutosController.updateProduto);
 
 /**
- * ================================
+ *  
  * ROTAS DE REMOÇÃO (DELETE)
- * ================================
+ *  
  */
 //Remove um produto pelo ID.
 router.delete("/delete/:id", ProdutosController.deleteProduto);

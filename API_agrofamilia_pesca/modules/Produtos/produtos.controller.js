@@ -12,7 +12,7 @@ class ProdutosController {
     
     async AllProdutos(req, res) {
         try {
-            const produtos = await ProdutosService.findAllProdutos();
+            const produtos = await ProdutosService.findAllProdutos(req.user);
             return res.status(200).json(produtos);
         } catch (error) {
             console.error(error);
@@ -26,7 +26,10 @@ class ProdutosController {
 
     async findProdutos(req, res, next) {
         try {
-            const produtos = await ProdutosService.find(req.params.value);
+            const produtos = await ProdutosService.find(
+                req.params.value,
+                req.user
+            );
             return res.status(200).json(produtos);
         } catch (error) {
             console.error(error);
