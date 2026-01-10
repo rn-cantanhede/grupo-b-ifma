@@ -49,7 +49,7 @@ async function findByIdName(value, idMethod, nameMethod) {
         const stringConverted = convertString(value);
         return find(stringConverted, nameMethod);
     };
-    
+
     return find(value, idMethod);
 };
 
@@ -77,6 +77,10 @@ async function findByInterval(inicio, fim, method) {
  * 
  */
 async function VerifyNivel({ user, admin, secretario, associacao, usuario }) {
+    if (!user) {
+        throw new Erros("Usuário não autenticado", 401);
+    };
+
     switch (user.nivel) {
         case 1:
             return admin();
@@ -92,7 +96,7 @@ async function VerifyNivel({ user, admin, secretario, associacao, usuario }) {
 
         default:
             throw new Erros("Nível de usuário inválido", 403);
-    }
+    };
 };
 
 /**
@@ -103,30 +107,25 @@ async function VerifyNivel({ user, admin, secretario, associacao, usuario }) {
  * 
  */
 function listUsers(usuarioObj, field, value) {
-    if (usuarioObj.length > 1) {
-        const usuariosList = [];
+    if (Array.isArray(usuarioObj)) {
+        const usuariosList = usuarioObj.filter(
+            (element) => element[field] == value
+        );
 
-        for (const element of usuarioObj) {
-            if (element[field] == value) {
-                usuariosList.push(element);
-            };
-        };
-
-        if (usuariosList == "") {
+        if (usuariosList.length === 0) {
             throw new Erros("Não encontrado", 404);
-        };
+        }
 
         return usuariosList;
     };
 
-    console.log(usuarioObj)
-    if (usuarioObj.length == 1 || usuarioObj.length == undefined) {
-        if (usuarioObj[0][field] == value || usuarioObj[field] == value) {
-            return usuarioObj[0];
+    if (!Array.isArray(usuarioObj)) {
+        if (usuarioObj[field] == value) {
+            return usuarioObj
+        } else {
+            throw new Erros("Não encontrado", 404);
         };
-    } else {
-        throw new Erros("Não encontrado", 404);
-    };;
+    };
 };
 
 module.exports = { find, findByIdName, findByInterval, VerifyNivel, listUsers };
