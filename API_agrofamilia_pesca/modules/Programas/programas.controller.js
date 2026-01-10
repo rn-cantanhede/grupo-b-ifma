@@ -14,7 +14,7 @@ class ProgramasController {
 
     async AllProgramas(req, res) {
         try {
-            const programas = await ProgramasService.getAll();
+            const programas = await ProgramasService.findAllProgramas(req.user);
             return res.status(200).json(programas);
         } catch (error) {
             console.log(error);
@@ -29,7 +29,10 @@ class ProgramasController {
 
     async findProgramas(req, res, next) {
         try {
-            const result = await ProgramasService.find(req.params.value);
+            const result = await ProgramasService.find(
+                req.params.value,
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -43,7 +46,10 @@ class ProgramasController {
 
     async findSecretariaPrograma(req, res, next) {
         try {
-            const result = await ProgramasService.findbySecretaria(req.params.secretaria);
+            const result = await ProgramasService.findbySecretaria(
+                req.params.secretaria,
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -57,7 +63,10 @@ class ProgramasController {
 
     async findEstadoPrograma(req, res, next) {
         try {
-            const result = await ProgramasService.findbyEstado(req.params.estado);
+            const result = await ProgramasService.findbyEstado(
+                req.params.estado,
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -71,7 +80,10 @@ class ProgramasController {
 
     async findOrigemRecursoPrograma(req, res, next) {
         try {
-            const result = await ProgramasService.findbyOrigemRecurso(req.params.recurso);
+            const result = await ProgramasService.findbyOrigemRecurso(
+                req.params.recurso,
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -85,7 +97,10 @@ class ProgramasController {
 
     async findDataInicioPrograma(req, res, next) {
         try {
-            const result = await ProgramasService.findbyDataInicio(req.params.data);
+            const result = await ProgramasService.findbyDataInicio(
+                req.params.data,
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -99,7 +114,10 @@ class ProgramasController {
 
     async findDataFimPrograma(req, res, next) {
         try {
-            const result = await ProgramasService.findbyDataFim(req.params.data);
+            const result = await ProgramasService.findbyDataFim(
+                req.params.data,
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -138,7 +156,7 @@ class ProgramasController {
     /**
      * Remove um programa pelo ID.
      */
-    
+
     async deletePrograma(req, res, next) {
         try {
             const result = await ProgramasService.deletePrograma(req.params.id);

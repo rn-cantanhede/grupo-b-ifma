@@ -1,14 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const ProgramasController = require("./programas.controller");
+const ProgramasController = require("../programas.controller");
 
 /**
- * ================================
+ * 
  * ROTAS DE CONSULTA (GET)
- * ================================
+ * 
  */
 
-//Rota responsável por listar todos os programas cadastrados.
+/**
+ * Retorna apenas a programas que o nivel > 1 pertence.
+ * Apenas o admin tem acesso a todos os programas.
+ * O resto das rotas seguem a mesma logica.
+ */
 router.get("/", ProgramasController.AllProgramas);
 
 /*
@@ -17,20 +21,6 @@ router.get("/", ProgramasController.AllProgramas);
  */
 
 router.get("/:value", ProgramasController.findProgramas);
-
-/*
- * Rota responsável por buscar programas vinculados
- * a uma secretaria específica.
- */
-
-router.get("/secretaria/:secretaria", ProgramasController.findSecretariaPrograma);
-
-/*
- * Rota responsável por buscar programas filtrando
- * pelo estado.
- */
-
-router.get("/estado/:estado", ProgramasController.findEstadoPrograma);
 
 /*
  * Rota responsável por buscar programas filtrando
@@ -54,9 +44,9 @@ router.get("/data-inicio/:data", ProgramasController.findDataInicioPrograma);
 router.get("/data-fim/:data", ProgramasController.findDataFimPrograma);
 
 /**
- * ================================
+ * 
  * ROTAS DE CRIAÇÃO (POST)
- * ================================
+ * 
  */
 
 /*
@@ -66,9 +56,9 @@ router.get("/data-fim/:data", ProgramasController.findDataFimPrograma);
 router.post("/new", ProgramasController.createPrograma);
 
 /**
- * ================================
+ * 
  * ROTAS DE ATUALIZAÇÃO (PUT)
- * ================================
+ * 
  */
 /*
  * Rota responsável por atualizar um programa existente
@@ -78,9 +68,9 @@ router.post("/new", ProgramasController.createPrograma);
 router.put("/update/:id", ProgramasController.updatePrograma);
 
 /**
- * ================================
+ * 
  * ROTAS DE REMOÇÃO (DELETE)
- * ================================
+ * 
  */
 
 /*

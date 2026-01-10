@@ -1,6 +1,7 @@
 const Erros = require("../../shared/errors/Errors");
-const { findByIdName, find } = require("../../shared/Utils/findUtils");
+const { findByIdName, find, VerifyNivel, listUsers } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
+const secretariasRepository = require("../Secretarias/secretarias.repository");
 const ProgramasRepository = require("./programas.repository");
 
 /**
@@ -17,9 +18,34 @@ class ProgramasService {
      * Retorna todos os programas disponíveis.
      */
 
-    async getAll() {
-        const result = await ProgramasRepository.findAllProgramas();
-        return result;
+    /**
+     * O uso do VerifyNivel do jeito que está, não está otimizado
+     * modificação nas VIEWs do database resoveriam o problema.
+     */
+
+    async findAllProgramas(user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return await ProgramasRepository.findAllProgramas();
+            },
+
+            secretario: async function () {
+                const secretaria = await secretariasRepository.findById(user.secretaria);
+                return await ProgramasRepository.findbySecretaria(secretaria.NOME);
+            },
+
+            associacao: async function () {
+                const secretaria = await secretariasRepository.findById(user.secretaria);
+                return await ProgramasRepository.findbySecretaria(secretaria.NOME);
+            },
+
+            usuario: async function () {
+                const secretaria = await secretariasRepository.findById(user.secretaria);
+                return await ProgramasRepository.findbySecretaria(secretaria.NOME);
+            },
+        });
     };
 
     /**
@@ -27,52 +53,184 @@ class ProgramasService {
      * Se for numérico, busca por ID; caso contrário, busca por nome.
      */
 
-    async find(value) {
-        return findByIdName(
-            value,
-            ProgramasRepository.findById,
-            ProgramasRepository.findByName
-        );
+    async find(value, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return findByIdName(
+                    value,
+                    ProgramasRepository.findById,
+                    ProgramasRepository.findByName
+                );
+            },
+
+            secretario: async function () {
+                const secretaria = await secretariasRepository.findById(user.secretaria);
+                const result = await findByIdName(
+                    value,
+                    ProgramasRepository.findById,
+                    ProgramasRepository.findByName
+                );
+
+                return listUsers(result, "SECRETARIA", secretaria.NOME);
+            },
+
+            associacao: async function () {
+                const secretaria = await secretariasRepository.findById(user.secretaria);
+                const result = await findByIdName(
+                    value,
+                    ProgramasRepository.findById,
+                    ProgramasRepository.findByName
+                );
+
+                return listUsers(result, "SECRETARIA", secretaria.NOME);
+            },
+
+            usuario: async function () {
+                const secretaria = await secretariasRepository.findById(user.secretaria);
+                const result = await findByIdName(
+                    value,
+                    ProgramasRepository.findById,
+                    ProgramasRepository.findByName
+                );
+
+                return listUsers(result, "SECRETARIA", secretaria.NOME);
+            },
+        });
     };
 
     /**
      * Busca programas vinculados a uma secretaria específica.
      */
 
-    async findbySecretaria(secretaria) {
-        return find(secretaria, ProgramasRepository.findbySecretaria);
+    async findbySecretaria(secretaria, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(secretaria, ProgramasRepository.findbySecretaria);
+            },
+        });
     };
 
     /**
      * Busca programas filtrando pelo estado.
      */
 
-    async findbyEstado(estado) {
-        return find(estado, ProgramasRepository.findbyEstado);
+    async findbyEstado(estado, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(estado, ProgramasRepository.findbyEstado);
+            },
+        });
     };
 
     /**
      * Busca programas pela origem do recurso financeiro.
      */
 
-    async findbyOrigemRecurso(recurso) {
-        return find(recurso, ProgramasRepository.findbyOrigemRecurso);
+    async findbyOrigemRecurso(recurso, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(recurso, ProgramasRepository.findbyOrigemRecurso);
+            },
+
+            secretario: async function () {
+                const secretaria = await secretariasRepository.findById(user.secretaria);
+                const result = await find(recurso, ProgramasRepository.findbyOrigemRecurso);
+
+                return listUsers(result, "SECRETARIA", secretaria.NOME);
+            },
+
+            associacao: async function () {
+                const secretaria = await secretariasRepository.findById(user.secretaria);
+                const result = await find(recurso, ProgramasRepository.findbyOrigemRecurso);
+
+                return listUsers(result, "SECRETARIA", secretaria.NOME);
+            },
+
+            usuario: async function () {
+                const secretaria = await secretariasRepository.findById(user.secretaria);
+                const result = await find(recurso, ProgramasRepository.findbyOrigemRecurso);
+
+                return listUsers(result, "SECRETARIA", secretaria.NOME);
+            },
+        });
     };
 
     /**
      * Busca programas pela data de início.
      */
 
-    async findbyDataInicio(data) {
-        return find(data, ProgramasRepository.findbyDataInicio);
+    async findbyDataInicio(data, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(data, ProgramasRepository.findbyDataInicio);
+            },
+
+            secretario: async function () {
+                const secretaria = await secretariasRepository.findById(user.secretaria);
+                const result = await find(data, ProgramasRepository.findbyDataInicio);
+
+                return listUsers(result, "SECRETARIA", secretaria.NOME);
+            },
+
+            associacao: async function () {
+                const secretaria = await secretariasRepository.findById(user.secretaria);
+                const result = await find(data, ProgramasRepository.findbyDataInicio);
+
+                return listUsers(result, "SECRETARIA", secretaria.NOME);
+            },
+
+            usuario: async function () {
+                const secretaria = await secretariasRepository.findById(user.secretaria);
+                const result = await find(data, ProgramasRepository.findbyDataInicio);
+
+                return listUsers(result, "SECRETARIA", secretaria.NOME);
+            },
+        });
     };
 
     /**
      * Busca programas pela data de fim.
      */
 
-    async findbyDataFim(data) {
-        return find(data, ProgramasRepository.findbyDataFim);
+    async findbyDataFim(data, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(data, ProgramasRepository.findbyDataFim);
+            },
+
+            secretario: async function () {
+                const secretaria = await secretariasRepository.findById(user.secretaria);
+                const result = await find(data, ProgramasRepository.findbyDataFim);
+
+                return listUsers(result, "SECRETARIA", secretaria.NOME);
+            },
+
+            associacao: async function () {
+                const secretaria = await secretariasRepository.findById(user.secretaria);
+                const result = await find(data, ProgramasRepository.findbyDataFim);
+
+                return listUsers(result, "SECRETARIA", secretaria.NOME);
+            },
+
+            usuario: async function () {
+                const secretaria = await secretariasRepository.findById(user.secretaria);
+                const result = await find(data, ProgramasRepository.findbyDataFim);
+
+                return listUsers(result, "SECRETARIA", secretaria.NOME);
+            },
+        });
     };
 
     /**
