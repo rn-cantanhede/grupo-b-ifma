@@ -7,6 +7,7 @@ const Authorize = require("../middleware/Authorize");
  * Importação dos módulos de rotas da aplicação,
  * organizados por domínio funcional.
  */
+const produtosRoutes = require("../modules/Produtos/routes/produtos.associacao.routes");
 const programasRoutes = require("../modules/Programas/routes/programas.associacao.routes");
 const secretariasRoutes = require("../modules/Secretarias/routes/secretarias.associacao.routes");
 const tipoProdutoRoutes = require("../modules/TipoProduto/routes/tipos-produtos.associacao.routes")
@@ -18,7 +19,8 @@ router.use(Authorize(3));
 /**
  * Registro das rotas da API por contexto de domínio.
  */
-router.use("/Programas", programasRoutes);
+router.use("/produtos", produtosRoutes);
+router.use("/programas", programasRoutes);
 router.use("/secretaria", secretariasRoutes);
 router.use("/tipo-produto", tipoProdutoRoutes);
 router.use("/usuarios", usuariosRoutes);
