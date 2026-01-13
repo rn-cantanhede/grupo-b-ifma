@@ -2,6 +2,7 @@
 // padronizando as operações de CRUD na aplicação.
 const { findAll, findBy, findByInterval, insertData, updateData, deleteData } = require("../../shared/Utils/dbUtils");
 const table = "pessoa";
+const view = "view_pessoas";
 
 /**
  * Repositório responsável pelas operações de acesso a dados
@@ -17,7 +18,7 @@ class PessoasRepository {
      */
 
     findAllPessoas() {
-        return findAll(table);
+        return findAll(view);
     };
 
     /**
@@ -25,7 +26,21 @@ class PessoasRepository {
      */
 
     findById(id) {
-        return findBy("ID", id, false, table);
+        return findBy("ID", id, false, view);
+    };
+
+    /**
+     * Busca pessoas pelo id da secretaria.
+     */
+    findByIdSecretaria(id) {
+        return findBy("ID_SECRETARIA", id, false, view);
+    };
+
+    /**
+     * Busca pessoas pelo id da associação.
+     */
+    findByIdAssociacaao(id) {
+        return findBy("ID_ASSOCIACAO", id, false, view);
     };
 
     /**
@@ -33,7 +48,7 @@ class PessoasRepository {
      */
 
     findByName(name) {
-        return findBy("NOME", name, true, table);
+        return findBy("NOME", name, true, view);
     };
 
     /**
@@ -41,7 +56,7 @@ class PessoasRepository {
      */
 
     findbyGenero(genero) {
-        return findBy("GENERO", genero, true, table);
+        return findBy("GENERO", genero, true, view);
     };
 
     /**
@@ -49,7 +64,7 @@ class PessoasRepository {
      */
 
     findbyData(data) {
-        return findBy("DATA_NASCIMENTO", data, true, table);
+        return findBy("DATA_NASCIMENTO", data, true, view);
     };
 
     /**
@@ -57,7 +72,7 @@ class PessoasRepository {
      */
 
     findByInicioFim(inicio, fim) {
-        return findByInterval("DATA_NASCIMENTO", inicio, fim, table);
+        return findByInterval("DATA_NASCIMENTO", inicio, fim, view);
     };
 
     /**

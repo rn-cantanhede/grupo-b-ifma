@@ -30,6 +30,13 @@ class AssociadosRepository {
     };
 
     /**
+     * Busca pessoas pelo id da secretaria.
+     */
+    findByIdSecretaria(id) {
+        return findBy("ID_SECRETARIA", id, false, table);
+    };
+
+    /**
      * Consulta associado pelo ID na tabela principal.
      */
 
@@ -67,6 +74,10 @@ class AssociadosRepository {
 
     findbyAssociacao(associacao) {
         return findBy("ASSOCIACAO", associacao, true, table);
+    };
+
+    findbySecretaria(secretaria) {
+        return findBy("SECRETARIA", secretaria, false, table);
     };
 
     /**

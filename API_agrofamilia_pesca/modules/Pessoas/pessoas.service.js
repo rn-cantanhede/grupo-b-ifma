@@ -1,48 +1,206 @@
 const Erros = require("../../shared/errors/Errors");
-const { find, findByInterval } = require("../../shared/Utils/findUtils");
+const { find, findByInterval, findByIdName, VerifyNivel, listUsers } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const PessoasRepository = require("./pessoas.repository");
+const associadosRepository = require("../Associados/associados.repository");
+const associacaoRepository = require("../Associacoes/associacoes.repository");
 
 class PessoasService {
     /**
      * Retorna a lista completa de pessoas.
      */
 
-    async findAllPessoas() {
-        const result = await PessoasRepository.findAllPessoas();
-        return result;
+    /**
+     * A consulta foi feita na tabela Associado,
+     * pois tem como filtrar os dados por associacao
+     * e secretaria, diferente da tabela Pessoa
+     */
+    async findAllPessoas(user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return await PessoasRepository.findAllPessoas();
+            },
+
+            secretario: async function () {
+                return find(
+                    user.secretaria,
+                    PessoasRepository.findByIdSecretaria
+                );
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.secretaria,
+                    associacaoRepository.findID_SECRETARIA
+                );
+
+                return find(
+                    associacao.ID,
+                    PessoasRepository.findByIdAssociacaao
+                );
+            },
+
+            usuario: async function () {
+                console.log(user.id);
+                return find(
+                    user.id,
+                    PessoasRepository.findById
+                );
+
+            },
+        });
     };
 
     /**
      * Busca uma pessoa pelo ID ou pelo nome.
      */
 
-    async find(value) {
-        return find(value, PessoasRepository.findById, PessoasRepository.findByName);
+    async find(value, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return findByIdName(
+                    value,
+                    PessoasRepository.findById,
+                    PessoasRepository.findByName
+                );
+            },
+
+            secretario: async function () {
+                const result = await findByIdName(
+                    value,
+                    associadosRepository.findById,
+                    associadosRepository.findByName
+                );
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.secretaria,
+                    associacaoRepository.findID_SECRETARIA
+                );
+
+                const result = await findByIdName(
+                    value,
+                    associadosRepository.findById,
+                    associadosRepository.findByName
+                );
+
+                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
+            },
+        });
     };
 
     /**
      * Busca pessoas filtrando pelo gênero.
      */
 
-    async findbyGenero(genero) {
-        return find(genero, PessoasRepository.findbyGenero);
+    async findbyGenero(genero, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(genero, PessoasRepository.findbyGenero);
+            },
+
+            secretario: async function () {
+
+                const result = await find(genero, PessoasRepository.findbyGenero);
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.secretaria,
+                    associacaoRepository.findID_SECRETARIA
+                );
+
+                const result = await find(genero, PessoasRepository.findbyGenero);
+
+                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
+            },
+        });
+
     };
 
     /**
      * Busca pessoas pela data de nascimento.
      */
 
-    async findbyData(data) {
-        return find(data, PessoasRepository.findbyData);
+    async findbyData(data, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(data, PessoasRepository.findbyData);
+            },
+
+            secretario: async function () {
+                const result = await find(data, PessoasRepository.findbyData);
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.secretaria,
+                    associacaoRepository.findID_SECRETARIA
+                );
+
+                const result = await find(data, PessoasRepository.findbyData);
+
+                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
+            },
+        });
     };
 
     /**
      * Busca pessoas dentro de um intervalo de datas de nascimento.
      */
 
-    async findByInicioFim(inicio, fim) {
-        return findByInterval(inicio, fim, PessoasRepository.findByInicioFim);
+    async findByInicioFim(inicio, fim, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return findByInterval(
+                    inicio,
+                    fim,
+                    PessoasRepository.findByInicioFim
+                );
+            },
+
+            secretario: async function () {
+                const result = await findByInterval(
+                    inicio,
+                    fim,
+                    PessoasRepository.findByInicioFim
+                );
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.secretaria,
+                    associacaoRepository.findID_SECRETARIA
+                );
+
+                const result = await findByInterval(
+                    inicio,
+                    fim,
+                    PessoasRepository.findByInicioFim
+                );
+
+                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
+            },
+        });
     };
 
     /**
