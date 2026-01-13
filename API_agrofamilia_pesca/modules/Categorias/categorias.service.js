@@ -1,5 +1,5 @@
 const Erros = require("../../shared/errors/Errors");
-const { find } = require("../../shared/Utils/findUtils");
+const { findByIdName, VerifyNivel } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const CategoriasRepository = require("./categorias.repository");
 
@@ -18,21 +18,68 @@ class CategoriasService {
      * Retorna todas as categorias cadastradas.
      */
 
-    async findAllCategorias() {
-        const result = await CategoriasRepository.findAllCategorias();
-        return result;
+    async findAllCategorias(user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return await CategoriasRepository.findAllCategorias();
+            },
+
+            secretario: async function () {
+                return await CategoriasRepository.findAllCategorias();
+            },
+
+            associacao: async function () {
+                return await CategoriasRepository.findAllCategorias();
+            },
+
+            usuario: async function () {
+                return await CategoriasRepository.findAllCategorias();
+            }, 
+        });
     };
 
     /**
      * Busca uma categoria por ID ou Nome.
      */
 
-    async find(value) {
-        return find(
-            value,
-            CategoriasRepository.findById,
-            CategoriasRepository.findByName
-        );
+    async find(value, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return findByIdName(
+                    value,
+                    CategoriasRepository.findById,
+                    CategoriasRepository.findByName
+                );
+            },
+
+            secretario: async function () {
+                return findByIdName(
+                    value,
+                    CategoriasRepository.findById,
+                    CategoriasRepository.findByName
+                );
+            },
+        
+            associacao: async function () {
+                return findByIdName(
+                    value,
+                    CategoriasRepository.findById,
+                    CategoriasRepository.findByName
+                );
+            },
+
+            usuario: async function () {
+                return findByIdName(
+                    value,
+                    CategoriasRepository.findById,
+                    CategoriasRepository.findByName
+                );
+            },
+        });
     };
 
     /**
@@ -64,7 +111,7 @@ class CategoriasService {
             throw new Erros("ID não existente", 404);
         };
 
-         // Lista de validações que devem ser aplicadas
+        // Lista de validações que devem ser aplicadas
         const validations = [];
 
         // Valida dependências antes da inserção
