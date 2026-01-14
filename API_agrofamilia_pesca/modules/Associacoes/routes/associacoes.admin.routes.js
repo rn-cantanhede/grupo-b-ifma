@@ -1,14 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const AssociacoesController = require("./associacoes.controller");
+const AssociacoesController = require("../associacoes.controller");
 
 /**
- * ================================
+ *  
  * ROTAS DE CONSULTA (GET)
- * ================================
+ *  
  */
-
- //Rota para listar todas as associações.
+/**
+ * Retorna apenas associações que o nivel > 1 pertence.
+ * Apenas o admin tem acesso a todas as associações.
+ * O resto das rotas seguem a mesma logica.
+ */
 router.get("/", AssociacoesController.AllAssociacoes);
 
 
@@ -23,26 +26,26 @@ router.get("/categoria/:categoria", AssociacoesController.findCategoriaAssociaca
 router.get("/secretaria/:secretaria", AssociacoesController.findSecretariaAssociacao);
 
 /**
- * ================================
+ *  
  * ROTAS DE CRIAÇÃO (POST)
- * ================================
+ *  
  */
 
 // Rota para criar uma nova associação.
 router.post("/new", AssociacoesController.createAssociacao);
 
 /**
- * ================================
+ *  
  * ROTAS DE ATUALIZAÇÃO (PUT)
- * ================================
+ *  
  */
 // Rota para atualizar uma associação existente.
 router.put("/update/:id", AssociacoesController.updateAssociacao);
 
 /**
- * ================================
+ *  
  * ROTAS DE REMOÇÃO (DELETE)
- * ================================
+ *  
  */
 
 // Rota para excluir uma associação.

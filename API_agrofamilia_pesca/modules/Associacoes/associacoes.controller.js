@@ -12,7 +12,7 @@ class AssociacoesController {
      */
     async AllAssociacoes(req, res) {
         try {
-            const associacoes = await AssociacoesService.findAllAssociacoes();
+            const associacoes = await AssociacoesService.findAllAssociacoes(req.user);
             return res.status(200).json(associacoes);
         } catch (error) {
             console.log(error);
@@ -25,7 +25,10 @@ class AssociacoesController {
      */
     async findAssociacao(req, res, next) {
         try {
-            const result = await AssociacoesService.find(req.params.value);
+            const result = await AssociacoesService.find(
+                req.params.value,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -38,7 +41,10 @@ class AssociacoesController {
      */
     async findCategoriaAssociacao(req, res, next) {
         try {
-            const result = await AssociacoesService.findByCategoria(req.params.categoria);
+            const result = await AssociacoesService.findByCategoria(
+                req.params.categoria,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -51,7 +57,10 @@ class AssociacoesController {
      */
     async findSecretariaAssociacao(req, res, next) {
         try {
-            const result = await AssociacoesService.findbySecretaria(req.params.secretaria);
+            const result = await AssociacoesService.findbySecretaria(
+                req.params.secretaria,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);

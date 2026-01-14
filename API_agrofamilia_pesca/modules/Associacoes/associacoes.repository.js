@@ -41,6 +41,10 @@ class Associacoes {
         return findBy("NOME", name, false, table);
     };
 
+    findbyIdSecretaria(id) {
+        return findBy("ID_SECRETARIA", id, false, table);
+    }
+
     /**
      * Busca associações pela categoria.
      */

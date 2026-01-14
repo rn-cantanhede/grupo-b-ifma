@@ -1,6 +1,7 @@
 const Erros = require("../../shared/errors/Errors");
-const { findByIdName, find } = require("../../shared/Utils/findUtils");
+const { findByIdName, find, VerifyNivel, listUsers } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
+const pessoasRepository = require("../Pessoas/pessoas.repository");
 const AssociacoesRepository = require("./associacoes.repository");
 
 /**
@@ -16,34 +17,112 @@ class AssociacoesService {
     /**
      * Retorna todas as associações cadastradas.
      */
-    async findAllAssociacoes(){
-        const result = await AssociacoesRepository.findAllAssociacoes();
-        return result;
+    async findAllAssociacoes(user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return await AssociacoesRepository.findAllAssociacoes();
+            },
+
+            secretario: async function () {
+                return find(
+                    user.secretaria,
+                    AssociacoesRepository.findbyIdSecretaria
+                );
+            },
+
+            associacao: async function () {
+                const pessoa = await find(
+                    user.id,
+                    pessoasRepository.findById
+                );
+                return find(
+                    pessoa.ID_ASSOCIACAO,
+                    AssociacoesRepository.findById
+                );
+            },
+
+            usuario: async function () {
+                console.log(user)
+                const pessoa = await find(
+                    user.id,
+                    pessoasRepository.findById
+                );
+                return find(
+                    pessoa.ID_ASSOCIACAO,
+                    AssociacoesRepository.findById
+                );
+            },
+        });
     };
 
     /**
      * Busca uma associação por ID ou por nome.
      */
-    async find(value){
-        return findByIdName(
-            value,
-            AssociacoesRepository.findById,
-            AssociacoesRepository.findByName
-        );
+    async find(value, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return findByIdName(
+                    value,
+                    AssociacoesRepository.findById,
+                    AssociacoesRepository.findByName
+                );
+            },
+
+            secretario: async function () {
+                const result = findByIdName(
+                    value,
+                    AssociacoesRepository.findById,
+                    AssociacoesRepository.findByName
+                );
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+        });
     };
 
     /**
      * Busca associações vinculadas a uma categoria específica.
      */
-    async findByCategoria(categoria){
-        return find(categoria, AssociacoesRepository.findbyCategoria);
+    async findByCategoria(categoria, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(
+                    categoria,
+                    AssociacoesRepository.findbyCategoria
+                );
+            },
+
+            secretario: async function () {
+                const result = await find(
+                    categoria,
+                    AssociacoesRepository.findbyCategoria
+                );
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+        });
     };
 
     /**
      * Busca associações vinculadas a uma secretaria específica.
      */
-    async findbySecretaria(secretaria){
-        return find(secretaria, AssociacoesRepository.findbySecretaria);
+    async findbySecretaria(secretaria, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(
+                    secretaria,
+                    AssociacoesRepository.findbySecretaria
+                );
+            },
+        });
     };
 
     /**
