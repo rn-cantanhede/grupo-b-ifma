@@ -28,10 +28,10 @@ FROM produto pro
 JOIN tipo_produto tipro ON tipro.ID = pro.ID_TIPO_PRODUTO;
 
 CREATE OR REPLACE VIEW view_produto_movimentacao AS
-SELECT movi.ID, pe.ID AS ID_PESSOA, agri.ID_ASSOCIADO, pe.NOME, agri.DAP, 
-pro.NOME AS PRODUTO, movi.QNT_PRODUZIDA, movi.VLR_UNITARIO, movi.DATA_MOVIMENTACAO, 
-loca.LATITUDE, loca.LONGITUDE, assoc.ID  AS ID_ASSOCIACAO, assoc.NOME AS ASSOCIADO, 
-sec.ID AS ID_SECRETARIA, sec.NOME AS SECRETARIA
+SELECT movi.ID, agri.DAP, pro.NOME AS PRODUTO, movi.QNT_PRODUZIDA, 
+movi.VLR_UNITARIO, movi.DATA_MOVIMENTACAO, loca.LATITUDE, loca.LONGITUDE,
+pe.ID AS ID_PESSOA, agri.ID_ASSOCIADO, pe.NOME, assoc.ID  AS ID_ASSOCIACAO, 
+assoc.NOME AS ASSOCIACAO, sec.ID AS ID_SECRETARIA, sec.NOME AS SECRETARIA
 FROM produto_movimentacao movi
 JOIN agricultura_familiar agri ON agri.ID = movi.ID_AGRICULTURA_FAMILIAR
 JOIN produto pro ON pro.ID = movi.ID_PRODUTO
