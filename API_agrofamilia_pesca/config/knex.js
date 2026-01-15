@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const environment = process.env.NODE_ENV;
+const environment = process.env.NODE_ENV || "development";
 
 /**
  * Configurações de conexão com o banco de dados
@@ -20,6 +20,21 @@ const configs = {
         pool: {
             min: 2,
             max: 10
+        },
+    },
+
+    development_ifma: {
+        client: "mysql2",
+        connection: {
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: "",
+            database: process.env.DB_NAME,
+            timezone: "-03:00",
+        },
+        pool: {
+            min: 2,
+            max: 10,
         },
     },
 };
