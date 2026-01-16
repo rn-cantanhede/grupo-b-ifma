@@ -128,4 +128,11 @@ function listUsers(usuarioObj, field, value) {
     };
 };
 
-module.exports = { find, findByIdName, findByInterval, VerifyNivel, listUsers };
+module.exports = {
+    find,
+    findByIdName,
+    findByInterval,
+    VerifyNivel,
+    listUsers,
+    convertString
+};
