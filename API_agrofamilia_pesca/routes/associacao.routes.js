@@ -9,6 +9,7 @@ const Authorize = require("../middleware/Authorize");
  */
 const associacoesRoutes = require("../modules/Associacoes/routes/associacoes.associacao.routes");
 const categoriasRoutes = require("../modules/Categorias/routes/categorias.associacao.routes");
+const movimentacoesRoutes = require("../modules/Movimentacoes/routes/movimentacoes.associacao.routes");
 const pessoasRoutes = require("../modules/Pessoas/routes/pessoas.associados.routes");
 const produtosRoutes = require("../modules/Produtos/routes/produtos.associacao.routes");
 const programasRoutes = require("../modules/Programas/routes/programas.associacao.routes");
@@ -24,6 +25,7 @@ router.use(Authorize(3));
  */
 router.use(associacoesRoutes);
 router.use("/categorias", categoriasRoutes);
+router.use("/movimentacoes", movimentacoesRoutes);
 router.use("/pessoas", pessoasRoutes);
 router.use("/produtos", produtosRoutes);
 router.use("/programas", programasRoutes);
