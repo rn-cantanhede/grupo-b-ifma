@@ -38,6 +38,22 @@ class MovimentacoesRepository {
     };
 
     /**
+     * Busca uma movimentação específica pelo ID_SECRETARIA na view.
+     */
+
+    findByIdSecretaria(id) {
+        return findBy("ID_SECRETARIA", id, false, table);
+    };
+
+    /**
+     * Busca uma movimentação específica pelo ID_PESSO na view.
+     */
+
+    findByIdPessoa(id) {
+        return findBy("ID_PESSOA", id, false, table);
+    };
+
+    /**
      * Busca movimentações filtrando pelo DAP.
      */
 

@@ -1,6 +1,7 @@
 const Erros = require("../../shared/errors/Errors");
-const { find, findByInterval } = require("../../shared/Utils/findUtils");
+const { find, findByInterval, VerifyNivel, convertString, listUsers } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
+const associacoesRepository = require("../Associacoes/associacoes.repository");
 const MovimentacoesRepository = require("./movimentacoes.repository");
 
 /**
@@ -16,54 +17,302 @@ class MovimentacoesService {
     /**
      * Retorna todas as movimentações registradas.
      */
-    
-    async findAllMovimentacoes() {
-        const result = await MovimentacoesRepository.findAllMovimentacoes();
-        return result;
+
+    async findAllMovimentacoesuser(user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return await MovimentacoesRepository.findAllMovimentacoes();
+            },
+
+            secretario: async function () {
+                return await find(
+                    user.secretaria,
+                    MovimentacoesRepository.findByIdSecretaria()
+                );
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.secretaria,
+                    associacoesRepository.findbyIdSecretaria
+                );
+
+                return await find(
+                    associacao.ID,
+                    MovimentacoesRepository.findByIdSecretaria
+                );
+            },
+
+            usuario: async function () {
+                return await find(
+                    user.id,
+                    MovimentacoesRepository.findByIdPessoa
+                );
+            },
+        });
     };
 
     /**
      * Busca uma movimentação pelo ID.
      */
 
-    async findById(id) {
+    async findById(id, user) {
         // Valida se o valor recebido é numérico antes de realizar a busca.
-        if (!isNaN(id)) {
-            return find(id, MovimentacoesRepository.findById);
-        };
-        throw new Erros("Apenas Id's", 403);
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                if (!isNaN(id)) {
+                    return find(
+                        id,
+                        MovimentacoesRepository.findById
+                    );
+                };
+                throw new Erros("Apenas Id's", 403);
+            },
+
+            secretario: async function () {
+                if (isNaN(id)) {
+                    throw new Erros("Apenas Id's", 403);
+                };
+
+                const result = await find(
+                    id,
+                    MovimentacoesRepository.findById
+                );
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+
+            associacao: async function () {
+                if (isNaN(id)) {
+                    throw new Erros("Apenas Id's", 403);
+                };
+
+                const associacao = await find(
+                    user.secretaria,
+                    associacoesRepository.findbyIdSecretaria
+                );
+
+                const result = await find(
+                    id,
+                    MovimentacoesRepository.findById
+                );
+
+                return await listUsers(result, "ID_ASSOCIACAO", associacao.ID);
+            },
+
+            usuario: async function () {
+                const result = await find(
+                    id,
+                    MovimentacoesRepository.findById
+                );
+
+                return await listUsers(result, "ID_PESSOA", user.id);
+            },
+        });
     };
 
     /**
      * Busca movimentações associadas a um DAP específico.
      */
 
-    async findbyDap(dap) {
-        return find(dap, MovimentacoesRepository.findbyDap);
+    async findbyDap(dap, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(
+                    dap,
+                    MovimentacoesRepository.findbyDap
+                );
+            },
+
+            secretario: async function () {
+                const result = await find(
+                    dap,
+                    MovimentacoesRepository.findbyDap
+                );
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.secretaria,
+                    associacoesRepository.findbyIdSecretaria
+                );
+
+                const result = await find(
+                    dap,
+                    MovimentacoesRepository.findbyDap
+                );
+
+                return await listUsers(result, "ID_ASSOCIACAO", associacao.ID);
+            },
+
+            usuario: async function () {
+                const result = await find(
+                    dap,
+                    MovimentacoesRepository.findbyDap
+                );
+
+                return await listUsers(result, "ID_PESSOA", user.id);
+            },
+        });
     };
 
     /**
      * Busca movimentações associadas a um produto específico.
      */
 
-    async findbyProduto(produto) {
-        return find(produto, MovimentacoesRepository.findbyProduto);
+    async findbyProduto(produto, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(
+                    convertString(produto),
+                    MovimentacoesRepository.findbyProduto
+                );
+            },
+
+            secretario: async function () {
+                const result = await find(
+                    convertString(produto),
+                    MovimentacoesRepository.findbyProduto
+                );
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.secretaria,
+                    associacoesRepository.findbyIdSecretaria
+                );
+
+                const result = await find(
+                    convertString(produto),
+                    MovimentacoesRepository.findbyProduto
+                );
+
+                return await listUsers(result, "ID_ASSOCIACAO", associacao.ID);
+            },
+
+            usuario: async function () {
+                const result = await find(
+                    convertString(produto),
+                    MovimentacoesRepository.findbyProduto
+                );
+
+                return await listUsers(result, "ID_PESSOA", user.id);
+            },
+        });
     };
 
     /**
      * Busca movimentações ocorridas em uma data específica.
      */
 
-    async findbyData(data) {
-        return find(data, MovimentacoesRepository.findbyData);
+    async findbyData(data, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(
+                    data,
+                    MovimentacoesRepository.findbyData
+                );
+            },
+
+            secretario: async function () {
+                const result = await find(
+                    data,
+                    MovimentacoesRepository.findbyData
+                );
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.secretaria,
+                    associacoesRepository.findbyIdSecretaria
+                );
+
+                const result = await find(
+                    data,
+                    MovimentacoesRepository.findbyData
+                );
+
+                return await listUsers(result, "ID_ASSOCIACAO", associacao.ID);
+            },
+
+            usuario: async function () {
+                const result = await find(
+                    data,
+                    MovimentacoesRepository.findbyData
+                );
+
+                return await listUsers(result, "ID_PESSOA", user.id);
+            },
+        });
     };
 
     /**
      * Busca movimentações dentro de um intervalo de datas.
      */
 
-    async findByInicioFim(inicio, fim) {
-        return findByInterval(inicio, fim, MovimentacoesRepository.findByInicioFim);
+    async findByInicioFim(inicio, fim, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return findByInterval(
+                    inicio,
+                    fim,
+                    MovimentacoesRepository.findByInicioFim
+                );
+            },
+
+            secretario: async function () {
+                const result = await findByInterval(
+                    inicio,
+                    fim,
+                    MovimentacoesRepository.findByInicioFim
+                );
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.secretaria,
+                    associacoesRepository.findbyIdSecretaria
+                );
+
+                const result = await findByInterval(
+                    inicio,
+                    fim,
+                    MovimentacoesRepository.findByInicioFim
+                );
+
+                return await listUsers(result, "ID_ASSOCIACAO", associacao.ID);
+            },
+
+            usuario: async function () {
+                const result = await findByInterval(
+                    inicio,
+                    fim,
+                    MovimentacoesRepository.findByInicioFim
+                );
+
+                return await listUsers(result, "ID_PESSOA", user.id);
+            },
+        });
     };
 
     /**
@@ -74,9 +323,21 @@ class MovimentacoesService {
 
         // Lista de validações que devem ser aplicadas antes da inserção
         const validations = [
-            { field: "ID_LOCAL", validation: MovimentacoesRepository.findID_LOCAL, errorMsg: "ID_LOCAL invalido" },
-            { field: "ID_AGRICULTURA_FAMILIAR", validation: MovimentacoesRepository.findID_AGRICULTURA_FAMILIAR, errorMsg: "ID_AGRICULTURA_FAMILIAR invalido" },
-            { field: "ID_PRODUTO", validation: MovimentacoesRepository.findID_PRODUTO, errorMsg: "ID_PRODUTO invalido" },
+            {
+                field: "ID_LOCAL",
+                validation: MovimentacoesRepository.findID_LOCAL,
+                errorMsg: "ID_LOCAL invalido"
+            },
+            {
+                field: "ID_AGRICULTURA_FAMILIAR",
+                validation: MovimentacoesRepository.findID_AGRICULTURA_FAMILIAR,
+                errorMsg: "ID_AGRICULTURA_FAMILIAR invalido"
+            },
+            {
+                field: "ID_PRODUTO",
+                validation: MovimentacoesRepository.findID_PRODUTO,
+                errorMsg: "ID_PRODUTO invalido"
+            },
             // { field: 'NOME', validationFn: (val) => val.length > 0, errorMessage: 'Nome do cliente é obrigatório' }, 
             // { field: 'EMAIL', validationFn: (val) => /\S+@\S+\.\S+/.test(val), errorMessage: 'Email inválido' },
         ];
@@ -103,9 +364,21 @@ class MovimentacoesService {
 
         // Lista de validações que devem ser aplicadas
         const validations = [
-            { field: "ID_LOCAL", validation: MovimentacoesRepository.findID_LOCAL, errorMsg: "ID_LOCAL invalido" },
-            { field: "ID_AGRICULTURA_FAMILIAR", validation: MovimentacoesRepository.findID_AGRICULTURA_FAMILIAR, errorMsg: "ID_AGRICULTURA_FAMILIAR invalido" },
-            { field: "ID_PRODUTO", validation: MovimentacoesRepository.findID_PRODUTO, errorMsg: "ID_PRODUTO invalido" },
+            {
+                field: "ID_LOCAL",
+                validation: MovimentacoesRepository.findID_LOCAL,
+                errorMsg: "ID_LOCAL invalido"
+            },
+            {
+                field: "ID_AGRICULTURA_FAMILIAR",
+                validation: MovimentacoesRepository.findID_AGRICULTURA_FAMILIAR,
+                errorMsg: "ID_AGRICULTURA_FAMILIAR invalido"
+            },
+            {
+                field: "ID_PRODUTO",
+                validation: MovimentacoesRepository.findID_PRODUTO,
+                errorMsg: "ID_PRODUTO invalido"
+            },
             // { field: 'NOME', validationFn: (val) => val.length > 0, errorMessage: 'Nome do cliente é obrigatório' }, 
             // // { field: 'EMAIL', validationFn: (val) => /\S+@\S+\.\S+/.test(val), errorMessage: 'Email inválido' },
         ];

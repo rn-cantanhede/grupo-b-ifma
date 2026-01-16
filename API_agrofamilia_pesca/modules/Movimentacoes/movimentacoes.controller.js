@@ -10,10 +10,10 @@ class MovimentacoesController {
     /**
      * Retorna todas as movimentações cadastradas.
      */
-    
+
     async AllMovimentacoes(req, res) {
         try {
-            const movimentacoes = await MovimentacoesService.findAllMovimentacoes();
+            const movimentacoes = await MovimentacoesService.findAllMovimentacoesuser(req.user);
             return res.status(200).json(movimentacoes);
         } catch (error) {
             console.log(error);
@@ -27,7 +27,10 @@ class MovimentacoesController {
 
     async findByIdMovimentacoes(req, res, next) {
         try {
-            const result = await MovimentacoesService.findById(req.params.id);
+            const result = await MovimentacoesService.findById(
+                req.params.id,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -41,7 +44,10 @@ class MovimentacoesController {
 
     async findDapMovimentacoes(req, res, next) {
         try {
-            const result = await MovimentacoesService.findbyDap(req.params.dap);
+            const result = await MovimentacoesService.findbyDap(
+                req.params.dap,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -55,7 +61,10 @@ class MovimentacoesController {
 
     async findProdutoMovimentacoes(req, res, next) {
         try {
-            const result = await MovimentacoesService.findbyProduto(req.params.produto);
+            const result = await MovimentacoesService.findbyProduto(
+                req.params.produto,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -69,7 +78,10 @@ class MovimentacoesController {
 
     async findDataMovimentacoes(req, res, next) {
         try {
-            const result = await MovimentacoesService.findbyData(req.params.data);
+            const result = await MovimentacoesService.findbyData(
+                req.params.data,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -85,7 +97,8 @@ class MovimentacoesController {
         try {
             const result = await MovimentacoesService.findByInicioFim(
                 req.params.inicio,
-                req.params.fim
+                req.params.fim,
+                req.user
             );
             res.status(200).json(result);
         } catch (error) {

@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const MovimentacoesController = require("./movimentacoes.controller");
+const MovimentacoesController = require("../movimentacoes.controller");
 
 /**
- * ================================
+ *  
  * ROTAS DE CONSULTA (GET)
- * ================================
+ *  
  */
 
 // Lista todas as movimentações cadastradas.
@@ -27,27 +27,27 @@ router.get("/data/:data", MovimentacoesController.findDataMovimentacoes);
 router.get("/data/intervalo/:inicio/:fim", MovimentacoesController.findInicioFimMovimentacoes);
 
 /**
- * ================================
+ *  
  * ROTAS DE CRIAÇÃO (POST)
- * ================================
+ *  
  */
 
 // Cria uma nova movimentação.
 router.post("/new", MovimentacoesController.createMovimentacao);
 
 /**
- * ================================
+ *  
  * ROTAS DE ATUALIZAÇÃO (PUT)
- * ================================
+ *  
  */
 
 // Atualiza uma movimentação existente.
 router.put("/update/:id", MovimentacoesController.updateMovimentacao);
 
 /**
- * ================================
+ *  
  * ROTAS DE REMOÇÃO (DELETE)
- * ================================
+ *  
  */
 
 // Remove uma movimentação do sistema.
