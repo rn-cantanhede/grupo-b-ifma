@@ -1,6 +1,7 @@
 const Erros = require("../../shared/errors/Errors");
-const { findByIdName, find } = require("../../shared/Utils/findUtils");
+const { findByIdName, find, VerifyNivel, listUsers } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
+const associadosRepository = require("../Associados/associados.repository");
 const LocalizacaoBeneficiadoRepository = require("./localizacao-beneficiado.repository");
 
 /**
@@ -18,21 +19,92 @@ class LocalizacaoBeneficiadoService {
      * Retorna todas as localizações beneficiadas.
      */
 
-    async findAllLocalizacao() {
-        const result = await LocalizacaoBeneficiadoRepository.findAllLocalizacao();
-        return result;
+    async findAllLocalizacao(user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return await LocalizacaoBeneficiadoRepository.findAllLocalizacao();
+            },
+
+            secretario: async function () {
+                return find(
+                    user.secretaria,
+                    LocalizacaoBeneficiadoRepository.findByIdSecretaria
+                );
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.id,
+                    associadosRepository.findID_PESSOA
+                );
+
+                return find(
+                    associacao.ID,
+                    LocalizacaoBeneficiadoRepository.findbyIdAssociacao
+                );
+            },
+
+            usuario: async function () {
+                return find(
+                    user.id,
+                    LocalizacaoBeneficiadoRepository.findByIdPessoa
+                );
+            },
+        });
     };
 
     /**
      * Busca uma localização beneficiada por ID ou Nome.
      */
 
-    async find(value) {
-        return findByIdName(
-            value,
-            LocalizacaoBeneficiadoRepository.findById,
-            LocalizacaoBeneficiadoRepository.findByName
-        );
+    async find(value, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return findByIdName(
+                    value,
+                    LocalizacaoBeneficiadoRepository.findById,
+                    LocalizacaoBeneficiadoRepository.findByName
+                );
+            },
+
+            secretario: async function () {
+                const result = await findByIdName(
+                    value,
+                    LocalizacaoBeneficiadoRepository.findById,
+                    LocalizacaoBeneficiadoRepository.findByName
+                );
+
+                return listUsers(
+                    result, 
+                    "ID_SECRETARIA", 
+                    user.secretaria
+                );
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.id,
+                    associadosRepository.findID_PESSOA
+                );
+
+                const result = await findByIdName(
+                    value,
+                    LocalizacaoBeneficiadoRepository.findById,
+                    LocalizacaoBeneficiadoRepository.findByName
+                );
+
+                return listUsers(
+                    result, 
+                    "ID_ASSOCIACAO", 
+                    associacao.ID
+                );
+            },
+        });
+
     };
 
     /**
@@ -40,8 +112,48 @@ class LocalizacaoBeneficiadoService {
      * pelo nome da associação.
      */
 
-    async findbyAssociacao(associacao) {
-        return find(associacao, LocalizacaoBeneficiadoRepository.findbyAssociacao);
+    async findbyAssociacao(associacao, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(
+                    associacao, 
+                    LocalizacaoBeneficiadoRepository.findbyAssociacao
+                );
+            },
+
+            secretario: async function () {
+                const result = await find(
+                    associacao, 
+                    LocalizacaoBeneficiadoRepository.findbyAssociacao
+                );
+
+                return listUsers(
+                    result, 
+                    "ID_SECRETARIA", 
+                    user.secretaria
+                );
+            },
+
+            associacao: async function () {
+                const associacaoID = await find(
+                    user.id,
+                    associadosRepository.findID_PESSOA
+                );
+
+                const result = await find(
+                    associacao, 
+                    LocalizacaoBeneficiadoRepository.findbyAssociacao
+                );
+
+                return listUsers(
+                    result, 
+                    "ID_ASSOCIACAO", 
+                    associacaoID.ID
+                );
+            },
+        });
     };
 
     /**

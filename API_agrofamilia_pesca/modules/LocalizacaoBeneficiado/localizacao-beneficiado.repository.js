@@ -30,6 +30,22 @@ class LocalizacaoBeneficiadoRepository {
     };
 
     /**
+     * Busca uma localização beneficiada pelo ID da secretaria.
+     */
+
+    findByIdSecretaria(id) {
+        return findBy("ID_SECRETARIA", id, false, table);
+    };
+
+    /**
+     * Busca uma localização beneficiada pelo ID da pessoa.
+     */
+
+    findByIdPessoa(id) {
+        return findBy("ID_PESSOA", id, false, table);
+    };
+
+    /**
      * Busca uma localização beneficiada pelo ID
      * para validação antes da exclusão.
      */
@@ -46,6 +62,14 @@ class LocalizacaoBeneficiadoRepository {
 
     findByName(name) {
         return findBy("NOME", name, true, table);
+    };
+
+    /**
+     * Busca localizações beneficiadas pelo id da associação.
+     */
+
+    findbyIdAssociacao(associacao) {
+        return findBy("ID_ASSOCIACAO", associacao, false, table);
     };
 
     /**

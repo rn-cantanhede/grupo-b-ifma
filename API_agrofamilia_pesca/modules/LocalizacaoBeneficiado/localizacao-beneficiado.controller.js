@@ -16,7 +16,7 @@ class LocalizacaoBeneficiadoController {
 
     async AllLocalizacoes(req, res) {
         try {
-            const localizacoes = await LocalizacaoBeneficiadoService.findAllLocalizacao();
+            const localizacoes = await LocalizacaoBeneficiadoService.findAllLocalizacao(req.user);
             return res.status(200).json(localizacoes);
         } catch (error) {
             console.log(error);
@@ -30,7 +30,10 @@ class LocalizacaoBeneficiadoController {
 
     async findLocalizacao(req, res, next) {
         try {
-            const result = await LocalizacaoBeneficiadoService.find(req.params.value);
+            const result = await LocalizacaoBeneficiadoService.find(
+                req.params.value,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -45,7 +48,10 @@ class LocalizacaoBeneficiadoController {
 
     async findAssociacao(req, res, next) {
         try {
-            const result = await LocalizacaoBeneficiadoService.findbyAssociacao(req.params.associacao);
+            const result = await LocalizacaoBeneficiadoService.findbyAssociacao(
+                req.params.associacao,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
