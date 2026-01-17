@@ -15,12 +15,14 @@ JOIN categoria cat ON cat.ID = ac.ID_CATEGORIA
 JOIN secretaria sec ON sec.ID = ac.ID_SECRETARIA;
 
 CREATE OR REPLACE VIEW view_localizacao_beneficiado AS
-SELECT loc.ID, ps.NOME, assoc.NOME AS ASSOCIACAO, loc.LATITUDE, 
-loc.LONGITUDE, loc.TITULO, loc.DESCRICAO
+SELECT loc.ID, ps.ID AS ID_PESSOA, ps.NOME, loc.LATITUDE, 
+loc.LONGITUDE, loc.TITULO, loc.DESCRICAO, asso.ID AS ID_ASSOCIACAO, assoc.NOME AS ASSOCIACAO,
+sec.ID AS ID_SECRETARIA, sec.NOME AS SECRETARIA
 FROM localizacao_beneficiada loc
 JOIN associado asso ON asso.ID_PESSOA = loc.ID_ASSOCIADO
 JOIN pessoa ps ON ps.ID = asso.ID_PESSOA
-JOIN associacao assoc ON assoc.ID = asso.ID_ASSOCIACAO;
+JOIN associacao assoc ON assoc.ID = asso.ID_ASSOCIACAO
+JOIN secretaria sec ON sec.ID = assoc.ID_SECRETARIA;
 
 CREATE OR REPLACE VIEW view_produtos AS
 SELECT pro.ID, pro.NOME, tipro.NOME AS TIPO_DO_PRODUTO
