@@ -8,6 +8,7 @@ const Authorize = require("../middleware/Authorize");
  * organizados por domínio funcional.
  */
 const associacoesRoutes = require("../modules/Associacoes/routes/associacoes.associacao.routes");
+const associadosRoutes = require("../modules/Associados/routes/associados.asociacao.routes");
 const categoriasRoutes = require("../modules/Categorias/routes/categorias.associacao.routes");
 const localizacoesRoutes = require("../modules/LocalizacaoBeneficiado/routes/localizacao.associacao.routes");
 const movimentacoesRoutes = require("../modules/Movimentacoes/routes/movimentacoes.associacao.routes");
@@ -25,6 +26,7 @@ router.use(Authorize(3));
  * Registro das rotas da API por contexto de domínio.
  */
 router.use(associacoesRoutes);
+router.use("/associados", associadosRoutes);
 router.use("/categorias", categoriasRoutes);
 router.use("/localizacao-beneficiado", localizacoesRoutes);
 router.use("/movimentacoes", movimentacoesRoutes);
