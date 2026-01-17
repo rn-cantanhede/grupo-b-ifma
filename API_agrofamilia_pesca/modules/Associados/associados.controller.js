@@ -10,10 +10,10 @@ class AssociadosController {
     /**
      * Retorna todos os associados.
      */
-    
+
     async AllAssociados(req, res) {
         try {
-            const view = await AssociadosService.findAllAssociados();
+            const view = await AssociadosService.findAllAssociados(req.user);
             return res.status(200).json(view);
         } catch (error) {
             console.log(error);
@@ -27,7 +27,10 @@ class AssociadosController {
 
     async findAssociado(req, res, next) {
         try {
-            const result = await AssociadosService.find(req.params.value);
+            const result = await AssociadosService.find(
+                req.params.value,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -41,7 +44,10 @@ class AssociadosController {
 
     async findCafAssociado(req, res, next) {
         try {
-            const result = await AssociadosService.findbyCaf(req.params.caf);
+            const result = await AssociadosService.findbyCaf(
+                req.params.caf,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -55,7 +61,10 @@ class AssociadosController {
 
     async findDapAssociado(req, res, next) {
         try {
-            const result = await AssociadosService.findbyDap(req.params.dap);
+            const result = await AssociadosService.findbyDap(
+                req.params.dap,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -69,7 +78,10 @@ class AssociadosController {
 
     async findAssociacaoAssociado(req, res, next) {
         try {
-            const result = await AssociadosService.findbyAssociacao(req.params.associacao);
+            const result = await AssociadosService.findbyAssociacao(
+                req.params.associacao,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -83,7 +95,10 @@ class AssociadosController {
 
     async findDataAssociado(req, res, next) {
         try {
-            const result = await AssociadosService.findbyData(req.params.data);
+            const result = await AssociadosService.findbyData(
+                req.params.data,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -97,7 +112,11 @@ class AssociadosController {
 
     async findInicioFimAssociado(req, res, next) {
         try {
-            const result = await AssociadosService.findByInicioFim(req.params.inicio, req.params.fim);
+            const result = await AssociadosService.findByInicioFim(
+                req.params.inicio,
+                req.params.fim,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);

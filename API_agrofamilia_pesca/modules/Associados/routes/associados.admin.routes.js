@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const AssociadosController = require("./associados.controller");
+const AssociadosController = require("../associados.controller");
 
 /**
- * ================================
+ *   
  * ROTAS DE CONSULTA (GET)
- * ================================
+ *   
  */
 
 // Retorna todos os associados cadastrados.
@@ -30,26 +30,26 @@ router.get("/data/:data", AssociadosController.findDataAssociado);
 router.get("/data/intervalo/:inicio/:fim", AssociadosController.findInicioFimAssociado);
 
 /**
- * ================================
+ *   
  * ROTAS DE CRIAÇÃO (POST)
- * ================================
+ *   
  */
 // Cria um novo associado.
 router.post("/new", AssociadosController.createAssociado);
 
 /**
- * ================================
+ *   
  * ROTAS DE ATUALIZAÇÃO (PUT)
- * ================================
+ *   
  */
 
 // Atualiza um associado existente.
 router.put("/update/:id", AssociadosController.updateAssociado);
 
 /**
- * ================================
+ *   
  * ROTAS DE REMOÇÃO (DELETE)
- * ================================
+ *   
  */
 
 // Remove um associado existente.

@@ -1,5 +1,5 @@
 const Erros = require("../../shared/errors/Errors");
-const { find, findByInterval, findByIdName } = require("../../shared/Utils/findUtils");
+const { find, findByInterval, findByIdName, VerifyNivel, listUsers } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const AssociadosRepository = require("./associados.repository");
 
@@ -17,60 +17,269 @@ class AssociadosService {
      * Retorna todos os associados cadastrados.
      */
 
-    async findAllAssociados() {
-        const result = await AssociadosRepository.findAllAssociados();
-        return result;
+    async findAllAssociados(user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return await AssociadosRepository.findAllAssociados();
+            },
+
+            secretario: async function () {
+                return find(
+                    user.secretaria,
+                    AssociadosRepository.findByIdSecretaria
+                );
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.id,
+                    AssociadosRepository.findID_PESSOA
+                );
+
+                return find(
+                    associacao.ID,
+                    AssociadosRepository.findbyIdAssociacao
+                );
+            },
+
+            usuario: async function () {
+                return find(
+                    user.id,
+                    AssociadosRepository.findByIdPessoa
+                );
+            },
+        });
     };
 
     /**
      * Busca associado por ID ou Nome, conforme o tipo de entrada.
      */
 
-    async find(value) {
-        return findByIdName(value, 
-            AssociadosRepository.findById, 
-            AssociadosRepository.findByName
-        );
+    async find(value, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return findByIdName(value,
+                    AssociadosRepository.findById,
+                    AssociadosRepository.findByName
+                );
+            },
+
+            secretario: async function () {
+                const result = await findByIdName(value,
+                    AssociadosRepository.findById,
+                    AssociadosRepository.findByName
+                );
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.id,
+                    AssociadosRepository.findID_PESSOA
+                );
+
+                const result = await findByIdName(value,
+                    AssociadosRepository.findById,
+                    AssociadosRepository.findByName
+                );
+
+                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
+            },
+        });
     };
 
     /**
      * Busca associado pelo CAF.
      */
 
-    async findbyCaf(caf) {
-        return find(caf, AssociadosRepository.findbyCaf);
+    async findbyCaf(caf, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(
+                    caf,
+                    AssociadosRepository.findbyCaf
+                );
+            },
+
+            secretario: async function () {
+                const result = await find(
+                    caf,
+                    AssociadosRepository.findbyCaf
+                );
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.id,
+                    AssociadosRepository.findID_PESSOA
+                );
+
+                const result = await find(
+                    caf,
+                    AssociadosRepository.findbyCaf
+                );
+
+                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
+            },
+        });
     };
 
     /**
      * Busca associado pelo DAP.
      */
 
-    async findbyDap(dap) {
-        return find(dap, AssociadosRepository.findbyDap);
+    async findbyDap(dap, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(
+                    dap,
+                    AssociadosRepository.findbyDap
+                );
+            },
+
+            secretario: async function () {
+                const result = await find(
+                    dap,
+                    AssociadosRepository.findbyDap
+                );
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.id,
+                    AssociadosRepository.findID_PESSOA
+                );
+
+                const result = await find(
+                    dap,
+                    AssociadosRepository.findbyDap
+                );
+
+                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
+            },
+        });
     };
 
     /**
      * Lista associados filtrando pela associação.
      */
 
-    async findbyAssociacao(associacao) {
-        return find(associacao, AssociadosRepository.findbyAssociacao);
+    async findbyAssociacao(associacao, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(
+                    associacao,
+                    AssociadosRepository.findbyAssociacao
+                );
+            },
+
+            secretario: async function () {
+                const result = await find(
+                    associacao,
+                    AssociadosRepository.findbyAssociacao
+                );
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+        });
     };
 
     /**
      * Busca associados pela data exata de validade do CAF.
      */
 
-    async findbyData(data) {
-        return find(data, AssociadosRepository.findbyData);
+    async findbyData(data, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(
+                    data,
+                    AssociadosRepository.findbyDataCaf
+                );
+            },
+
+            secretario: async function () {
+                const result = await find(
+                    data,
+                    AssociadosRepository.findbyDataCaf
+                );
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.id,
+                    AssociadosRepository.findID_PESSOA
+                );
+
+                const result = await find(
+                    data,
+                    AssociadosRepository.findbyDataCaf
+                );
+
+                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
+            },
+        });
     };
 
     /**
      * Busca associados por intervalo de validade do CAF.
      */
 
-    async findByInicioFim(inicio, fim) {
-        return findByInterval(inicio, fim, AssociadosRepository.findByInicioFim);
+    async findByInicioFim(inicio, fim, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return findByInterval(
+                    inicio,
+                    fim,
+                    AssociadosRepository.findByInicioFimCaf
+                );
+            },
+
+            secretario: async function () {
+                const result = await findByInterval(
+                    inicio,
+                    fim,
+                    AssociadosRepository.findByInicioFimCaf
+                );
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.id,
+                    AssociadosRepository.findID_PESSOA
+                );
+
+                const result = await findByInterval(
+                    inicio,
+                    fim,
+                    AssociadosRepository.findByInicioFimCaf
+                );
+
+                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
+            },
+        });
     };
 
     /**
@@ -81,8 +290,16 @@ class AssociadosService {
 
         // Lista de validações que devem ser aplicadas antes da inserção
         const validations = [
-            { field: "ID_PESSOA", validation: AssociadosRepository.findID_PESSOA, errorMsg: "ID_PESSOA invalido" },
-            { field: "ID_ASSOCIACAO", validation: AssociadosRepository.findID_ASSOCIACAO, errorMsg: "ID_ASSOCIACAO invalido" },
+            {
+                field: "ID_PESSOA",
+                validation: AssociadosRepository.findID_PESSOA,
+                errorMsg: "ID_PESSOA invalido"
+            },
+            {
+                field: "ID_ASSOCIACAO",
+                validation: AssociadosRepository.findID_ASSOCIACAO,
+                errorMsg: "ID_ASSOCIACAO invalido"
+            },
         ];
 
         // Valida dependências antes da inserção
@@ -107,8 +324,16 @@ class AssociadosService {
 
         // Lista de validações que devem ser aplicadas
         const validations = [
-            { field: "ID_PESSOA", validation: AssociadosRepository.findID_PESSOA, errorMsg: "ID_PESSOA invalido" },
-            { field: "ID_ASSOCIACAO", validation: AssociadosRepository.findID_ASSOCIACAO, errorMsg: "ID_ASSOCIACAO invalido" },
+            {
+                field: "ID_PESSOA",
+                validation: AssociadosRepository.findID_PESSOA,
+                errorMsg: "ID_PESSOA invalido"
+            },
+            {
+                field: "ID_ASSOCIACAO",
+                validation: AssociadosRepository.findID_ASSOCIACAO,
+                errorMsg: "ID_ASSOCIACAO invalido"
+            },
         ];
 
         // Valida dependências antes da inserção

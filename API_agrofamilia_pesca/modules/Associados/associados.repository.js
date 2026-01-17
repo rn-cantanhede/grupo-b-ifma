@@ -37,6 +37,14 @@ class AssociadosRepository {
     };
 
     /**
+     * Busca pessoas pelo id da pessoa.
+     */
+
+    findByIdPessoa(id) {
+        return findBy("ID_PESSOA", id, false, table);
+    };
+
+    /**
      * Consulta associado pelo ID na tabela principal.
      */
 
@@ -76,15 +84,33 @@ class AssociadosRepository {
         return findBy("ASSOCIACAO", associacao, true, table);
     };
 
+    /**
+     * Lista associados filtrando por id da associação.
+     */
+
+    findbyIdAssociacao(id) {
+        return findBy("ID_ASSOCIACAO", id, false, table);
+    };
+
+    /**
+     * Lista associados filtrando por secretaria.
+     */
     findbySecretaria(secretaria) {
         return findBy("SECRETARIA", secretaria, false, table);
+    };
+
+    /**
+     * Lista associados filtrando pelo ID da secretaria.
+     */
+    findbyIdSecretaria(id) {
+        return findBy("ID_SECRETARIA", id, false, table);
     };
 
     /**
      * Consulta associados pela data de validade do CAF.
      */
 
-    findbyData(data) {
+    findbyDataCaf(data) {
         return findBy("VALIDADE_CAF", data, true, table);
     };
 
@@ -92,7 +118,7 @@ class AssociadosRepository {
      * Consulta registros pela validade do CAF dentro de um intervalo.
      */
 
-    findByInicioFim(inicio, fim) {
+    findByInicioFimCaf(inicio, fim) {
         return findByInterval("VALIDADE_CAF", inicio, fim, table);
     };
 
