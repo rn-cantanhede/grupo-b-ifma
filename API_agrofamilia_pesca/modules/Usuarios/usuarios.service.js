@@ -4,8 +4,7 @@ const jwt = require("jsonwebtoken");
 const { findByIdName, find, VerifyNivel, listUsers } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const UsuariosRepository = require("./usuarios.repository");
-const secretariasService = require("../Secretarias/secretarias.service");
-const associacoesService = require("../Associacoes/associacoes.service");
+const associacoesRepository = require("../Associacoes/associacoes.repository");
 
 const secret = process.env.JWT_SECRET;
 /**
@@ -21,11 +20,7 @@ class UsuariosService {
     /**
      * Retorna todos os usuarios cadastrados.
      */
-
-    /**
-     * O uso do VerifyNivel do jeito que está, não está otimizado
-     * modificação nas VIEWs do database resoveriam o problema.
-     */
+    
     async findAllUsuarios(user) {
         return VerifyNivel({
             user,
@@ -35,19 +30,29 @@ class UsuariosService {
             },
 
             secretario: async function () {
-                const secretaria = await find(user.secretaria, secretariasService.find);
-                return await find(secretaria.NOME, UsuariosRepository.findBySecretaria);
+                return await find(
+                    user.secretaria,
+                    UsuariosRepository.findByIdSecretaria
+                );
             },
 
             associacao: async function () {
-                const secretaria = await find(user.secretaria, secretariasService.find);
-                const associacoes = await find(secretaria.NOME, associacoesService.findbySecretaria);
-                return await UsuariosRepository.findByAssociacao(associacoes[0].NOME);
+                const associacao = await find(
+                    user.secretaria,
+                    associacoesRepository.findbyIdSecretaria
+                );
+
+                return find(
+                    associacao.ID,
+                    UsuariosRepository.findByIdAssociacao
+                );
             },
 
             usuario: async function () {
-                const result = await find(user.id, UsuariosRepository.findById);
-                return result[0];
+                return await find(
+                    user.id,
+                    UsuariosRepository.findByIdPessoa
+                );
             }
         });
     };
@@ -60,7 +65,7 @@ class UsuariosService {
      * Terá que ser ajustado em todos os repositorys na refatoração
      */
 
-      
+
     /**
      * Busca usuario por ID ou Nome, conforme o tipo de entrada.
      */
@@ -77,26 +82,28 @@ class UsuariosService {
             },
 
             secretario: async function () {
-                const secretaria = await find(user.secretaria, secretariasService.find);
                 const result = await findByIdName(
                     value,
                     UsuariosRepository.findById,
                     UsuariosRepository.findByName
                 );
 
-                return listUsers(result, "SECRETARIA", secretaria.NOME);
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
             },
 
             associacao: async function () {
-                const secretaria = await find(user.secretaria, secretariasService.find);
-                const associacoes = await find(secretaria.NOME, associacoesService.findbySecretaria);
+                const associacao = await find(
+                    user.secretaria,
+                    associacoesRepository.findbyIdSecretaria
+                );
+                
                 const result = await findByIdName(
                     value,
                     UsuariosRepository.findById,
                     UsuariosRepository.findByName
                 );
 
-                return listUsers(result, "ASSOCIACAO", associacoes[0].NOME);
+                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
             },
         });
     };
@@ -113,18 +120,26 @@ class UsuariosService {
             },
 
             secretario: async function () {
-                const secretaria = await find(user.secretaria, secretariasService.find);
-                const result = await find(nivel, UsuariosRepository.findByNivel);
+                const result = await find(
+                    nivel,
+                    UsuariosRepository.findByNivel
+                );
 
-                return listUsers(result, "SECRETARIA", secretaria.NOME);
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
             },
 
             associacao: async function () {
-                const secretaria = await find(user.secretaria, secretariasService.find);
-                const associacoes = await find(secretaria.NOME, associacoesService.findbySecretaria);
-                const result = await UsuariosRepository.findByNivel(nivel);
+                const associacao = await find(
+                    user.secretaria,
+                    associacoesRepository.findbyIdSecretaria
+                );
 
-                return listUsers(result, "ASSOCIACAO", associacoes[0].NOME);
+                const result = await find(
+                    nivel,
+                    UsuariosRepository.findByNivel
+                );
+
+                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
             },
         });
     };
@@ -154,18 +169,26 @@ class UsuariosService {
             },
 
             secretario: async function () {
-                const secretaria = await secretariasService.find(user.secretaria);
-                const result = await find(login, UsuariosRepository.findByLogin);
+                const result = await find(
+                    login,
+                    UsuariosRepository.findByLogin
+                );
 
-                return listUsers(result, "SECRETARIA", secretaria.NOME);
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
             },
 
             associacao: async function () {
-                const secretaria = await find(user.secretaria, secretariasService.find);
-                const associacoes = await find(secretaria.NOME, associacoesService.findbySecretaria);
-                const result = await UsuariosRepository.findByLogin(login);
+                const associacao = await find(
+                    user.secretaria,
+                    associacoesRepository.findbyIdSecretaria
+                );
 
-                return listUsers(result, "ASSOCIACAO", associacoes[0].NOME);
+                const result = await find(
+                    login,
+                    UsuariosRepository.findByLogin
+                );
+
+                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
             },
         });
     };
