@@ -27,6 +27,27 @@ class AgriculturaFamiliarRepository {
     };
 
     /**
+     * Busca um registro específico pelo ID da pessoa.
+     */
+    findByIdPessoa(id) {
+        return findBy("ID_PESSOA", id, false, table);
+    };
+
+    /**
+     * Busca registros pelo ID da secretaria.
+     */
+    findByIdSecretaria(id) {
+        return findBy("ID_SECRETARIA", id, true, table);
+    };
+
+    /**
+     * Busca registros pelo ID da associacao.
+     */
+    findByIdAssociacao(id) {
+        return findBy("ID_ASSOCIACAO", id, true, table);
+    };
+
+    /**
      * Busca um registro pelo ID diretamente na tabela real,
      * geralmente utilizada antes de operações de exclusão.
      */

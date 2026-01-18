@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const AgriculturaFamiliarController = require("./agricultura-familiar.controller");
+const AgriculturaFamiliarController = require("../agricultura-familiar.controller");
 
 /**
- * ================================
+ *  
  * ROTAS DE CONSULTA (GET)
- * ================================
+ *  
  */
 
 // Retorna todos os registros de agricultura familiar.
@@ -24,27 +24,27 @@ router.get("/dap/:dap", AgriculturaFamiliarController.findDapAgriculturaFamiliar
 router.get("/programa/:programa", AgriculturaFamiliarController.findProgramaAgriculturaFamiliar);
 
 /**
- * ================================
+ *  
  * ROTAS DE CRIAÇÃO (POST)
- * ================================
+ *  
  */
 
 // Cria um novo registro de agricultura familiar.
 router.post("/new", AgriculturaFamiliarController.createAgriculturaFamiliar);
 
 /**
- * ================================
+ *  
  * ROTAS DE ATUALIZAÇÃO (PUT)
- * ================================
+ *  
  */
 
 // Atualiza um registro existente de agricultura familiar,
 router.put("/update/:id", AgriculturaFamiliarController.updateAgriculturaFamiliar);
 
 /**
- * ================================
+ *  
  * ROTAS DE REMOÇÃO (DELETE)
- * ================================
+ *  
  */
 
 // Remove um registro de agricultura familiar

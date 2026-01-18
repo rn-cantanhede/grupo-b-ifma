@@ -12,7 +12,7 @@ class AgriculturaFamiliarController {
      */
     async AllAgriculturaFamiliar(req, res) {
         try {
-            const result = await AgriculturaFamiliarService.findAllAgriculturaFamiliar();
+            const result = await AgriculturaFamiliarService.findAllAgriculturaFamiliar(req.user);
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -25,7 +25,10 @@ class AgriculturaFamiliarController {
      */
     async findAgriculturaFamiliar(req, res, next) {
         try {
-            const result = await AgriculturaFamiliarService.find(req.params.value);
+            const result = await AgriculturaFamiliarService.find(
+                req.params.value,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -38,7 +41,10 @@ class AgriculturaFamiliarController {
      */
     async findCafAgriculturaFamiliar(req, res, next) {
         try {
-            const result = await AgriculturaFamiliarService.findbyCaf(req.params.caf);
+            const result = await AgriculturaFamiliarService.findbyCaf(
+                req.params.caf,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -51,7 +57,10 @@ class AgriculturaFamiliarController {
      */
     async findDapAgriculturaFamiliar(req, res, next) {
         try {
-            const result = await AgriculturaFamiliarService.findbyDap(req.params.dap);
+            const result = await AgriculturaFamiliarService.findbyDap(
+                req.params.dap,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -64,7 +73,10 @@ class AgriculturaFamiliarController {
      */
     async findProgramaAgriculturaFamiliar(req, res, next) {
         try {
-            const result = await AgriculturaFamiliarService.findbyPrograma(req.params.programa);
+            const result = await AgriculturaFamiliarService.findbyPrograma(
+                req.params.programa,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);

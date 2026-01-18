@@ -1,6 +1,7 @@
 const Erros = require("../../shared/errors/Errors");
-const { findByIdName, find } = require("../../shared/Utils/findUtils");
+const { findByIdName, find, VerifyNivel, listUsers } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
+const associacoesRepository = require("../Associacoes/associacoes.repository");
 const AgriculturaFamiliarRepository = require("./agricultura-familiar.repository");
 
 /**
@@ -16,41 +17,199 @@ class AgriculturaFamiliarService {
     /**
      * Retorna todos os registros de agricultura familiar.
      */
-    async findAllAgriculturaFamiliar() {
-        const result = await AgriculturaFamiliarRepository.findAllAgriculturaFamiliar();
-        return result;
+    async findAllAgriculturaFamiliar(user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return await AgriculturaFamiliarRepository.findAllAgriculturaFamiliar();
+            },
+
+            secretario: async function () {
+                return find(
+                    user.secretaria,
+                    AgriculturaFamiliarRepository.findByIdSecretaria
+                );
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.secretaria,
+                    associacoesRepository.findbyIdSecretaria
+                );
+
+                return find(
+                    associacao.ID,
+                    AgriculturaFamiliarRepository.findByIdAssociacao
+                );
+            },
+
+            usuario: async function () {
+                return find(
+                    user.id,
+                    AgriculturaFamiliarRepository.findByIdPessoa
+                );
+            },
+        });
     };
 
     /**
      * Busca um registro por ID ou por nome.
      */
-    async find(value) {
-        return findByIdName(
-            value,
-            AgriculturaFamiliarRepository.findById,
-            AgriculturaFamiliarRepository.findByName
-        );
+    async find(value, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return findByIdName(
+                    value,
+                    AgriculturaFamiliarRepository.findById,
+                    AgriculturaFamiliarRepository.findByName
+                );
+            },
+
+            secretario: async function () {
+                const result = await findByIdName(
+                    value,
+                    AgriculturaFamiliarRepository.findById,
+                    AgriculturaFamiliarRepository.findByName
+                );
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.secretaria,
+                    associacoesRepository.findbyIdSecretaria
+                );
+
+                const result = await findByIdName(
+                    value,
+                    AgriculturaFamiliarRepository.findById,
+                    AgriculturaFamiliarRepository.findByName
+                );
+
+                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
+            },
+        });
     };
 
     /**
      * Busca registros pelo número do CAF.
      */
-    async findbyCaf(caf) {
-        return find(caf, AgriculturaFamiliarRepository.findbyCaf);
+    async findbyCaf(caf, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(
+                    caf,
+                    AgriculturaFamiliarRepository.findbyCaf
+                );
+            },
+
+            secretario: async function () {
+                const result = await find(
+                    caf,
+                    AgriculturaFamiliarRepository.findbyCaf
+                );
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.secretaria,
+                    associacoesRepository.findbyIdSecretaria
+                );
+
+                const result = await find(
+                    caf,
+                    AgriculturaFamiliarRepository.findbyCaf
+                );
+
+                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
+            },
+        });
     };
 
     /**
      * Busca registros pelo número da DAP.
      */
-    async findbyDap(dap) {
-        return find(dap, AgriculturaFamiliarRepository.findbyDap);
+    async findbyDap(dap, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(
+                    dap,
+                    AgriculturaFamiliarRepository.findbyDap
+                );
+            },
+
+            secretario: async function () {
+                const result = await find(
+                    dap,
+                    AgriculturaFamiliarRepository.findbyDap
+                );
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.secretaria,
+                    associacoesRepository.findbyIdSecretaria
+                );
+
+                const result = await find(
+                    dap,
+                    AgriculturaFamiliarRepository.findbyDap
+                );
+
+                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
+            },
+        });
     };
 
     /**
      * Busca registros vinculados a um programa específico.
      */
-    async findbyPrograma(programa) {
-        return find(programa, AgriculturaFamiliarRepository.findbyPrograma);
+    async findbyPrograma(programa, user) {
+        return VerifyNivel({
+            user,
+
+            admin: async function () {
+                return find(
+                    programa,
+                    AgriculturaFamiliarRepository.findbyPrograma
+                );
+            },
+
+            secretario: async function () {
+                const result = await find(
+                    programa,
+                    AgriculturaFamiliarRepository.findbyPrograma
+                );
+
+                return listUsers(result, "ID_SECRETARIA", user.secretaria);
+            },
+
+            associacao: async function () {
+                const associacao = await find(
+                    user.secretaria,
+                    associacoesRepository.findbyIdSecretaria
+                );
+
+                const result = await find(
+                    programa,
+                    AgriculturaFamiliarRepository.findbyPrograma
+                );
+
+                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
+            },
+        });
     };
 
     /**
@@ -74,7 +233,7 @@ class AgriculturaFamiliarService {
 
         // Valida dependências antes da inserção
         await validationsUtils.validate(data, validations);
-        
+
         // Insere no banco de dados
         return await AgriculturaFamiliarRepository.createAgriculturaFamiliar(data);
     };
