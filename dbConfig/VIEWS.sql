@@ -61,9 +61,11 @@ JOIN associacao assoc ON assoc.ID = asso.ID_ASSOCIACAO
 JOIN secretaria sec ON sec.ID = assoc.ID_SECRETARIA;
 
 CREATE OR REPLACE VIEW view_usuarios AS
-SELECT user.ID, pe.NOME, user.NIVEL, sec.NOME AS SECRETARIA, 
-asso.NOME AS ASSOCIACAO, user.LOGIN
+SELECT user.ID, pe.ID AS ID_PESSOA, pe.NOME, user.NIVEL, sec.ID AS ID_SECRETARIA, 
+sec.NOME AS SECRETARIA, asso.ID AS ID_ASSOCIACAO, asso.NOME AS ASSOCIACAO, 
+user.LOGIN
 FROM usuario AS user
 JOIN pessoa pe ON pe.ID = user.ID_PESSOA
 JOIN secretaria sec ON sec.ID = user.ID_SECRETARIA
-JOIN associacao asso ON asso.ID_SECRETARIA = user.ID_SECRETARIA;
+JOIN associado assoc ON assoc.ID_PESSOA = user.ID_PESSOA
+JOIN associacao asso ON asso.ID = assoc.ID_ASSOCIACAO;
