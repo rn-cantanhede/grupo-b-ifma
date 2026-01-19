@@ -3,9 +3,9 @@ const router = express.Router();
 const TipoProdutoController = require("../tipos-produtos.controller");
 
 /**
- * ================================
+ *   
  * ROTAS DE CONSULTA (GET)
- * ================================
+ *   
  */
 
 //Retorna todos os tipos de produto.
@@ -15,9 +15,9 @@ router.get("/", TipoProdutoController.findallTipoProduto);
 router.get("/:value", TipoProdutoController.findTipoProduto);
 
 /**
- * ================================
+ *   
  * ROTAS DE CRIAÇÃO (POST)
- * ================================
+ *   
  */
 
 //Cria um novo tipo de produto.

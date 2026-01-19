@@ -1,9 +1,10 @@
 const Erros = require("../../shared/errors/Errors");
-const { findByIdName, VerifyNivel } = require("../../shared/Utils/findUtils");
-const validationsUtils = require("../../shared/Utils/validationsUtils");
 const TiposProdutosPolicy = require("./policies/tipos-produtos.policy");
 const BaseService = require("../../shared/base/BaseService");
+const validationsUtils = require("../../shared/Utils/validationsUtils");
 const TiposProdutosRepository = require("./tipos-produtos.repository");
+const { findByIdName } = require("../../shared/Utils/findUtils");
+const associadosRepository = require("../Associados/associados.repository");
 
 /**
  * Camada de serviço responsável pela regra de negócio
@@ -16,12 +17,7 @@ const TiposProdutosRepository = require("./tipos-produtos.repository");
 class TiposProdutosService {
 
     /**
-     * Retorna todos os tipos de produto cadastrados.
-     */
-
-    /**
-     * O uso do VerifyNivel do jeito que está, não está otimizado
-     * modificação nas VIEWs do database resoveriam o problema.
+     * Retorna todos os tipos de produto cadastrados com filtro de escopo.
      */
     async findallTipoProduto(user) {
         if (!TiposProdutosPolicy.canGet(user)) {
@@ -34,7 +30,6 @@ class TiposProdutosService {
     /**
      * Busca tipo de produto por ID ou Nome.
      */
-
     async find(value, user) {
         if (!TiposProdutosPolicy.canGet(user)) {
             throw new Erros("Acesso negado", 403);
@@ -48,60 +43,48 @@ class TiposProdutosService {
     };
 
     /**
-     * Insere um novo tipo de produto após validação dos dados.
+     * Insere um novo tipo de produto.
      */
+    async insertCategoria(data, user) {
 
-    async insertCategoria(data) {
+        const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
 
-        // Lista de validações que devem ser aplicadas antes da inserção
+        if (!TiposProdutosPolicy.canPost(user, targetUser)) {
+            throw new Erros("Acesso negado", 403);
+        };
+
         const validations = [];
-
-        // Valida dependências antes da inserção
         await validationsUtils.validate(data, validations);
 
-        // Insere no banco de dados
         return await TiposProdutosRepository.insertCategoria(data);
     };
 
     /**
      * Atualiza um tipo de produto existente.
-     * Valida a existência do registro antes da atualização.
      */
+    async updateCategoria(id, data, user) {
+        const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
 
-    async updateCategoria(id, data) {
-
-        // Verifica se o programa existe antes de atualizar
-        const idCategoria = await TiposProdutosRepository.findById(id);
-
-        if (!idCategoria) {
-            throw new Erros("ID invalido", 404);
+        if (!TiposProdutosPolicy.canUpdate(user, targetUser)) {
+            throw new Erros("Acesso negado", 403);
         };
 
-        // Lista de validações que devem ser aplicadas
         const validations = [];
-
-        // Valida dependências antes da inserção
         await validationsUtils.validate(data, validations);
 
-        // Aplica a atualização no banco de dados
         return await TiposProdutosRepository.updateCategoria(id, data);
     };
 
     /**
      * Remove um tipo de produto existente.
-     * Valida a existência do registro antes da exclusão.
      */
+    async deleteTipoProduto(id, user) {
+        const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
 
-    async deleteTipoProduto(id) {
-
-        // Verifica se existe na tabela real antes de excluir
-        const idProduto = await TiposProdutosRepository.findById(id);
-
-        if (!idProduto) {
-            throw new Erros("ID invalido", 404);
+        if (!TiposProdutosPolicy.canDelete(user, targetUser)) {
+            throw new Erros("Acesso negado", 403);
         };
 
-        // Remove definitivamente
         return await TiposProdutosRepository.deleteTipoProduto(id);
     };
 };

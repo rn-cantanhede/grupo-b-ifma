@@ -27,7 +27,10 @@ class TipoProdutoController {
 
     async findTipoProduto(req, res, next) {
         try {
-            const result = await TiposProdutosService.find(req.params.value, req.user);
+            const result = await TiposProdutosService.find(
+                req.params.value, 
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -41,7 +44,10 @@ class TipoProdutoController {
 
     async insertCategoria(req, res, next) {
         try {
-            const result = await TiposProdutosService.insertCategoria(req.body);
+            const result = await TiposProdutosService.insertCategoria(
+                req.body,
+                req.user
+            );
             return res.status(201).json(result);
         } catch (error) {
             console.log(error);
@@ -55,7 +61,11 @@ class TipoProdutoController {
 
     async updateCategoria(req, res, next) {
         try {
-            const result = await TiposProdutosService.updateCategoria(req.params.id, req.body);
+            const result = await TiposProdutosService.updateCategoria(
+                req.params.id,
+                req.body,
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -69,7 +79,10 @@ class TipoProdutoController {
     
     async deleteTipoProduto(req, res, next) {
         try {
-            const result = await TiposProdutosService.deleteTipoProduto(req.params.id);
+            const result = await TiposProdutosService.deleteTipoProduto(
+                req.params.id,
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
