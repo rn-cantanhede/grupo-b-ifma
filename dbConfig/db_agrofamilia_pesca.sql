@@ -116,10 +116,12 @@ CREATE TABLE PRODUTO_MOVIMENTACAO (
 CREATE TABLE USUARIO (
   ID INT AUTO_INCREMENT PRIMARY KEY, -- Identificador único para cada usuário
   ID_PESSOA INT NOT NULL, -- Chave estrangeira que referencia a pessoa do usuário
-  NIVEL INT, -- Nível de acesso do usuário (ex: 1 = admin, 2 = secretaria, etc.)
   ID_SECRETARIA INT, -- Chave estrangeira que referencia a secretaria associada ao usuário
+  ID_ASSOCIACAO INT, -- Chave estrangeira que referencia a associacao associada ao usuário
+  NIVEL INT, -- Nível de acesso do usuário (ex: 1 = admin, 2 = secretaria, etc.)
   LOGIN VARCHAR(50) UNIQUE NOT NULL, -- Nome de login único para o usuário
   SENHA VARCHAR(255) NOT NULL, -- Senha criptografada do usuário
   FOREIGN KEY (ID_PESSOA) REFERENCES PESSOA(ID), -- Relacionamento com a tabela PESSOA
+  FOREIGN KEY (ID_ASSOCIACAO) REFERENCES ASSOCIACAO(ID), -- Relacionamento com a tabela ASSOCIACAO
   FOREIGN KEY (ID_SECRETARIA) REFERENCES SECRETARIA(ID) -- Relacionamento com a tabela SECRETARIA
 );
