@@ -1,6 +1,8 @@
 const Erros = require("../../shared/errors/Errors");
 const { findByIdName, VerifyNivel } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
+const TiposProdutosPolicy = require("./policies/tipos-produtos.policy");
+const BaseService = require("../../shared/base/BaseService");
 const TiposProdutosRepository = require("./tipos-produtos.repository");
 
 /**
@@ -22,25 +24,11 @@ class TiposProdutosService {
      * modificação nas VIEWs do database resoveriam o problema.
      */
     async findallTipoProduto(user) {
-        return VerifyNivel({
-            user,
+        if (!TiposProdutosPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return await TiposProdutosRepository.findallTipoProduto();
-            },
-
-            secretario: async function () {
-                return await TiposProdutosRepository.findallTipoProduto();
-            },
-
-            associacao: async function () {
-                return await TiposProdutosRepository.findallTipoProduto();
-            },
-
-            usuario: async function () {
-                return await TiposProdutosRepository.findallTipoProduto();
-            }
-        });
+        return await TiposProdutosRepository.findallTipoProduto();
     };
 
     /**
@@ -48,41 +36,15 @@ class TiposProdutosService {
      */
 
     async find(value, user) {
-        return VerifyNivel({
-            user,
+        if (!TiposProdutosPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return findByIdName(
-                    value, 
-                    TiposProdutosRepository.findById, 
-                    TiposProdutosRepository.findByName
-                );
-            },
-
-            secretario: async function () {
-                return findByIdName(
-                    value, 
-                    TiposProdutosRepository.findById, 
-                    TiposProdutosRepository.findByName
-                );
-            },
-
-            associacao: async function () {
-                return findByIdName(
-                    value, 
-                    TiposProdutosRepository.findById, 
-                    TiposProdutosRepository.findByName
-                );
-            },
-
-            usuario: async function () {
-                return findByIdName(
-                    value, 
-                    TiposProdutosRepository.findById, 
-                    TiposProdutosRepository.findByName
-                );
-            }
-        });
+        return await findByIdName(
+            value,
+            TiposProdutosRepository.findById,
+            TiposProdutosRepository.findByName
+        );
     };
 
     /**
