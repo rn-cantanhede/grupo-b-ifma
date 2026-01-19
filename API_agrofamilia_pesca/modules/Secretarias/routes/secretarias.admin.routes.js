@@ -3,9 +3,9 @@ const router = express.Router();
 const SecretariasController = require("../secretarias.controller");
 
 /**
- * ================================
+ *  
  * ROTAS DE CONSULTA (GET)
- * ================================
+ *  
  */
 
 //Lista todas as secretarias cadastradas no sistema.
@@ -25,27 +25,27 @@ router.get("/estado/:estado", SecretariasController.findEstadoSecretarias);
 router.get("/cidade/:cidade", SecretariasController.findCidadeSecretarias);
 
 /**
- * ================================
+ *  
  * ROTAS DE CRIAÇÃO (POST)
- * ================================
+ *  
  */
 
 //Cria uma nova secretaria no sistema.
 router.post("/new", SecretariasController.createSecretaria);
 
 /**
- * ================================
+ *  
  * ROTAS DE ATUALIZAÇÃO (PUT)
- * ================================
+ *  
  */
 
 //Atualiza os dados de uma secretaria existente.
 router.put("/update/:id", SecretariasController.updateSecretaria);
 
 /**
- * ================================
+ *  
  * ROTAS DE REMOÇÃO (DELETE)
- * ================================
+ *  
  */
 
 //Remove uma secretaria existente do sistema.

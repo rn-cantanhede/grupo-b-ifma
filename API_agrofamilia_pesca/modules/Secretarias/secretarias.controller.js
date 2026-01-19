@@ -78,7 +78,10 @@ class SecretariasController {
 
     async createSecretaria(req, res, next) {
         try {
-            const result = await SecretariasService.createSecretaria(req.body);
+            const result = await SecretariasService.createSecretaria(
+                req.body,
+                req.user
+            );
             return res.status(201).json(result);
         } catch (error) {
             console.log(error);
@@ -94,7 +97,8 @@ class SecretariasController {
         try {
             const result = await SecretariasService.updateSecretaria(
                 req.params.id, 
-                req.body
+                req.body,
+                req.user
             );
             return res.status(200).json(result);
         } catch (error) {
@@ -109,7 +113,10 @@ class SecretariasController {
     
     async deleteSecretaria(req, res, next) {
         try {
-            const result = await SecretariasService.deleteSecretaria(req.params.id);
+            const result = await SecretariasService.deleteSecretaria(
+                req.params.id,
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
