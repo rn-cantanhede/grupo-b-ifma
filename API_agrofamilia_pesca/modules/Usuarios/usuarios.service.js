@@ -2,6 +2,8 @@ const Erros = require("../../shared/errors/Errors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { findByIdName, find, VerifyNivel, listUsers } = require("../../shared/Utils/findUtils");
+const UsuarioPolicy = require("./policies/usuario.policy");
+const BaseService = require("../../shared/base/BaseService");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const UsuariosRepository = require("./usuarios.repository");
 const associacoesRepository = require("../Associacoes/associacoes.repository");
@@ -20,91 +22,41 @@ class UsuariosService {
     /**
      * Retorna todos os usuarios cadastrados.
      */
-    
+
     async findAllUsuarios(user) {
-        return VerifyNivel({
+        if (!UsuarioPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+
+        };
+
+        const usuarios = await UsuariosRepository.findAllUsuarios();
+
+        return BaseService.filterByUserLevel({
             user,
-
-            admin: async function () {
-                return await UsuariosRepository.findAllUsuarios();
-            },
-
-            secretario: async function () {
-                return await find(
-                    user.secretaria,
-                    UsuariosRepository.findByIdSecretaria
-                );
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.secretaria,
-                    associacoesRepository.findbyIdSecretaria
-                );
-
-                return find(
-                    associacao.ID,
-                    UsuariosRepository.findByIdAssociacao
-                );
-            },
-
-            usuario: async function () {
-                return await find(
-                    user.id,
-                    UsuariosRepository.findByIdPessoa
-                );
-            }
+            data: usuarios,
+            associacoesRepository
         });
     };
-
-    /**
-     * Por algum motivo(provalvelmente de tipagem), o findByID só funciona
-     * com o multiple = true.
-      Precisa de correção no dbUtils com criação de finds (findBy e findBy)
-     * diretamente nele.
-     * Terá que ser ajustado em todos os repositorys na refatoração
-     */
-
 
     /**
      * Busca usuario por ID ou Nome, conforme o tipo de entrada.
      */
     async find(value, user) {
-        return VerifyNivel({
+        if (!UsuarioPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+
+        };
+
+        const usuarios = await findByIdName(
+            value,
+            UsuariosRepository.findById,
+            UsuariosRepository.findByName
+        );
+
+        return BaseService.filterByUserLevel({
             user,
-
-            admin: async function () {
-                return findByIdName(
-                    value,
-                    UsuariosRepository.findById,
-                    UsuariosRepository.findByName
-                );
-            },
-
-            secretario: async function () {
-                const result = await findByIdName(
-                    value,
-                    UsuariosRepository.findById,
-                    UsuariosRepository.findByName
-                );
-
-                return listUsers(result, "ID_SECRETARIA", user.secretaria);
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.secretaria,
-                    associacoesRepository.findbyIdSecretaria
-                );
-                
-                const result = await findByIdName(
-                    value,
-                    UsuariosRepository.findById,
-                    UsuariosRepository.findByName
-                );
-
-                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
-            },
+            data: usuarios,
+            associacoesRepository
         });
     };
 
@@ -112,84 +64,52 @@ class UsuariosService {
      * Busca usuario pelo Nivel.
      */
     async findByNivel(nivel, user) {
-        return VerifyNivel({
+        if (!UsuarioPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+
+        };
+
+        const usuarios = await find(
+            nivel,
+            UsuariosRepository.findByNivel
+        );
+
+        return BaseService.filterByUserLevel({
             user,
-
-            admin: async function () {
-                return find(nivel, UsuariosRepository.findByNivel);
-            },
-
-            secretario: async function () {
-                const result = await find(
-                    nivel,
-                    UsuariosRepository.findByNivel
-                );
-
-                return listUsers(result, "ID_SECRETARIA", user.secretaria);
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.secretaria,
-                    associacoesRepository.findbyIdSecretaria
-                );
-
-                const result = await find(
-                    nivel,
-                    UsuariosRepository.findByNivel
-                );
-
-                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
-            },
+            data: usuarios,
+            associacoesRepository
         });
     };
 
     /**
      * Busca usuario pela secretaria.
      */
-    async findBySecretaria(secretaria) {
-        return VerifyNivel({
-            user,
+    async findBySecretaria(secretaria, user) {
+        if (!UsuarioPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return find(secretaria, UsuariosRepository.findBySecretaria);
-            },
-        });
+        if (!user.nivel == 1) {
+            throw new Erros("Apenas admins podem acessar", 403);
+        };
+
+        return await UsuariosRepository.findBySecretaria(secretaria);
     };
 
     /**
      * Busca usuario pelo login.
      */
     async findByLogin(login, user) {
-        return VerifyNivel({
+        if (!UsuarioPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
+
+        const usuarios = await find(login, UsuariosRepository.findByLogin);
+
+        return BaseService.filterByUserLevel({
             user,
-
-            admin: async function () {
-                return find(login, UsuariosRepository.findByLogin);
-            },
-
-            secretario: async function () {
-                const result = await find(
-                    login,
-                    UsuariosRepository.findByLogin
-                );
-
-                return listUsers(result, "ID_SECRETARIA", user.secretaria);
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.secretaria,
-                    associacoesRepository.findbyIdSecretaria
-                );
-
-                const result = await find(
-                    login,
-                    UsuariosRepository.findByLogin
-                );
-
-                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
-            },
+            data: usuarios,
+            associacoesRepository
         });
     };
 

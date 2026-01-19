@@ -25,7 +25,10 @@ class UsuariosController {
      */
     async findUsuarios(req, res, next) {
         try {
-            const result = await UsuariosService.find(req.params.value, req.user);
+            const result = await UsuariosService.find(
+                req.params.value,
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -38,7 +41,10 @@ class UsuariosController {
      */
     async findNivelUsuarios(req, res, next) {
         try {
-            const result = await UsuariosService.findByNivel(req.params.nivel, req.user);
+            const result = await UsuariosService.findByNivel(
+                req.params.nivel,
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -51,7 +57,10 @@ class UsuariosController {
      */
     async findSecretariaUsuarios(req, res, next) {
         try {
-            const result = await UsuariosService.findBySecretaria(req.params.secretaria);
+            const result = await UsuariosService.findBySecretaria(
+                req.params.secretaria,
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
