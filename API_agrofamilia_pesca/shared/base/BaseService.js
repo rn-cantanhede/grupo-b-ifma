@@ -1,82 +1,67 @@
 const Erros = require("../errors/Errors");
 
 class BaseService {
-
     /**
-     * Filtra um ou vários registros por campo.
-     * Retorna apenas os registros permitidos.
+     * Aplica o escopo de visibilidade nos dados seguindo o seu padrão de escrita.
      */
-    static async filterByUserLevel({
-        user,
-        data,
-        associacoesRepository
-    }) {
-        const levelMap = {
-            1: function () { // ADMIN
-                return data;
-            },
-
-            2: function () {
-                return BaseService.filterByField(
-                    data,
-                    "ID_SECRETARIA",
-                    user.secretaria
-                );
-            },
-
-            3: async function () {
-                const associacao = await associacoesRepository.findbyIdSecretaria(
-                    user.secretaria
-                );
-
-                return BaseService.filterByField(
-                    data,
-                    "ID_ASSOCIACAO",
-                    associacao.ID
-                );
-            },
-
-            4: function () {
-                return BaseService.filterByField(
-                    data,
-                    "ID_PESSOA",
-                    user.id
-                );
+    static applyScope({ user, data, mapping = {} }) {
+        if (!data) {
+            if (Array.isArray(data)) {
+                return [];
             }
+            return null;
+        }
+
+        // Mapeamento de campos
+        const secretariaField = 'ID_SECRETARIA';
+        if (mapping.secretaria) {
+            secretariaField = mapping.secretaria;
+        }
+
+        const pessoaField = 'ID_PESSOA';
+        if (mapping.pessoa) {
+            pessoaField = mapping.pessoa;
+        }
+
+        // Normalização para array para processamento uniforme
+        const isArray = Array.isArray(data);
+        let items = [];
+        if (isArray) {
+            items = data;
+        } else {
+            items = [data];
+        }
+
+        let filtered = [];
+
+        if (user.nivel == 1) {
+            filtered = items;
+        }
+
+        if (user.nivel == 2 || user.nivel == 3) {
+            filtered = items.filter(function (item) {
+                return item[secretariaField] == user.secretaria;
+            });
+        }
+
+        if (user.nivel == 4) {
+            filtered = items.filter(function (item) {
+                if (item[pessoaField]) {
+                    return item[pessoaField] == user.id;
+                }
+                return item[secretariaField] == user.secretaria;
+            });
         };
 
-        const handler = levelMap[user.nivel];
+        if (filtered.length == 0) {
+            throw new Erros("Acesso negado aos dados ou registro não encontrado", 404);
+        };
 
-        if (!handler) {
-            throw new Error("Nível de usuário inválido", 403);
-        }
-
-        return handler();
-    }
-
-    static filterByField(data, field, value) {
-        if (!data) {
-            throw new Erros("Nenhum dado encontrado", 404);
-        }
-
-        if (Array.isArray(data)) {
-            const filtered = data.filter(function (item) {
-                return item[field] == value;
-            });
-
-            if (!filtered.length) {
-                throw new Erros("Nenhum registro encontrado", 404);
-            }
-
+        if (isArray) {
             return filtered;
         }
-
-        if (data[field] == value) {
-            return data
-        };
-
-        throw new Erros("Nenhum registro encontrado", 404);
-    }
-}
+        return filtered[0];
+    };
+};
 
 module.exports = BaseService;
