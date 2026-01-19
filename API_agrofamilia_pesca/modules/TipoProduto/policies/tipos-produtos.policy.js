@@ -9,7 +9,7 @@ class TiposProdutosPolicy {
             LevelPolicy.LEVELS.ASSOCIACAO,
             LevelPolicy.LEVELS.USUARIO
         ]);
-    }
+    };
 
     static canPost(user) {
         return LevelPolicy.hasAccess(user, [
@@ -17,25 +17,21 @@ class TiposProdutosPolicy {
             LevelPolicy.LEVELS.SECRETARIA,
             LevelPolicy.LEVELS.ASSOCIACAO
         ]);
-    }
+    };
 
     static canUpdate(user, targetUser) {
         if (LevelPolicy.isAdmin(user)) return true;
 
         if (LevelPolicy.isSecretaria(user)) {
             return user.secretaria == targetUser.ID_SECRETARIA;
-        }
-
-        if (LevelPolicy.isAssociacao(user)) {
-            return user.associacao == targetUser.ID_ASSOCIACAO;
-        }
+        };
 
         return false;
-    }
+    };
 
     static canDelete(user, targetUser) {
         return this.canUpdate(user, targetUser);
-    }
-}
+    };
+};
 
 module.exports = TiposProdutosPolicy;
