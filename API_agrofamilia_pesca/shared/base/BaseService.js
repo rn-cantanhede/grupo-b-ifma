@@ -13,18 +13,18 @@ class BaseService {
         }
 
         // Mapeamento de campos
-        const secretariaField = 'ID_SECRETARIA';
+        let secretariaField = 'ID_SECRETARIA';
         if (mapping.secretaria) {
             secretariaField = mapping.secretaria;
         }
 
-        const pessoaField = 'ID_PESSOA';
+        let pessoaField = 'ID_PESSOA';
         if (mapping.pessoa) {
             pessoaField = mapping.pessoa;
         }
 
         // Normalização para array para processamento uniforme
-        const isArray = Array.isArray(data);
+        let isArray = Array.isArray(data);
         let items = [];
         if (isArray) {
             items = data;
