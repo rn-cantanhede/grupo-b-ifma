@@ -1,7 +1,9 @@
 const Erros = require("../../shared/errors/Errors");
-const { findByIdName, VerifyNivel } = require("../../shared/Utils/findUtils");
+const ProdutosPolicy = require("./policies/produtos.policy");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const ProdutosRepository = require("./produtos.repository");
+const associadosRepository = require("../Associados/associados.repository");
+const { findByIdName } = require("../../shared/Utils/findUtils");
 
 /**
  * Camada de serviço responsável pela regra de negócio
@@ -17,25 +19,11 @@ class ProdutosService {
      */
 
     async findAllProdutos(user) {
-        return VerifyNivel({
-            user,
+        if (!ProdutosPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return await ProdutosRepository.findAllProdutos();
-            },
-
-            secretario: async function () {
-                return await ProdutosRepository.findAllProdutos();
-            },
-
-            associacao: async function () {
-                return await ProdutosRepository.findAllProdutos();
-            },
-
-            usuario: async function () {
-                return await ProdutosRepository.findAllProdutos();
-            },
-        });
+        return await ProdutosRepository.findAllProdutos();
     };
 
     /**
@@ -43,49 +31,35 @@ class ProdutosService {
      */
 
     async find(value, user) {
-        return VerifyNivel({
-            user,
+        if (!ProdutosPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return findByIdName(
-                    value, 
-                    ProdutosRepository.findById, 
-                    ProdutosRepository.findByName
-                );
-            },
-
-
-            secretario: async function () {
-                return findByIdName(
-                    value, 
-                    ProdutosRepository.findById, 
-                    ProdutosRepository.findByName
-                );
-            },
-
-            associacao: async function () {
-                return findByIdName(
-                    value, 
-                    ProdutosRepository.findById, 
-                    ProdutosRepository.findByName
-                );
-            },
-
-            usuario: async function () {
-                return findByIdName(
-                    value, 
-                    ProdutosRepository.findById, 
-                    ProdutosRepository.findByName
-                );
-            },
-        });
+        return findByIdName(
+            value,
+            ProdutosRepository.findById,
+            ProdutosRepository.findByName
+        );
     };
 
     /**
      * Cria um novo produto após validação das dependências.
+     * 
+     * Formato passado no body:
+     * 
+     * {
+     *   "NOME": "",
+     *   "ID_TIPO_PRODUTO": ""
+     * }
+     * 
      */
 
-    async createProduto(produto) {
+    async createProduto(produto, user) {
+        const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
+
+        if (!ProdutosPolicy.canPost(user, targetUser)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
         // Lista de validações que devem ser aplicadas antes da inserção
         const validations = [
@@ -105,18 +79,33 @@ class ProdutosService {
 
     /**
      * Atualiza um produto existente.
+     * 
+     * Formato passado no body:
+     * 
+     * {
+     *   "NOME": "",
+     *   "ID_TIPO_PRODUTO": ""
+     * }
+     * 
      */
 
-    async updateProduto(id, produto) {
+    async updateProduto(id, produto, user) {
+        const targetUser = await associadosRepository.findByIdPessoa(user.id);
 
-        // Verifica se o programa existe antes de atualizar
-        const idProduto = await ProdutosRepository.findById(id);
-
-        if (!idProduto) {
-            throw new Erros("ID inválido", 404);
+        // Solução provisória
+        const Alluser = {
+            id: user.id,
+            login: user.login,
+            nivel: user.nivel,
+            secretaria: user.secretaria,
+            associacao: targetUser.ID_ASSOCIACAO
         };
 
-        // Verifica se existe antes de atualizar
+
+        if (!ProdutosPolicy.canUpdate(Alluser, targetUser)) {
+            throw new Erros("Acesso negado", 403);
+        };
+
         const validations = [
             {
                 field: "ID_TIPO_PRODUTO",
@@ -136,7 +125,22 @@ class ProdutosService {
      * Remove um produto pelo ID.
      */
 
-    async deleteProduto(id) {
+    async deleteProduto(id, user) {
+        const targetUser = await associadosRepository.findByIdPessoa(user.id);
+
+        // Solução provisória
+        const Alluser = {
+            id: user.id,
+            login: user.login,
+            nivel: user.nivel,
+            secretaria: user.secretaria,
+            associacao: targetUser.ID_ASSOCIACAO
+        };
+
+
+        if (!ProdutosPolicy.canUpdate(Alluser, targetUser)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
         // Verifica se existe na tabela real antes de excluir
         const idProduto = await ProdutosRepository.findById(id);

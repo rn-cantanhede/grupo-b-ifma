@@ -43,7 +43,10 @@ class ProdutosController {
 
     async createProduto(req, res, next) {
         try {
-            const result = await ProdutosService.createProduto(req.body);
+            const result = await ProdutosService.createProduto(
+                req.body,
+                req.user
+            );
             return res.status(201).json(result);
         } catch (error) {
             console.error(error);
@@ -57,7 +60,11 @@ class ProdutosController {
 
     async updateProduto(req, res, next) {
         try {
-            const result = await ProdutosService.updateProduto(req.params.id, req.body);
+            const result = await ProdutosService.updateProduto(
+                req.params.id, 
+                req.body,
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.error(error);
@@ -71,7 +78,10 @@ class ProdutosController {
 
     async deleteProduto(req, res, next) {
         try {
-            const result = await ProdutosService.deleteProduto(req.params.id);
+            const result = await ProdutosService.deleteProduto(
+                req.params.id,
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.error(error);
