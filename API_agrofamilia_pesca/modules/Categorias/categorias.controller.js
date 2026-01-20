@@ -44,7 +44,10 @@ class CategoriasController {
 
     async createCategoria(req, res, next) {
         try {
-            const result = await CategoriasService.createCategoria(req.body);
+            const result = await CategoriasService.createCategoria(
+                req.body,
+                req.user
+            );
             return res.status(201).json(result);
         } catch (error) {
             console.log(error);
@@ -60,7 +63,8 @@ class CategoriasController {
         try {
             const result = await CategoriasService.updateCategoria(
                 req.params.id,
-                req.body
+                req.body,
+                req.user
             );
             return res.status(200).json(result);
         } catch (error) {
@@ -75,7 +79,10 @@ class CategoriasController {
 
     async deleteCategoria(req, res, next) {
         try {
-            const result = await CategoriasService.deleteCategoria(req.params.id);
+            const result = await CategoriasService.deleteCategoria(
+                req.params.id,
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);

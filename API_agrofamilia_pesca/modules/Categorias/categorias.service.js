@@ -1,7 +1,9 @@
 const Erros = require("../../shared/errors/Errors");
-const { findByIdName, VerifyNivel } = require("../../shared/Utils/findUtils");
+const CategoriasPolicy = require("./policies/categorias.policy");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
+const associadosRepository = require("../Associados/associados.repository");
 const CategoriasRepository = require("./categorias.repository");
+const { findByIdName, VerifyNivel } = require("../../shared/Utils/findUtils");
 
 /**
  * Camada de serviço responsável pela regra de negócio
@@ -19,25 +21,11 @@ class CategoriasService {
      */
 
     async findAllCategorias(user) {
-        return VerifyNivel({
-            user,
+        if (!CategoriasPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return await CategoriasRepository.findAllCategorias();
-            },
-
-            secretario: async function () {
-                return await CategoriasRepository.findAllCategorias();
-            },
-
-            associacao: async function () {
-                return await CategoriasRepository.findAllCategorias();
-            },
-
-            usuario: async function () {
-                return await CategoriasRepository.findAllCategorias();
-            }, 
-        });
+        return await CategoriasRepository.findAllCategorias();
     };
 
     /**
@@ -45,48 +33,34 @@ class CategoriasService {
      */
 
     async find(value, user) {
-        return VerifyNivel({
-            user,
+        if (!CategoriasPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return findByIdName(
-                    value,
-                    CategoriasRepository.findById,
-                    CategoriasRepository.findByName
-                );
-            },
-
-            secretario: async function () {
-                return findByIdName(
-                    value,
-                    CategoriasRepository.findById,
-                    CategoriasRepository.findByName
-                );
-            },
-        
-            associacao: async function () {
-                return findByIdName(
-                    value,
-                    CategoriasRepository.findById,
-                    CategoriasRepository.findByName
-                );
-            },
-
-            usuario: async function () {
-                return findByIdName(
-                    value,
-                    CategoriasRepository.findById,
-                    CategoriasRepository.findByName
-                );
-            },
-        });
+        return await findByIdName(
+            value,
+            CategoriasRepository.findById,
+            CategoriasRepository.findByName
+        );
     };
 
     /**
      * Cria uma nova categoria após validação dos dados.
+     * 
+     * Formato passado no body:
+     * 
+     * {
+     *   "NOME": ""
+     * }
+     * 
      */
 
-    async createCategoria(data) {
+    async createCategoria(data, user) {
+        const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
+
+        if (!CategoriasPolicy.canPost(user, targetUser)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
         // Lista de validações que devem ser aplicadas antes da inserção
         const validations = [];
@@ -100,9 +74,21 @@ class CategoriasService {
 
     /**
      * Atualiza uma categoria existente.
+     * 
+     * Formato passado no body:
+     * 
+     * {
+     *   "NOME": ""
+     * }
+     * 
      */
 
-    async updateCategoria(id, categoria) {
+    async updateCategoria(id, categoria, user) {
+        const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
+
+        if (!CategoriasPolicy.canPost(user, targetUser)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
         // Verifica se existe antes de atualizar
         const idCategoria = await CategoriasRepository.findById(id);
@@ -125,7 +111,12 @@ class CategoriasService {
      * Remove uma categoria existente.
      */
 
-    async deleteCategoria(id) {
+    async deleteCategoria(id, user) {
+        const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
+
+        if (!CategoriasPolicy.canPost(user, targetUser)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
         // Verifica se existe na tabela real antes de excluir
         const idCategoria = await CategoriasRepository.findById(id);
