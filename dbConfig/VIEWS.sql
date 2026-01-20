@@ -45,7 +45,7 @@ JOIN secretaria sec ON sec.ID = assoc.ID_SECRETARIA;
 
 CREATE OR REPLACE VIEW view_programas AS
 SELECT prog.ID, prog.NOME, prog.DESCRICAO, prog.DATA_INICIO, prog.DATA_FIM,
-prog.ORIGEM_RECURSO, prog.VLR_REPASSE, sec.NOME AS SECRETARIA, sec.ESTADO
+prog.ORIGEM_RECURSO, prog.VLR_REPASSE, prog.ID_SECRETARIA, sec.NOME AS SECRETARIA, sec.ESTADO
 FROM progRama prog
 JOIN secretaria sec ON sec.ID = prog.ID_SECRETARIA;
 
