@@ -29,6 +29,10 @@ class PessoasRepository {
         return findBy("ID", id, false, view);
     };
 
+    findId(id) {
+        return findBy("ID", id, false, table);
+    };
+
     /**
      * Busca pessoas pelo id da secretaria.
      */

@@ -3,9 +3,9 @@ const router = express.Router();
 const PessoasController = require("../pessoas.controller");
 
 /**
- * ================================
+ *  
  * ROTAS DE CONSULTA (GET)
- * ================================
+ *  
  */
 
 //Rota responsável por retornar todas as pessoas cadastradas.
@@ -24,27 +24,27 @@ router.get("/data/:data", PessoasController.findDataPessoa);
 router.get("/data/intervalo/:inicio/:fim", PessoasController.findInicioFimPessoa);
 
 /**
- * ================================
+ *  
  * ROTAS DE CRIAÇÃO (POST)
- * ================================
+ *  
  */
 
 //Rota responsável por criar um novo registro de pessoa.
 router.post("/new", PessoasController.createPessoa);
 
 /**
- * ================================
+ *  
  * ROTAS DE ATUALIZAÇÃO (PUT)
- * ================================
+ *  
  */
 
 //Rota responsável por atualizar os dados de uma pessoa existente.
 router.put("/update/:id", PessoasController.updatePessoa);
 
 /**
- * ================================
+ *  
  * ROTAS DE REMOÇÃO (DELETE)
- * ================================
+ *  
  */
 
 //Rota responsável por remover uma pessoa pelo ID.

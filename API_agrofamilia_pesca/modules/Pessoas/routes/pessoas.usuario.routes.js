@@ -3,9 +3,9 @@ const router = express.Router();
 const PessoasController = require("../pessoas.controller");
 
 /**
- * ================================
+ * 
  * ROTAS DE CONSULTA (GET)
- * ================================
+ * 
  */
 
 /**

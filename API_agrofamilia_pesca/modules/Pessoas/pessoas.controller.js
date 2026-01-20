@@ -95,7 +95,10 @@ class PessoasController {
 
     async createPessoa(req, res, next) {
         try {
-            const result = await PessoasService.createPessoa(req.body);
+            const result = await PessoasService.createPessoa(
+                req.body,
+                req.user
+            );
             return res.status(201).json(result);
         } catch (error) {
             console.error(error);
@@ -109,7 +112,11 @@ class PessoasController {
 
     async updatePessoa(req, res, next) {
         try {
-            const result = await PessoasService.updatePessoa(req.params.id, req.body);
+            const result = await PessoasService.updatePessoa(
+                req.params.id, 
+                req.body,
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.error(error);
@@ -123,7 +130,10 @@ class PessoasController {
 
     async deletePessoa(req, res, next) {
         try {
-            const result = await PessoasService.deletePessoa(req.params.id);
+            const result = await PessoasService.deletePessoa(
+                req.params.id,
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.error(error);
