@@ -130,7 +130,10 @@ class AssociadosController {
 
     async createAssociado(req, res, next) {
         try {
-            const result = await AssociadosService.createAssociado(req.body);
+            const result = await AssociadosService.createAssociado(
+                req.body,
+                req.user
+            );
             res.status(201).json(result);
         } catch (error) {
             console.log(error);
@@ -144,7 +147,11 @@ class AssociadosController {
 
     async updateAssociado(req, res, next) {
         try {
-            const result = await AssociadosService.updateAssociado(req.params.id, req.body);
+            const result = await AssociadosService.updateAssociado(
+                req.params.id, 
+                req.body,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -158,7 +165,10 @@ class AssociadosController {
 
     async deleteAssociado(req, res, next) {
         try {
-            const result = await AssociadosService.deleteAssociado(req.params.id);
+            const result = await AssociadosService.deleteAssociado(
+                req.params.id,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);

@@ -1,7 +1,10 @@
 const Erros = require("../../shared/errors/Errors");
-const { find, findByInterval, findByIdName, VerifyNivel, listUsers } = require("../../shared/Utils/findUtils");
+const BaseService = require("../../shared/base/BaseService");
+const AssociadosPolicy = require("./policies/associados.policy");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const AssociadosRepository = require("./associados.repository");
+const associadosRepository = require("./associados.repository");
+const { find, findByInterval, findByIdName } = require("../../shared/Utils/findUtils");
 
 /**
  * Camada de serviço responsável pela regra de negócio
@@ -18,39 +21,13 @@ class AssociadosService {
      */
 
     async findAllAssociados(user) {
-        return VerifyNivel({
-            user,
+        if (!AssociadosPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return await AssociadosRepository.findAllAssociados();
-            },
+        const result = await AssociadosRepository.findAllAssociados();
 
-            secretario: async function () {
-                return find(
-                    user.secretaria,
-                    AssociadosRepository.findByIdSecretaria
-                );
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.id,
-                    AssociadosRepository.findID_PESSOA
-                );
-
-                return find(
-                    associacao.ID,
-                    AssociadosRepository.findbyIdAssociacao
-                );
-            },
-
-            usuario: async function () {
-                return find(
-                    user.id,
-                    AssociadosRepository.findByIdPessoa
-                );
-            },
-        });
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
@@ -58,39 +35,16 @@ class AssociadosService {
      */
 
     async find(value, user) {
-        return VerifyNivel({
-            user,
+        if (!AssociadosPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return findByIdName(value,
-                    AssociadosRepository.findById,
-                    AssociadosRepository.findByName
-                );
-            },
+        const result = await findByIdName(value,
+            AssociadosRepository.findById,
+            AssociadosRepository.findByName
+        );
 
-            secretario: async function () {
-                const result = await findByIdName(value,
-                    AssociadosRepository.findById,
-                    AssociadosRepository.findByName
-                );
-
-                return listUsers(result, "ID_SECRETARIA", user.secretaria);
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.id,
-                    AssociadosRepository.findID_PESSOA
-                );
-
-                const result = await findByIdName(value,
-                    AssociadosRepository.findById,
-                    AssociadosRepository.findByName
-                );
-
-                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
-            },
-        });
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
@@ -98,39 +52,16 @@ class AssociadosService {
      */
 
     async findbyCaf(caf, user) {
-        return VerifyNivel({
-            user,
+        if (!AssociadosPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return find(
-                    caf,
-                    AssociadosRepository.findbyCaf
-                );
-            },
+        const result = await find(
+            caf,
+            AssociadosRepository.findbyCaf
+        );
 
-            secretario: async function () {
-                const result = await find(
-                    caf,
-                    AssociadosRepository.findbyCaf
-                );
-
-                return listUsers(result, "ID_SECRETARIA", user.secretaria);
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.id,
-                    AssociadosRepository.findID_PESSOA
-                );
-
-                const result = await find(
-                    caf,
-                    AssociadosRepository.findbyCaf
-                );
-
-                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
-            },
-        });
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
@@ -138,39 +69,16 @@ class AssociadosService {
      */
 
     async findbyDap(dap, user) {
-        return VerifyNivel({
-            user,
+        if (!AssociadosPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return find(
-                    dap,
-                    AssociadosRepository.findbyDap
-                );
-            },
+        const result = await find(
+            dap,
+            AssociadosRepository.findbyDap
+        );
 
-            secretario: async function () {
-                const result = await find(
-                    dap,
-                    AssociadosRepository.findbyDap
-                );
-
-                return listUsers(result, "ID_SECRETARIA", user.secretaria);
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.id,
-                    AssociadosRepository.findID_PESSOA
-                );
-
-                const result = await find(
-                    dap,
-                    AssociadosRepository.findbyDap
-                );
-
-                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
-            },
-        });
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
@@ -178,25 +86,16 @@ class AssociadosService {
      */
 
     async findbyAssociacao(associacao, user) {
-        return VerifyNivel({
-            user,
+        if (!AssociadosPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return find(
-                    associacao,
-                    AssociadosRepository.findbyAssociacao
-                );
-            },
+        const result = await find(
+            associacao,
+            AssociadosRepository.findbyAssociacao
+        );
 
-            secretario: async function () {
-                const result = await find(
-                    associacao,
-                    AssociadosRepository.findbyAssociacao
-                );
-
-                return listUsers(result, "ID_SECRETARIA", user.secretaria);
-            },
-        });
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
@@ -204,39 +103,16 @@ class AssociadosService {
      */
 
     async findbyData(data, user) {
-        return VerifyNivel({
-            user,
+        if (!AssociadosPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return find(
-                    data,
-                    AssociadosRepository.findbyDataCaf
-                );
-            },
+        const result = await find(
+            data,
+            AssociadosRepository.findbyDataCaf
+        );
 
-            secretario: async function () {
-                const result = await find(
-                    data,
-                    AssociadosRepository.findbyDataCaf
-                );
-
-                return listUsers(result, "ID_SECRETARIA", user.secretaria);
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.id,
-                    AssociadosRepository.findID_PESSOA
-                );
-
-                const result = await find(
-                    data,
-                    AssociadosRepository.findbyDataCaf
-                );
-
-                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
-            },
-        });
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
@@ -244,49 +120,37 @@ class AssociadosService {
      */
 
     async findByInicioFim(inicio, fim, user) {
-        return VerifyNivel({
-            user,
+        if (!AssociadosPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return findByInterval(
-                    inicio,
-                    fim,
-                    AssociadosRepository.findByInicioFimCaf
-                );
-            },
+        const result = await findByInterval(
+            inicio,
+            fim,
+            AssociadosRepository.findByInicioFimCaf
+        );
 
-            secretario: async function () {
-                const result = await findByInterval(
-                    inicio,
-                    fim,
-                    AssociadosRepository.findByInicioFimCaf
-                );
-
-                return listUsers(result, "ID_SECRETARIA", user.secretaria);
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.id,
-                    AssociadosRepository.findID_PESSOA
-                );
-
-                const result = await findByInterval(
-                    inicio,
-                    fim,
-                    AssociadosRepository.findByInicioFimCaf
-                );
-
-                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
-            },
-        });
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
      * Cria um associado após validar referências obrigatórias.
+     * 
+     * Formato passado no body:
+     * 
+     * {
+     *   "ID_PESSOA": "",
+     *   "ID_ASSOCIACAO": "",
+     *   "CAF": "",
+     *   "VALIDADE_CAF": "",
+     * }
+     * 
      */
 
-    async createAssociado(associado) {
+    async createAssociado(associado, user) {
+        if (!AssociadosPolicy.canPost(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
         // Lista de validações que devem ser aplicadas antes da inserção
         const validations = [
@@ -311,15 +175,40 @@ class AssociadosService {
 
     /**
      * Modifica um associado após validar referências obrigatórias.
+     * 
+     * Formato passado no body:
+     * 
+     * {
+     *   "ID_PESSOA": "",
+     *   "ID_ASSOCIACAO": "",
+     *   "CAF": "",
+     *   "VALIDADE_CAF": "",
+     * }
+     * 
      */
 
-    async updateAssociado(id, associado) {
+    async updateAssociado(id, associado, user) {
 
         // Verifica se existe antes de atualizar
-        const idAssociado = await AssociadosRepository.findById(id);
+        const idAssociado = await AssociadosRepository.findId(id);
 
         if (!idAssociado) {
             throw new Erros("ID invalido", 404);
+        };
+
+        const targetUser = await associadosRepository.findByIdPessoa(user.id);
+
+        // Solução provisória
+        const Alluser = {
+            id: user.id,
+            login: user.login,
+            nivel: user.nivel,
+            secretaria: user.secretaria,
+            associacao: targetUser?.ID_ASSOCIACAO
+        };
+
+        if (!AssociadosPolicy.canUpdate(Alluser, idAssociado)) {
+            throw new Erros("Acesso negado", 403);
         };
 
         // Lista de validações que devem ser aplicadas
@@ -347,13 +236,27 @@ class AssociadosService {
      * Deleta um associado após validar o id.
      */
 
-    async deleteAssociado(id) {
-
-        // Verifica se existe na tabela real antes de excluir
-        const idAssociado = await AssociadosRepository.findByIdDelete(id);
+    async deleteAssociado(id, user) {
+        // Verifica se existe antes de atualizar
+        const idAssociado = await AssociadosRepository.findId(id);
 
         if (!idAssociado) {
             throw new Erros("ID invalido", 404);
+        };
+
+        const targetUser = await associadosRepository.findByIdPessoa(user.id);
+
+        // Solução provisória
+        const Alluser = {
+            id: user.id,
+            login: user.login,
+            nivel: user.nivel,
+            secretaria: user.secretaria,
+            associacao: targetUser?.ID_ASSOCIACAO
+        };
+
+        if (!AssociadosPolicy.canUpdate(Alluser, idAssociado)) {
+            throw new Erros("Acesso negado", 403);
         };
 
         // Remove definitivamente

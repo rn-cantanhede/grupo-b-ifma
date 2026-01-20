@@ -29,6 +29,10 @@ class AssociadosRepository {
         return findBy("ID", id, false, table);
     };
 
+    findId(id) {
+        return findBy("ID", id, false, "view_associados");
+    };
+    
     /**
      * Busca pessoas pelo id da secretaria.
      */

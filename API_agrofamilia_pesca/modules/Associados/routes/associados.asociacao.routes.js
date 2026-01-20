@@ -20,9 +20,6 @@ router.get("/caf/:caf", AssociadosController.findCafAssociado);
 // Busca associados pelo número do DAP.
 router.get("/dap/:dap", AssociadosController.findDapAssociado);
 
-// Busca associados vinculados a uma associação específica.
-router.get("/associacao/:associacao", AssociadosController.findAssociacaoAssociado);
-
 // Busca associados cadastrados em uma data específica.
 router.get("/data/:data", AssociadosController.findDataAssociado);
 
