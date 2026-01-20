@@ -25,11 +25,11 @@ class UsuariosService {
     async findAllUsuarios(user) {
         if (!UsuarioPolicy.canGet(user)) {
             throw new Erros("Acesso negado", 403);
-        }
+        };
 
         const usuarios = await UsuariosRepository.findAllUsuarios();
         return BaseService.applyScope({ user, data: usuarios });
-    }
+    };
 
     /**
      * Busca usuário por ID ou Nome, respeitando a visibilidade do usuário.
@@ -37,7 +37,7 @@ class UsuariosService {
     async find(value, user) {
         if (!UsuarioPolicy.canGet(user)) {
             throw new Erros("Acesso negado", 403);
-        }
+        };
 
         const usuarios = await findByIdName(
             value,
@@ -46,7 +46,7 @@ class UsuariosService {
         );
 
         return BaseService.applyScope({ user, data: usuarios });
-    }
+    };
 
     /**
      * Lista usuários filtrando pelo nível.
@@ -54,11 +54,11 @@ class UsuariosService {
     async findByNivel(nivel, user) {
         if (!UsuarioPolicy.canGet(user)) {
             throw new Erros("Acesso negado", 403);
-        }
+        };
 
         const usuarios = await find(nivel, UsuariosRepository.findByNivel);
         return BaseService.applyScope({ user, data: usuarios });
-    }
+    };
 
     /**
      * Lista usuários filtrando pela secretaria.
@@ -66,11 +66,11 @@ class UsuariosService {
     async findBySecretaria(secretaria, user) {
         if (!UsuarioPolicy.canGet(user)) {
             throw new Erros("Acesso negado", 403);
-        }
+        };
 
         const usuarios = await UsuariosRepository.findBySecretaria(secretaria);
         return BaseService.applyScope({ user, data: usuarios });
-    }
+    };
 
     /**
      * Busca usuário pelo login.
@@ -78,11 +78,11 @@ class UsuariosService {
     async findByLogin(login, user) {
         if (!UsuarioPolicy.canGet(user)) {
             throw new Erros("Acesso negado", 403);
-        }
+        };
 
         const usuarios = await find(login, UsuariosRepository.findByLogin);
         return BaseService.applyScope({ user, data: usuarios });
-    }
+    };
 
     /**
      * Cria um novo usuário, aplicando validações e hash de senha.
@@ -118,7 +118,7 @@ class UsuariosService {
         usuario.SENHA = bcrypt.hashSync(usuario.SENHA, salt);
 
         return await UsuariosRepository.createUsuario(usuario);
-    }
+    };
 
     /**
      * Atualiza um usuário existente, aplicando validações e hash de senha se necessário.
@@ -156,10 +156,10 @@ class UsuariosService {
         if (usuario.SENHA) {
             const salt = bcrypt.genSaltSync(10);
             usuario.SENHA = bcrypt.hashSync(usuario.SENHA, salt);
-        }
+        };
 
         return await UsuariosRepository.updateUsuario(id, usuario);
-    }
+    };
 
     /**
      * Remove um usuário existente.
@@ -169,7 +169,7 @@ class UsuariosService {
         if (!idUsuario) throw new Erros("ID inexistente", 404);
 
         return await UsuariosRepository.deleteUsuario(id);
-    }
+    };
 
     /**
      * Autentica um usuário e retorna um token JWT válido por 1 dia.
@@ -187,17 +187,17 @@ class UsuariosService {
 
         if (!user || !bcrypt.compareSync(data.SENHA, user.SENHA)) {
             return { Error: 'Login ou senha inválidos' };
-        }
+        };
 
         const token = jwt.sign({
             id: user.ID_PESSOA,
             login: user.LOGIN,
             nivel: user.NIVEL,
             secretaria: user.ID_SECRETARIA
-        }, secret, { expiresIn: '1d' });
+        }, secret, { expiresIn: '7d' });
 
         return token;
-    }
-}
+    };
+};
 
 module.exports = new UsuariosService();
