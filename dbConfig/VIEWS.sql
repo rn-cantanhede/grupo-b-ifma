@@ -8,6 +8,14 @@ JOIN associacao ac ON ac.ID = a.ID_ASSOCIACAO
 JOIN agricultura_familiar af ON af.ID_ASSOCIADO = a.ID
 JOIN secretaria sec ON sec.ID = ac.ID_SECRETARIA;
 
+CREATE OR REPLACE VIEW view_associados AS
+SELECT a.ID, a.ID_PESSOA, a.CAF, a.VALIDADE_CAF, 
+ac.ID AS ID_ASSOCIACAO, ac.NOME AS ASSOCIACAO, 
+sec.ID AS ID_SECRETARIA, sec.NOME AS SECRETARIA
+FROM associado a
+JOIN associacao ac ON ac.ID = a.ID_ASSOCIACAO
+JOIN secretaria sec ON sec.ID = ac.ID_SECRETARIA;
+
 CREATE OR REPLACE VIEW view_associacoes AS
 SELECT ac.ID, ac.NOME, cat.NOME AS CATEGORIA, sec.ID AS ID_SECRETARIA, sec.NOME AS SECRETARIA
 FROM associacao ac
