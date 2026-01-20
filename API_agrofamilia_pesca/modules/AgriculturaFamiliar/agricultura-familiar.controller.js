@@ -89,7 +89,10 @@ class AgriculturaFamiliarController {
      */
     async createAgriculturaFamiliar(req, res, next) {
         try {
-            const result = await AgriculturaFamiliarService.createAgriculturaFamiliar(req.body);
+            const result = await AgriculturaFamiliarService.createAgriculturaFamiliar(
+                req.body,
+                req.user
+            );
             res.status(201).json(result);
         } catch (error) {
             console.log(error);
@@ -104,7 +107,8 @@ class AgriculturaFamiliarController {
         try {
             const result = await AgriculturaFamiliarService.updateAgriculturaFamiliar(
                 req.params.id,
-                req.body
+                req.body,
+                req.user
             );
             res.status(200).json(result);
         } catch (error) {
@@ -118,7 +122,10 @@ class AgriculturaFamiliarController {
      */
     async deleteAgriculturaFamiliar(req, res, next) {
         try {
-            const result = await AgriculturaFamiliarService.deleteAgriculturaFamiliar(req.params.id);
+            const result = await AgriculturaFamiliarService.deleteAgriculturaFamiliar(
+                req.params.id,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);

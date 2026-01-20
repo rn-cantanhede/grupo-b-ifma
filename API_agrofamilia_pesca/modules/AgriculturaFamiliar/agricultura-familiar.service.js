@@ -1,8 +1,10 @@
 const Erros = require("../../shared/errors/Errors");
-const { findByIdName, find, VerifyNivel, listUsers } = require("../../shared/Utils/findUtils");
+const BaseService = require("../../shared/base/BaseService");
+const AgriculturaPolicy = require("./policies/agricultura.policy");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
-const associacoesRepository = require("../Associacoes/associacoes.repository");
+const associadosRepository = require("../Associados/associados.repository");
 const AgriculturaFamiliarRepository = require("./agricultura-familiar.repository");
+const { findByIdName, find } = require("../../shared/Utils/findUtils");
 
 /**
  * Camada de serviço responsável pela regra de negócio
@@ -18,205 +20,96 @@ class AgriculturaFamiliarService {
      * Retorna todos os registros de agricultura familiar.
      */
     async findAllAgriculturaFamiliar(user) {
-        return VerifyNivel({
-            user,
+        if (!AgriculturaPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return await AgriculturaFamiliarRepository.findAllAgriculturaFamiliar();
-            },
+        const result = await AgriculturaFamiliarRepository.findAllAgriculturaFamiliar();
 
-            secretario: async function () {
-                return find(
-                    user.secretaria,
-                    AgriculturaFamiliarRepository.findByIdSecretaria
-                );
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.secretaria,
-                    associacoesRepository.findbyIdSecretaria
-                );
-
-                return find(
-                    associacao.ID,
-                    AgriculturaFamiliarRepository.findByIdAssociacao
-                );
-            },
-
-            usuario: async function () {
-                return find(
-                    user.id,
-                    AgriculturaFamiliarRepository.findByIdPessoa
-                );
-            },
-        });
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
      * Busca um registro por ID ou por nome.
      */
     async find(value, user) {
-        return VerifyNivel({
-            user,
+        if (!AgriculturaPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return findByIdName(
-                    value,
-                    AgriculturaFamiliarRepository.findById,
-                    AgriculturaFamiliarRepository.findByName
-                );
-            },
+        const result = await findByIdName(
+            value,
+            AgriculturaFamiliarRepository.findById,
+            AgriculturaFamiliarRepository.findByName
+        );
 
-            secretario: async function () {
-                const result = await findByIdName(
-                    value,
-                    AgriculturaFamiliarRepository.findById,
-                    AgriculturaFamiliarRepository.findByName
-                );
-
-                return listUsers(result, "ID_SECRETARIA", user.secretaria);
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.secretaria,
-                    associacoesRepository.findbyIdSecretaria
-                );
-
-                const result = await findByIdName(
-                    value,
-                    AgriculturaFamiliarRepository.findById,
-                    AgriculturaFamiliarRepository.findByName
-                );
-
-                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
-            },
-        });
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
      * Busca registros pelo número do CAF.
      */
     async findbyCaf(caf, user) {
-        return VerifyNivel({
-            user,
+        if (!AgriculturaPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return find(
-                    caf,
-                    AgriculturaFamiliarRepository.findbyCaf
-                );
-            },
+        const result = await find(
+            caf,
+            AgriculturaFamiliarRepository.findbyCaf
+        );
 
-            secretario: async function () {
-                const result = await find(
-                    caf,
-                    AgriculturaFamiliarRepository.findbyCaf
-                );
-
-                return listUsers(result, "ID_SECRETARIA", user.secretaria);
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.secretaria,
-                    associacoesRepository.findbyIdSecretaria
-                );
-
-                const result = await find(
-                    caf,
-                    AgriculturaFamiliarRepository.findbyCaf
-                );
-
-                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
-            },
-        });
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
      * Busca registros pelo número da DAP.
      */
     async findbyDap(dap, user) {
-        return VerifyNivel({
-            user,
+        if (!AgriculturaPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return find(
-                    dap,
-                    AgriculturaFamiliarRepository.findbyDap
-                );
-            },
+        const result = await find(
+            dap,
+            AgriculturaFamiliarRepository.findbyDap
+        );
 
-            secretario: async function () {
-                const result = await find(
-                    dap,
-                    AgriculturaFamiliarRepository.findbyDap
-                );
-
-                return listUsers(result, "ID_SECRETARIA", user.secretaria);
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.secretaria,
-                    associacoesRepository.findbyIdSecretaria
-                );
-
-                const result = await find(
-                    dap,
-                    AgriculturaFamiliarRepository.findbyDap
-                );
-
-                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
-            },
-        });
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
      * Busca registros vinculados a um programa específico.
      */
     async findbyPrograma(programa, user) {
-        return VerifyNivel({
-            user,
+        if (!AgriculturaPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return find(
-                    programa,
-                    AgriculturaFamiliarRepository.findbyPrograma
-                );
-            },
+        const result = await find(
+            programa,
+            AgriculturaFamiliarRepository.findbyPrograma
+        );
 
-            secretario: async function () {
-                const result = await find(
-                    programa,
-                    AgriculturaFamiliarRepository.findbyPrograma
-                );
-
-                return listUsers(result, "ID_SECRETARIA", user.secretaria);
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.secretaria,
-                    associacoesRepository.findbyIdSecretaria
-                );
-
-                const result = await find(
-                    programa,
-                    AgriculturaFamiliarRepository.findbyPrograma
-                );
-
-                return listUsers(result, "ID_ASSOCIACAO", associacao.ID);
-            },
-        });
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
      * Cria um novo registro de agricultura familiar.
+     * 
+     * Formato passado no body:
+     * 
+     * {
+     *   "ID_ASSOCIADO": "",
+     *   "ID_PROGRAMA": "",
+     *   "DAP": ""
+     * }
+     * 
      */
-    async createAgriculturaFamiliar(data) {
-
+    async createAgriculturaFamiliar(data, user) {
+        if (!AgriculturaPolicy.canPost(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
         // Lista de validações que devem ser aplicadas antes da inserção
         const validations = [
             {
@@ -240,14 +133,37 @@ class AgriculturaFamiliarService {
 
     /**
      * Atualiza um registro existente de agricultura familiar.
+     * 
+     * Formato passado no body:
+     * 
+     * {
+     *   "ID_ASSOCIADO": "",
+     *   "ID_PROGRAMA": "",
+     *   "DAP": ""
+     * }
+     * 
      */
-    async updateAgriculturaFamiliar(id, data) {
+    async updateAgriculturaFamiliar(id, data, user) {
 
         // Verifica se existe antes de atualizar
         const idAgri = await AgriculturaFamiliarRepository.findById(id);
 
         if (!idAgri) {
             throw new Erros("ID invalido", 404);
+        };
+
+        const targetUser = await associadosRepository.findByIdPessoa(user.id);
+
+        const Alluser = {
+            id: user.id,
+            login: user.login,
+            nivel: user.nivel,
+            secretaria: user.secretaria,
+            associacao: targetUser?.ID_ASSOCIACAO
+        };
+
+        if (!AgriculturaPolicy.canUpdate(Alluser, idAgri)) {
+            throw new Erros("Acesso negado", 403);
         };
 
         // Lista de validações que devem ser aplicadas
@@ -274,13 +190,27 @@ class AgriculturaFamiliarService {
     /**
      * Remove um registro de agricultura familiar.
      */
-    async deleteAgriculturaFamiliar(id) {
+    async deleteAgriculturaFamiliar(id, user) {
 
         // Verifica se existe na tabela real antes de excluir
-        const idAgri = await AgriculturaFamiliarRepository.findByIdDelete(id);
+        const idAgri = await AgriculturaFamiliarRepository.findById(id);
 
         if (!idAgri) {
             throw new Erros("ID invalido", 404);
+        };
+
+        const targetUser = await associadosRepository.findByIdPessoa(user.id);
+
+        const Alluser = {
+            id: user.id,
+            login: user.login,
+            nivel: user.nivel,
+            secretaria: user.secretaria,
+            associacao: targetUser?.ID_ASSOCIACAO
+        };
+
+        if (!AgriculturaPolicy.canDelete(Alluser, idAgri)) {
+            throw new Erros("Acesso negado", 403);
         };
 
         // Remove definitivamente
