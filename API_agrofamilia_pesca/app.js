@@ -28,12 +28,12 @@ app.use(express.json());
  * Configura o gerenciamento de sessão da aplicação. 
  */
 app.use(session({
-    name: "teste",
-    secret: "Teste",
+    name: "__Host-auth",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 300000
+        maxAge: 1000 * 60 * 60
     }
 }));
 
