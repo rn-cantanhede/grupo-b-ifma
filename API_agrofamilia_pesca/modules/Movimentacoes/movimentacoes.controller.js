@@ -13,7 +13,7 @@ class MovimentacoesController {
 
     async AllMovimentacoes(req, res) {
         try {
-            const movimentacoes = await MovimentacoesService.findAllMovimentacoesuser(req.user);
+            const movimentacoes = await MovimentacoesService.findAllMovimentacoes(req.user);
             return res.status(200).json(movimentacoes);
         } catch (error) {
             console.log(error);
@@ -113,7 +113,10 @@ class MovimentacoesController {
 
     async createMovimentacao(req, res, next) {
         try {
-            const result = await MovimentacoesService.createMovimentacao(req.body);
+            const result = await MovimentacoesService.createMovimentacao(
+                req.body,
+                req.user
+            );
             res.status(201).json(result);
         } catch (error) {
             console.log(error);
@@ -129,7 +132,8 @@ class MovimentacoesController {
         try {
             const result = await MovimentacoesService.updateMovimentacao(
                 req.params.id,
-                req.body
+                req.body,
+                req.user
             );
             res.status(200).json(result);
         } catch (error) {
@@ -144,7 +148,10 @@ class MovimentacoesController {
 
     async deleteMovimentacao(req, res, next) {
         try {
-            const result = await MovimentacoesService.deleteMovimentacao(req.params.id);
+            const result = await MovimentacoesService.deleteMovimentacao(
+                req.params.id,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);

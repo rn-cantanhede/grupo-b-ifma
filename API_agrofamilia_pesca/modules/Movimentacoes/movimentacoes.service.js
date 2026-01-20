@@ -1,8 +1,10 @@
 const Erros = require("../../shared/errors/Errors");
-const { find, findByInterval, VerifyNivel, convertString, listUsers } = require("../../shared/Utils/findUtils");
+const BaseService = require("../../shared/base/BaseService");
+const MovimentacoesPolicy = require("./policies/movimentacoes.policy");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
-const associacoesRepository = require("../Associacoes/associacoes.repository");
 const MovimentacoesRepository = require("./movimentacoes.repository");
+const associadosRepository = require("../Associados/associados.repository");
+const { find, findByInterval, convertString } = require("../../shared/Utils/findUtils");
 
 /**
  * Camada de serviço responsável pela regra de negócio
@@ -18,40 +20,14 @@ class MovimentacoesService {
      * Retorna todas as movimentações registradas.
      */
 
-    async findAllMovimentacoesuser(user) {
-        return VerifyNivel({
-            user,
+    async findAllMovimentacoes(user) {
+        if (!MovimentacoesPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return await MovimentacoesRepository.findAllMovimentacoes();
-            },
+        const result = await MovimentacoesRepository.findAllMovimentacoes();
 
-            secretario: async function () {
-                return await find(
-                    user.secretaria,
-                    MovimentacoesRepository.findByIdSecretaria()
-                );
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.secretaria,
-                    associacoesRepository.findbyIdSecretaria
-                );
-
-                return await find(
-                    associacao.ID,
-                    MovimentacoesRepository.findByIdSecretaria
-                );
-            },
-
-            usuario: async function () {
-                return await find(
-                    user.id,
-                    MovimentacoesRepository.findByIdPessoa
-                );
-            },
-        });
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
@@ -59,60 +35,16 @@ class MovimentacoesService {
      */
 
     async findById(id, user) {
-        // Valida se o valor recebido é numérico antes de realizar a busca.
-        return VerifyNivel({
-            user,
+        if (!MovimentacoesPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                if (!isNaN(id)) {
-                    return find(
-                        id,
-                        MovimentacoesRepository.findById
-                    );
-                };
-                throw new Erros("Apenas Id's", 403);
-            },
+        const result = await find(
+            id,
+            MovimentacoesRepository.findById
+        );
 
-            secretario: async function () {
-                if (isNaN(id)) {
-                    throw new Erros("Apenas Id's", 403);
-                };
-
-                const result = await find(
-                    id,
-                    MovimentacoesRepository.findById
-                );
-
-                return listUsers(result, "ID_SECRETARIA", user.secretaria);
-            },
-
-            associacao: async function () {
-                if (isNaN(id)) {
-                    throw new Erros("Apenas Id's", 403);
-                };
-
-                const associacao = await find(
-                    user.secretaria,
-                    associacoesRepository.findbyIdSecretaria
-                );
-
-                const result = await find(
-                    id,
-                    MovimentacoesRepository.findById
-                );
-
-                return await listUsers(result, "ID_ASSOCIACAO", associacao.ID);
-            },
-
-            usuario: async function () {
-                const result = await find(
-                    id,
-                    MovimentacoesRepository.findById
-                );
-
-                return await listUsers(result, "ID_PESSOA", user.id);
-            },
-        });
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
@@ -120,48 +52,16 @@ class MovimentacoesService {
      */
 
     async findbyDap(dap, user) {
-        return VerifyNivel({
-            user,
+        if (!MovimentacoesPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return find(
-                    dap,
-                    MovimentacoesRepository.findbyDap
-                );
-            },
+        const result = await find(
+            dap,
+            MovimentacoesRepository.findbyDap
+        );
 
-            secretario: async function () {
-                const result = await find(
-                    dap,
-                    MovimentacoesRepository.findbyDap
-                );
-
-                return listUsers(result, "ID_SECRETARIA", user.secretaria);
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.secretaria,
-                    associacoesRepository.findbyIdSecretaria
-                );
-
-                const result = await find(
-                    dap,
-                    MovimentacoesRepository.findbyDap
-                );
-
-                return await listUsers(result, "ID_ASSOCIACAO", associacao.ID);
-            },
-
-            usuario: async function () {
-                const result = await find(
-                    dap,
-                    MovimentacoesRepository.findbyDap
-                );
-
-                return await listUsers(result, "ID_PESSOA", user.id);
-            },
-        });
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
@@ -169,48 +69,16 @@ class MovimentacoesService {
      */
 
     async findbyProduto(produto, user) {
-        return VerifyNivel({
-            user,
+        if (!MovimentacoesPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return find(
-                    convertString(produto),
-                    MovimentacoesRepository.findbyProduto
-                );
-            },
+        const result = await find(
+            convertString(produto),
+            MovimentacoesRepository.findbyProduto
+        );
 
-            secretario: async function () {
-                const result = await find(
-                    convertString(produto),
-                    MovimentacoesRepository.findbyProduto
-                );
-
-                return listUsers(result, "ID_SECRETARIA", user.secretaria);
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.secretaria,
-                    associacoesRepository.findbyIdSecretaria
-                );
-
-                const result = await find(
-                    convertString(produto),
-                    MovimentacoesRepository.findbyProduto
-                );
-
-                return await listUsers(result, "ID_ASSOCIACAO", associacao.ID);
-            },
-
-            usuario: async function () {
-                const result = await find(
-                    convertString(produto),
-                    MovimentacoesRepository.findbyProduto
-                );
-
-                return await listUsers(result, "ID_PESSOA", user.id);
-            },
-        });
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
@@ -218,48 +86,16 @@ class MovimentacoesService {
      */
 
     async findbyData(data, user) {
-        return VerifyNivel({
-            user,
+        if (!MovimentacoesPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return find(
-                    data,
-                    MovimentacoesRepository.findbyData
-                );
-            },
+        const result = await find(
+            data,
+            MovimentacoesRepository.findbyData
+        );
 
-            secretario: async function () {
-                const result = await find(
-                    data,
-                    MovimentacoesRepository.findbyData
-                );
-
-                return listUsers(result, "ID_SECRETARIA", user.secretaria);
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.secretaria,
-                    associacoesRepository.findbyIdSecretaria
-                );
-
-                const result = await find(
-                    data,
-                    MovimentacoesRepository.findbyData
-                );
-
-                return await listUsers(result, "ID_ASSOCIACAO", associacao.ID);
-            },
-
-            usuario: async function () {
-                const result = await find(
-                    data,
-                    MovimentacoesRepository.findbyData
-                );
-
-                return await listUsers(result, "ID_PESSOA", user.id);
-            },
-        });
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
@@ -267,59 +103,41 @@ class MovimentacoesService {
      */
 
     async findByInicioFim(inicio, fim, user) {
-        return VerifyNivel({
-            user,
+        if (!MovimentacoesPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return findByInterval(
-                    inicio,
-                    fim,
-                    MovimentacoesRepository.findByInicioFim
-                );
-            },
+        const result = await findByInterval(
+            inicio,
+            fim,
+            MovimentacoesRepository.findByInicioFim
+        );
 
-            secretario: async function () {
-                const result = await findByInterval(
-                    inicio,
-                    fim,
-                    MovimentacoesRepository.findByInicioFim
-                );
-
-                return listUsers(result, "ID_SECRETARIA", user.secretaria);
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.secretaria,
-                    associacoesRepository.findbyIdSecretaria
-                );
-
-                const result = await findByInterval(
-                    inicio,
-                    fim,
-                    MovimentacoesRepository.findByInicioFim
-                );
-
-                return await listUsers(result, "ID_ASSOCIACAO", associacao.ID);
-            },
-
-            usuario: async function () {
-                const result = await findByInterval(
-                    inicio,
-                    fim,
-                    MovimentacoesRepository.findByInicioFim
-                );
-
-                return await listUsers(result, "ID_PESSOA", user.id);
-            },
-        });
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
      * Cria uma nova movimentação de produto.
+     * 
+     * Formato passado no body:
+     * 
+     * {
+     *   "ID_LOCAL": "",
+     *   "ID_AGRICULTURA_FAMILIAR": "",
+     *   "ID_PRODUTO": "",
+     *   "QNT_PRODUZIDA": "",
+     *   "VLR_UNITARIO": "",
+     *   "DATA_MOVIMENTACAO": ""
+     * }
+     * 
      */
 
-    async createMovimentacao(movimentacao) {
+    async createMovimentacao(movimentacao, user) {
+        const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
+
+        if (!MovimentacoesPolicy.canPost(user, targetUser)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
         // Lista de validações que devem ser aplicadas antes da inserção
         const validations = [
@@ -351,15 +169,40 @@ class MovimentacoesService {
 
     /**
      * Atualiza uma movimentação existente.
+     * 
+     * Formato passado no body:
+     * 
+     * {
+     *   "ID_LOCAL": "",
+     *   "ID_AGRICULTURA_FAMILIAR": "",
+     *   "ID_PRODUTO": "",
+     *   "QNT_PRODUZIDA": "",
+     *   "VLR_UNITARIO": "",
+     *   "DATA_MOVIMENTACAO": ""
+     * }
+     * 
      */
 
-    async updateMovimentacao(id, movimentacao) {
-
+    async updateMovimentacao(id, movimentacao, user) {
         // Verifica existe antes de atualizar
         const idMovimentacao = await MovimentacoesRepository.findById(id);
 
         if (!idMovimentacao) {
             throw new Erros("ID invalido", 404);
+        };
+
+        const targetUser = await associadosRepository.findByIdPessoa(user.id);
+
+        const Alluser = {
+            id: user.id,
+            login: user.login,
+            nivel: user.nivel,
+            secretaria: user.secretaria,
+            associacao: targetUser?.ID_ASSOCIACAO
+        };
+
+        if (!MovimentacoesPolicy.canUpdate(Alluser, idMovimentacao)) {
+            throw new Erros("Acesso negado", 403);
         };
 
         // Lista de validações que devem ser aplicadas
@@ -378,9 +221,7 @@ class MovimentacoesService {
                 field: "ID_PRODUTO",
                 validation: MovimentacoesRepository.findID_PRODUTO,
                 errorMsg: "ID_PRODUTO invalido"
-            },
-            // { field: 'NOME', validationFn: (val) => val.length > 0, errorMessage: 'Nome do cliente é obrigatório' }, 
-            // // { field: 'EMAIL', validationFn: (val) => /\S+@\S+\.\S+/.test(val), errorMessage: 'Email inválido' },
+            }
         ];
 
         // Executa as validações
@@ -394,13 +235,26 @@ class MovimentacoesService {
      * Remove uma movimentação do sistema.
      */
 
-    async deleteMovimentacao(id) {
-
-        // Verifica se existe na tabela real antes de excluir
-        const idMovimentacao = await MovimentacoesRepository.findByIdDelete(id);
+    async deleteMovimentacao(id, user) {
+        // Verifica existe antes de atualizar
+        const idMovimentacao = await MovimentacoesRepository.findById(id);
 
         if (!idMovimentacao) {
-            throw new Erros("ID não existente", 404);
+            throw new Erros("ID invalido", 404);
+        };
+
+        const targetUser = await associadosRepository.findByIdPessoa(user.id);
+
+        const Alluser = {
+            id: user.id,
+            login: user.login,
+            nivel: user.nivel,
+            secretaria: user.secretaria,
+            associacao: targetUser?.ID_ASSOCIACAO
+        };
+
+        if (!MovimentacoesPolicy.canUpdate(Alluser, idMovimentacao)) {
+            throw new Erros("Acesso negado", 403);
         };
 
         // Remove definitivamente
