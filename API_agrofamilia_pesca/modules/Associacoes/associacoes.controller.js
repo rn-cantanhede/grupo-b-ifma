@@ -73,7 +73,10 @@ class AssociacoesController {
      */
     async createAssociacao(req, res, next) {
         try {
-            const result = await AssociacoesService.createAssociacao(req.body);
+            const result = await AssociacoesService.createAssociacao(
+                req.body,
+                req.user
+            );
             res.status(201).json(result);
         } catch (error) {
             console.log(error);
@@ -86,7 +89,11 @@ class AssociacoesController {
      */
     async updateAssociacao(req, res, next) {
         try {
-            const result = await AssociacoesService.updateAssociacao(req.params.id, req.body);
+            const result = await AssociacoesService.updateAssociacao(
+                req.params.id, 
+                req.body,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -99,7 +106,10 @@ class AssociacoesController {
      */
     async deleteAssociacao(req, res, next) {
         try {
-            const result = await AssociacoesService.deleteAssociacao(req.params.id);
+            const result = await AssociacoesService.deleteAssociacao(
+                req.params.id,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
