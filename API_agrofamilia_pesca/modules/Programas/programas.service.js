@@ -1,8 +1,9 @@
 const Erros = require("../../shared/errors/Errors");
-const { findByIdName, find, VerifyNivel, listUsers } = require("../../shared/Utils/findUtils");
+const { findByIdName } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
-const secretariasRepository = require("../Secretarias/secretarias.repository");
 const ProgramasRepository = require("./programas.repository");
+const ProgramasPolicy = require("./policies/programas.policy");
+const BaseService = require("../../shared/base/BaseService");
 
 /**
  * Camada de serviço responsável pela regra de negócio
@@ -15,289 +16,119 @@ const ProgramasRepository = require("./programas.repository");
 class ProgramasService {
 
     /**
-     * Retorna todos os programas disponíveis.
+     * Retorna todos os programas.
+     * O BaseService filtra o que o usuário não pode ver.
      */
-
-    /**
-     * O uso do VerifyNivel do jeito que está, não está otimizado
-     * modificação nas VIEWs do database resoveriam o problema.
-     */
-
     async findAllProgramas(user) {
-        return VerifyNivel({
+        if (!ProgramasPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
+
+        const result = await ProgramasRepository.findAllProgramas();
+
+        return BaseService.applyScope({
             user,
-
-            admin: async function () {
-                return await ProgramasRepository.findAllProgramas();
-            },
-
-            secretario: async function () {
-                const secretaria = await secretariasRepository.findById(user.secretaria);
-                return await ProgramasRepository.findbySecretaria(secretaria.NOME);
-            },
-
-            associacao: async function () {
-                const secretaria = await secretariasRepository.findById(user.secretaria);
-                return await ProgramasRepository.findbySecretaria(secretaria.NOME);
-            },
-
-            usuario: async function () {
-                const secretaria = await secretariasRepository.findById(user.secretaria);
-                return await ProgramasRepository.findbySecretaria(secretaria.NOME);
+            data: result,
+            mapping: {
+                secretaria: 'ID_SECRETARIA'
             },
         });
     };
 
     /**
-     * Busca um programa pelo valor informado.
-     * Se for numérico, busca por ID; caso contrário, busca por nome.
+     * Busca um programa. O BaseService garante que se ele achar um 
+     * ID que não pertence ao usuário, ele barra o acesso.
      */
-
     async find(value, user) {
-        return VerifyNivel({
-            user,
+        if (!ProgramasPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        }
 
-            admin: async function () {
-                return findByIdName(
-                    value,
-                    ProgramasRepository.findById,
-                    ProgramasRepository.findByName
-                );
-            },
+        const programa = await findByIdName(
+            value,
+            ProgramasRepository.findById,
+            ProgramasRepository.findByName
+        );
 
-            secretario: async function () {
-                const secretaria = await secretariasRepository.findById(user.secretaria);
-                const result = await findByIdName(
-                    value,
-                    ProgramasRepository.findById,
-                    ProgramasRepository.findByName
-                );
-
-                return listUsers(result, "SECRETARIA", secretaria.NOME);
-            },
-
-            associacao: async function () {
-                const secretaria = await secretariasRepository.findById(user.secretaria);
-                const result = await findByIdName(
-                    value,
-                    ProgramasRepository.findById,
-                    ProgramasRepository.findByName
-                );
-
-                return listUsers(result, "SECRETARIA", secretaria.NOME);
-            },
-
-            usuario: async function () {
-                const secretaria = await secretariasRepository.findById(user.secretaria);
-                const result = await findByIdName(
-                    value,
-                    ProgramasRepository.findById,
-                    ProgramasRepository.findByName
-                );
-
-                return listUsers(result, "SECRETARIA", secretaria.NOME);
-            },
-        });
+        return BaseService.applyScope({ user, data: programa });
     };
 
     /**
-     * Busca programas vinculados a uma secretaria específica.
+     * Cria um novo programa, aplicando validações e hash de senha.
+     * 
+     * Formato passado no body:
+     * 
+     * {
+     *  "NOME": "",
+     *   "DESCRICAO": "",
+     *   "DATA_INICIO": "",
+     *   "DATA_FIM": "",
+     *   "ORIGEM_RECURSO": "",
+     *   "VLR_REPASSE": "",
+     *   "ID_SECRETARIA": ""
+     * }
+     * 
      */
 
-    async findbySecretaria(secretaria, user) {
-        return VerifyNivel({
-            user,
+    async createPrograma(programa, user) {
+        if (!ProgramasPolicy.canPost(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return find(secretaria, ProgramasRepository.findbySecretaria);
-            },
-        });
-    };
+        if (user.nivel !== 1 && programa.ID_SECRETARIA !== user.secretaria) {
+            throw new Erros("Você só pode criar programas para sua secretaria", 403);
+        };
 
-    /**
-     * Busca programas filtrando pelo estado.
-     */
-
-    async findbyEstado(estado, user) {
-        return VerifyNivel({
-            user,
-
-            admin: async function () {
-                return find(estado, ProgramasRepository.findbyEstado);
-            },
-        });
-    };
-
-    /**
-     * Busca programas pela origem do recurso financeiro.
-     */
-
-    async findbyOrigemRecurso(recurso, user) {
-        return VerifyNivel({
-            user,
-
-            admin: async function () {
-                return find(recurso, ProgramasRepository.findbyOrigemRecurso);
-            },
-
-            secretario: async function () {
-                const secretaria = await secretariasRepository.findById(user.secretaria);
-                const result = await find(recurso, ProgramasRepository.findbyOrigemRecurso);
-
-                return listUsers(result, "SECRETARIA", secretaria.NOME);
-            },
-
-            associacao: async function () {
-                const secretaria = await secretariasRepository.findById(user.secretaria);
-                const result = await find(recurso, ProgramasRepository.findbyOrigemRecurso);
-
-                return listUsers(result, "SECRETARIA", secretaria.NOME);
-            },
-
-            usuario: async function () {
-                const secretaria = await secretariasRepository.findById(user.secretaria);
-                const result = await find(recurso, ProgramasRepository.findbyOrigemRecurso);
-
-                return listUsers(result, "SECRETARIA", secretaria.NOME);
-            },
-        });
-    };
-
-    /**
-     * Busca programas pela data de início.
-     */
-
-    async findbyDataInicio(data, user) {
-        return VerifyNivel({
-            user,
-
-            admin: async function () {
-                return find(data, ProgramasRepository.findbyDataInicio);
-            },
-
-            secretario: async function () {
-                const secretaria = await secretariasRepository.findById(user.secretaria);
-                const result = await find(data, ProgramasRepository.findbyDataInicio);
-
-                return listUsers(result, "SECRETARIA", secretaria.NOME);
-            },
-
-            associacao: async function () {
-                const secretaria = await secretariasRepository.findById(user.secretaria);
-                const result = await find(data, ProgramasRepository.findbyDataInicio);
-
-                return listUsers(result, "SECRETARIA", secretaria.NOME);
-            },
-
-            usuario: async function () {
-                const secretaria = await secretariasRepository.findById(user.secretaria);
-                const result = await find(data, ProgramasRepository.findbyDataInicio);
-
-                return listUsers(result, "SECRETARIA", secretaria.NOME);
-            },
-        });
-    };
-
-    /**
-     * Busca programas pela data de fim.
-     */
-
-    async findbyDataFim(data, user) {
-        return VerifyNivel({
-            user,
-
-            admin: async function () {
-                return find(data, ProgramasRepository.findbyDataFim);
-            },
-
-            secretario: async function () {
-                const secretaria = await secretariasRepository.findById(user.secretaria);
-                const result = await find(data, ProgramasRepository.findbyDataFim);
-
-                return listUsers(result, "SECRETARIA", secretaria.NOME);
-            },
-
-            associacao: async function () {
-                const secretaria = await secretariasRepository.findById(user.secretaria);
-                const result = await find(data, ProgramasRepository.findbyDataFim);
-
-                return listUsers(result, "SECRETARIA", secretaria.NOME);
-            },
-
-            usuario: async function () {
-                const secretaria = await secretariasRepository.findById(user.secretaria);
-                const result = await find(data, ProgramasRepository.findbyDataFim);
-
-                return listUsers(result, "SECRETARIA", secretaria.NOME);
-            },
-        });
-    };
-
-    /**
-     * Cria um novo programa após validar regras de negócio.
-     */
-
-    async createPrograma(programa) {
-
-        // Lista de validações que devem ser aplicadas antes da inserção
-        const validations = [
-            {
-                field: "ID_SECRETARIA",
-                validation: ProgramasRepository.findID_SECRETARIA,
-                errorMsg: "ID_SECRETARIA invalido"
-            },
-        ];
-
-        // Executa todas as validações definidas
-        await validationsUtils.validate(programa, validations);
-
-        // Insere o programa no banco de dados
+        await validationsUtils.validate(programa, []);
         return await ProgramasRepository.createPrograma(programa);
     };
 
     /**
-     * Atualiza um programa existente.
+     * Atualiza um programa existente, aplicando validações e hash de senha se necessário.
+     * 
+     * Formato passado no body:
+     * 
+     * {
+     *  "NOME": "",
+     *   "DESCRICAO": "",
+     *   "DATA_INICIO": "",
+     *   "DATA_FIM": "",
+     *   "ORIGEM_RECURSO": "",
+     *   "VLR_REPASSE": "",
+     *   "ID_SECRETARIA": ""
+     * }
+     * 
      */
 
-    async updatePrograma(id, programa) {
+    async updatePrograma(id, programa, user) {
+        const registroExistente = await ProgramasRepository.findById(id);
 
-        // Verifica se o programa existe antes de atualizar
-        const idPrograma = await ProgramasRepository.findById(id);
-
-        if (!idPrograma) {
+        if (!registroExistente) {
             throw new Erros("ID invalido", 404);
         };
 
-        // Valida se a secretaria informada é válida
-        const validations = [
-            {
-                field: "ID_SECRETARIA",
-                validation: ProgramasRepository.findID_SECRETARIA,
-                errorMsg: "ID_SECRETARIA invalido"
-            },
-        ];
+        if (!ProgramasPolicy.canUpdate(user, registroExistente)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-        // Executa as validações
-        await validationsUtils.validate(programa, validations);
-
-        // Atualiza o programa no banco
+        await validationsUtils.validate(programa, []);
         return await ProgramasRepository.updatePrograma(id, programa);
     };
 
     /**
-     * Remove um programa do banco de dados.
+     * Remove um programa existente.
      */
+    async deletePrograma(id, user) {
+        const registroExistente = await ProgramasRepository.findById(id);
 
-    async deletePrograma(id) {
-
-        // Verifica se o programa existe na tabela real antes de excluir
-        const idPrograma = await ProgramasRepository.findByIdDelete(id);
-
-        if (!idPrograma) {
+        if (!registroExistente) {
             throw new Erros("ID não existe", 404);
         };
 
-        // Remove definitivamente
+        if (!ProgramasPolicy.canDelete(user, registroExistente)) {
+            throw new Erros("Acesso negado", 403);
+        };
+
         return await ProgramasRepository.deletePrograma(id);
     };
 };

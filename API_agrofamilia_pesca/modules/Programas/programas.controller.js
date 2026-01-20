@@ -131,7 +131,10 @@ class ProgramasController {
 
     async createPrograma(req, res, next) {
         try {
-            const result = await ProgramasService.createPrograma(req.body);
+            const result = await ProgramasService.createPrograma(
+                req.body,
+                req.user
+            );
             return res.status(201).json(result);
         } catch (error) {
             console.log(error);
@@ -145,7 +148,11 @@ class ProgramasController {
 
     async updatePrograma(req, res, next) {
         try {
-            const result = await ProgramasService.updatePrograma(req.params.id, req.body);
+            const result = await ProgramasService.updatePrograma(
+                req.params.id, 
+                req.body,
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -159,7 +166,10 @@ class ProgramasController {
 
     async deletePrograma(req, res, next) {
         try {
-            const result = await ProgramasService.deletePrograma(req.params.id);
+            const result = await ProgramasService.deletePrograma(
+                req.params.id,
+                req.user
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);

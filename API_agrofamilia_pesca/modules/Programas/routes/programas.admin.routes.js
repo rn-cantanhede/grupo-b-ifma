@@ -3,9 +3,9 @@ const router = express.Router();
 const ProgramasController = require("../programas.controller");
 
 /**
- * ================================
+ *  
  * ROTAS DE CONSULTA (GET)
- * ================================
+ *  
  */
 
 //Rota responsável por listar todos os programas cadastrados.
@@ -54,9 +54,9 @@ router.get("/data-inicio/:data", ProgramasController.findDataInicioPrograma);
 router.get("/data-fim/:data", ProgramasController.findDataFimPrograma);
 
 /**
- * ================================
+ *  
  * ROTAS DE CRIAÇÃO (POST)
- * ================================
+ *  
  */
 
 /*
@@ -66,9 +66,9 @@ router.get("/data-fim/:data", ProgramasController.findDataFimPrograma);
 router.post("/new", ProgramasController.createPrograma);
 
 /**
- * ================================
+ *  
  * ROTAS DE ATUALIZAÇÃO (PUT)
- * ================================
+ *  
  */
 /*
  * Rota responsável por atualizar um programa existente
@@ -78,9 +78,9 @@ router.post("/new", ProgramasController.createPrograma);
 router.put("/update/:id", ProgramasController.updatePrograma);
 
 /**
- * ================================
+ *  
  * ROTAS DE REMOÇÃO (DELETE)
- * ================================
+ *  
  */
 
 /*
