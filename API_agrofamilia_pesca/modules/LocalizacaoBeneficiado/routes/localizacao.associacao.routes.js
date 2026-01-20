@@ -14,10 +14,6 @@ router.get("/", LocalizacaoBeneficiadoController.AllLocalizacoes);
 // Busca uma localização beneficiada por ID ou Nome.
 router.get("/:value", LocalizacaoBeneficiadoController.findLocalizacao);
 
-// Lista localizações beneficiadas filtrando
-// pelo nome da associação vinculada.
-router.get("/associacao/:associacao", LocalizacaoBeneficiadoController.findAssociacao);
-
 /**
  *  
  * ROTAS DE CRIAÇÃO (POST)

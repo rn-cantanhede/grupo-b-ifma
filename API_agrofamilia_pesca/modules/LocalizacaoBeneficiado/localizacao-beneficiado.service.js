@@ -1,8 +1,10 @@
 const Erros = require("../../shared/errors/Errors");
-const { findByIdName, find, VerifyNivel, listUsers } = require("../../shared/Utils/findUtils");
+const BaseService = require("../../shared/base/BaseService");
+const LocalizacaoPolicy = require("./policies/localizacao.policy");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const associadosRepository = require("../Associados/associados.repository");
 const LocalizacaoBeneficiadoRepository = require("./localizacao-beneficiado.repository");
+const { findByIdName, find, VerifyNivel, listUsers } = require("../../shared/Utils/findUtils");
 
 /**
  * Service responsável pela regra de negócio
@@ -20,39 +22,13 @@ class LocalizacaoBeneficiadoService {
      */
 
     async findAllLocalizacao(user) {
-        return VerifyNivel({
-            user,
+        if (!LocalizacaoPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return await LocalizacaoBeneficiadoRepository.findAllLocalizacao();
-            },
+        const result = await LocalizacaoBeneficiadoRepository.findAllLocalizacao();
 
-            secretario: async function () {
-                return find(
-                    user.secretaria,
-                    LocalizacaoBeneficiadoRepository.findByIdSecretaria
-                );
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.id,
-                    associadosRepository.findID_PESSOA
-                );
-
-                return find(
-                    associacao.ID,
-                    LocalizacaoBeneficiadoRepository.findbyIdAssociacao
-                );
-            },
-
-            usuario: async function () {
-                return find(
-                    user.id,
-                    LocalizacaoBeneficiadoRepository.findByIdPessoa
-                );
-            },
-        });
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
@@ -60,51 +36,17 @@ class LocalizacaoBeneficiadoService {
      */
 
     async find(value, user) {
-        return VerifyNivel({
-            user,
+        if (!LocalizacaoPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return findByIdName(
-                    value,
-                    LocalizacaoBeneficiadoRepository.findById,
-                    LocalizacaoBeneficiadoRepository.findByName
-                );
-            },
+        const result = await findByIdName(
+            value,
+            LocalizacaoBeneficiadoRepository.findById,
+            LocalizacaoBeneficiadoRepository.findByName
+        );
 
-            secretario: async function () {
-                const result = await findByIdName(
-                    value,
-                    LocalizacaoBeneficiadoRepository.findById,
-                    LocalizacaoBeneficiadoRepository.findByName
-                );
-
-                return listUsers(
-                    result, 
-                    "ID_SECRETARIA", 
-                    user.secretaria
-                );
-            },
-
-            associacao: async function () {
-                const associacao = await find(
-                    user.id,
-                    associadosRepository.findID_PESSOA
-                );
-
-                const result = await findByIdName(
-                    value,
-                    LocalizacaoBeneficiadoRepository.findById,
-                    LocalizacaoBeneficiadoRepository.findByName
-                );
-
-                return listUsers(
-                    result, 
-                    "ID_ASSOCIACAO", 
-                    associacao.ID
-                );
-            },
-        });
-
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
@@ -113,54 +55,39 @@ class LocalizacaoBeneficiadoService {
      */
 
     async findbyAssociacao(associacao, user) {
-        return VerifyNivel({
-            user,
+        if (!LocalizacaoPolicy.canGet(user)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
-            admin: async function () {
-                return find(
-                    associacao, 
-                    LocalizacaoBeneficiadoRepository.findbyAssociacao
-                );
-            },
+        const result = await find(
+            associacao,
+            LocalizacaoBeneficiadoRepository.findbyAssociacao
+        );
 
-            secretario: async function () {
-                const result = await find(
-                    associacao, 
-                    LocalizacaoBeneficiadoRepository.findbyAssociacao
-                );
-
-                return listUsers(
-                    result, 
-                    "ID_SECRETARIA", 
-                    user.secretaria
-                );
-            },
-
-            associacao: async function () {
-                const associacaoID = await find(
-                    user.id,
-                    associadosRepository.findID_PESSOA
-                );
-
-                const result = await find(
-                    associacao, 
-                    LocalizacaoBeneficiadoRepository.findbyAssociacao
-                );
-
-                return listUsers(
-                    result, 
-                    "ID_ASSOCIACAO", 
-                    associacaoID.ID
-                );
-            },
-        });
+        return BaseService.applyScope({ user, data: result });
     };
 
     /**
      * Cria uma nova localização beneficiada.
+     * 
+     * Formato passado no body:
+     * 
+     * {
+     *   "ID_ASSOCIADO": "",
+     *   "LATITUDE": "",
+     *   "LONGITUDE": "",
+     *   "TITULO": "",
+     *   "DESCRICAO": "",
+     * }
+     * 
      */
 
-    async createlocalizacao(localizacao) {
+    async createlocalizacao(localizacao, user) {
+        const targetUser = await LocalizacaoBeneficiadoRepository.findByIdSecretaria(user.secretaria);
+
+        if (!LocalizacaoPolicy.canPost(user, targetUser)) {
+            throw new Erros("Acesso negado", 403);
+        };
 
         // Lista de validações que devem ser aplicadas antes da inserção
         const validations = [
@@ -180,15 +107,49 @@ class LocalizacaoBeneficiadoService {
 
     /**
      * Atualiza uma localização beneficiada existente.
+     * 
+     * Formato passado no body:
+     * 
+     * {
+     *   "ID_ASSOCIADO": "",
+     *   "LATITUDE": "",
+     *   "LONGITUDE": "",
+     *   "TITULO": "",
+     *   "DESCRICAO": "",
+     * }
+     * 
      */
 
-    async updateLocalizacao(id, localizacao) {
-
+    async updateLocalizacao(id, localizacao, user) {
         // Verifica existe antes de atualizar
         const idLocalizacao = await LocalizacaoBeneficiadoRepository.findById(id);
 
         if (!idLocalizacao) {
             throw new Erros("ID invalido", 404);
+        };
+
+        const targetUser = await associadosRepository.findByIdPessoa(user.id);
+
+        const Alluser = {
+            id: user.id,
+            login: user.login,
+            nivel: user.nivel,
+            secretaria: user.secretaria,
+            associacao: targetUser?.ID_ASSOCIACAO
+        };
+
+        console.log("--- TESTE DE BATIMENTO ESTÁTICO ---");
+        console.log("TIPO do Alluser.associacao:", typeof Alluser.associacao, "VALOR:", Alluser.associacao);
+        console.log("TIPO do idLocalizacao.ID_ASSOCIACAO:", typeof idLocalizacao.ID_ASSOCIACAO, "VALOR:", idLocalizacao.ID_ASSOCIACAO);
+        console.log("COMPARAÇÃO (==):", Alluser.associacao == idLocalizacao.ID_ASSOCIACAO);
+
+        if (!LocalizacaoPolicy.canUpdate(Alluser, idLocalizacao)) {
+            console.log("POLICY REJEITOU O ACESSO!");
+            throw new Erros("Acesso negado", 403);
+        }
+
+        if (!LocalizacaoPolicy.canUpdate(Alluser, idLocalizacao)) {
+            throw new Erros("Acesso negado", 403);
         };
 
         // Lista de validações que devem ser aplicadas
@@ -211,13 +172,27 @@ class LocalizacaoBeneficiadoService {
      * Remove uma localização beneficiada.
      */
 
-    async deleteLocalizacao(id) {
+    async deleteLocalizacao(id, user) {
 
         // Verifica se o programa existe na tabela real antes de excluir
-        const idLocalizacao = await LocalizacaoBeneficiadoRepository.findByIdDelete(id);
+        const idLocalizacao = await LocalizacaoBeneficiadoRepository.findById(id);
 
         if (!idLocalizacao) {
             throw new Erros("ID não existente", 404);
+        };
+
+        const targetUser = await associadosRepository.findByIdPessoa(user.id);
+
+        const Alluser = {
+            id: user.id,
+            login: user.login,
+            nivel: user.nivel,
+            secretaria: user.secretaria,
+            associacao: targetUser?.ID_ASSOCIACAO
+        };
+
+        if (!LocalizacaoPolicy.canDelete(Alluser, idLocalizacao)) {
+            throw new Erros("Acesso negado", 403);
         };
 
         // Remove definitivamente

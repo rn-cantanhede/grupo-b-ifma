@@ -65,7 +65,10 @@ class LocalizacaoBeneficiadoController {
 
     async createlocalizacao(req, res, next) {
         try {
-            const result = await LocalizacaoBeneficiadoService.createlocalizacao(req.body);
+            const result = await LocalizacaoBeneficiadoService.createlocalizacao(
+                req.body,
+                req.user
+            );
             res.status(201).json(result);
         } catch (error) {
             console.log(error);
@@ -79,7 +82,11 @@ class LocalizacaoBeneficiadoController {
 
     async updateLocalizacao(req, res, next) {
         try {
-            const result = await LocalizacaoBeneficiadoService.updateLocalizacao(req.params.id, req.body);
+            const result = await LocalizacaoBeneficiadoService.updateLocalizacao(
+                req.params.id, 
+                req.body,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -93,7 +100,10 @@ class LocalizacaoBeneficiadoController {
 
     async deleteLocalizacao(req, res, next) {
         try {
-            const result = await LocalizacaoBeneficiadoService.deleteLocalizacao(req.params.id);
+            const result = await LocalizacaoBeneficiadoService.deleteLocalizacao(
+                req.params.id,
+                req.user
+            );
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
