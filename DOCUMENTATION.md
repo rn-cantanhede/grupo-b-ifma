@@ -273,7 +273,7 @@ Registro de beneficiários em programas.
 - Desenvolvedor: Renã Cantanhede
 - LinkedIn: https://www.linkedin.com/in/rn-cantanhede
 - GitHub: https://github.com/rn-cantanhede
-- Instagram: [https://www.linkedin.com/in/rn-cantanhede](https://www.instagram.com/rn.cantanhede/)
+- Instagram: https://www.instagram.com/rn.cantanhede/
 - Propósito: Projeto desenvolvido como parte de um curso de back-end com Node.js.
 
 ---
