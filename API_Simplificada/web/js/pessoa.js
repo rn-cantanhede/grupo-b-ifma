@@ -101,10 +101,10 @@ async function getAgriculturaFamiliar(id) {
     return result;
 };
 
-function total(result){
+function total(result) {
     const totalId = document.getElementById("total");
     const total = parseFloat(result.QNT_PRODUZIDA * result.VLR_UNITARIO);
-    
+
     totalId.innerHTML = total;
 };
 
@@ -133,7 +133,7 @@ function setDados(idTable, columns, result) {
         } else {
             display = raw == null ? "" : String(raw);
         };
-        
+
         value.textContent = display;
     });
 };

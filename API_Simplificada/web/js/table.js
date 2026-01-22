@@ -13,7 +13,37 @@ const routeAPI = {
     },
     "tipos-produtos": {
         link: true,
-        html: "produtos.html",
+        html: "tipo.html",
+        param: "id"
+    },
+    produtos: {
+        link: true,
+        html: "produto.html",
+        param: "id"
+    },
+    associacoes: {
+        link: true,
+        html: "associacao.html",
+        param: "id"
+    },
+    associados: {
+        link: true,
+        html: "pessoa.html",
+        param: "id"
+    },
+    movimentacoes: {
+        link: true,
+        html: "movimentacao.html",
+        param: "id"
+    },
+    secretarias: {
+        link: true,
+        html: "secretaria.html",
+        param: "id"
+    },
+    programas: {
+        link: true,
+        html: "programa.html",
         param: "id"
     },
 };
@@ -162,7 +192,7 @@ async function getSecretarias() {
 };
 
 async function getProdutos() {
-    setActiveTab("produdos");
+    setActiveTab("produtos");
 
     const columns = [
         { key: "ID", formatter: null },
@@ -185,18 +215,53 @@ async function getTiposProduto() {
 };
 
 
+const tabFunctions = {
+    "agricultura-familiar": getAgriculturaFamiliar,
+    "pessoas": getPessoas,
+    "associacoes": getAssociacoes,
+    "associados": getAssociados,
+    "categorias": getCategorias,
+    "localizacoes": getLocalizacoes,
+    "produtos": getProdutos,
+    "movimentacoes": getMovimentacoes,
+    "programas": getProgramas,
+    "secretarias": getSecretarias,
+    "tipos-produtos": getTiposProduto
+};
+
 function setActiveTab(activeTab) {
-    const tabs = ["agricultura-familiar", "pessoas", "associacoes",
-        "associados", "categorias", "localizacoes", "movimentacoes",
-        "produdos", "programas", "secretarias", "tipos-produtos"];
+    const tabs = Object.keys(tabFunctions);
 
     tabs.forEach(tab => {
+        // Sidebar marker
         const tabElement = document.getElementById(tab);
-        tabElement.classList.remove("active");
+        if (tabElement) tabElement.classList.remove("active");
+
+        // Dropdown marker
+        const dropdownItems = document.querySelectorAll(`.dropdown-item[href*="tab=${tab}"]`);
+        dropdownItems.forEach(item => item.classList.remove("active"));
     });
 
-    document.getElementById(activeTab).classList.add("active");
-};
+    // Sidebar marker
+    const activeEl = document.getElementById(activeTab);
+    if (activeEl) activeEl.classList.add("active");
+
+    // Dropdown marker
+    const activeDropdownItems = document.querySelectorAll(`.dropdown-item[href*="tab=${activeTab}"]`);
+    activeDropdownItems.forEach(item => item.classList.add("active"));
+}
+
+function loadTabFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab");
+
+    if (tab && tabFunctions[tab]) {
+        tabFunctions[tab]();
+    } else {
+        // Default
+        getAgriculturaFamiliar();
+    }
+}
 
 async function createTable(endpoint, columns) {
 
@@ -204,9 +269,17 @@ async function createTable(endpoint, columns) {
     const list = document.getElementById("data");
     list.textContent = "";
 
+    // Set Table Title
+    const titleEl = document.getElementById("table-title");
+    const menuItem = document.getElementById(endpoint);
+    if (titleEl && menuItem) {
+        titleEl.innerText = menuItem.innerText.trim();
+    }
+
     createHead(columns);
 
     const body = document.createElement("tbody");
+    body.classList.add("table-group-divider");
 
     data.forEach(item => {
         const row = createRow(item, columns, endpoint);
@@ -235,6 +308,22 @@ function createRow(data, columns, endpoint) {
     if (data) {
         row.setAttribute("id", data.ID);
 
+        const route = routeAPI[endpoint];
+        if (route && route.link) {
+            const id = data.ID || "";
+            row.style.cursor = "pointer";
+            row.setAttribute('tabindex', '0');
+            row.addEventListener('click', () => {
+                const targetUrl = new URL(`${route.html}?${route.param}=${encodeURIComponent(id)}`, location.href).href;
+                window.open(targetUrl, '_blank');
+            });
+            row.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const targetUrl = new URL(`${route.html}?${route.param}=${encodeURIComponent(id)}`, location.href).href;
+                    window.open(targetUrl, '_blank');
+                }
+            });
+        }
         columns.forEach(column => {
             let value = data[column.key];
 
@@ -270,6 +359,7 @@ function createCell(tag, value, header = false, tbody = false, id, endpoint) {
 
         link.setAttribute("class", "nav-link");
         link.setAttribute("href", `${html}?${param}=${id}`);
+        link.setAttribute("target", "_blank");
         link.textContent = value;
         cell.appendChild(link);
     } else {

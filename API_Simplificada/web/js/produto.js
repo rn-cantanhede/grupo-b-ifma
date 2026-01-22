@@ -13,7 +13,7 @@ const routeAPI = {
     },
     "tipos-produtos": {
         link: true,
-        html: "tipos-de-produtos.html",
+        html: "tipo.html",
         param: "id"
     },
 };
@@ -36,7 +36,14 @@ function getValueUrl() {
 
 async function getAll() {
     const id = getValueUrl();
-    const tipo_produto = getTipoProduto(id);
+    if (id) {
+        const produto = await getProduto(id);
+        const nome = produto && (produto.NOME || produto.nome);
+        if (nome) await getMovimentacoesByProduto(nome);
+        return;
+    }
+
+    const tipo_produto = getTipoProduto();
     const produto = getProdutos();
 };
 
@@ -55,24 +62,71 @@ async function getTipoProduto(id) {
 };
 
 async function getMovimentacoes(dap) {
-    const idTable = ["produdo", "produzida", "unitario", "movimentacao"];
+    // legacy - not used; prefer getMovimentacoesByProduto
+}
+
+async function getProduto(id) {
+    const idTable = ["prod_id", "prod_nome", "prod_tipo"];
     const columns = [
-        { key: "PRODUTO", formatter: null },
-        { key: "QNT_PRODUZIDA", formatter: null },
-        { key: "VLR_UNITARIO", formatter: null },
-        { key: "DATA_MOVIMENTACAO", formatter: value => value.split("T")[0] },
+        { key: "ID", formatter: null },
+        { key: "NOME", formatter: null },
+        { key: "TIPO_DO_PRODUTO", formatter: null },
     ];
-    const result = await getMethode(`movimentacoes/dap/${dap}`);
 
+    const result = await getMethode(`produtos/${id}`);
     setDados(idTable, columns, result);
-    total(result);
-
     return result;
+}
+
+async function getMovimentacoesByProduto(produtoName) {
+    try {
+        const resultado = await getMethode(`movimentacoes/produto/${encodeURIComponent(produtoName)}`);
+        renderMovimentacoes(resultado);
+        return resultado;
+    } catch (err) {
+        console.log('Erro ao buscar movimentacoes por produto', err);
+    }
+}
+
+function renderMovimentacoes(data) {
+    const tbody = document.getElementById('movimentos-body');
+    if (!tbody) return;
+    tbody.textContent = '';
+    if (!data) return;
+    const list = Array.isArray(data) ? data : [data];
+    list.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.style.cursor = 'pointer';
+        tr.setAttribute('tabindex', '0');
+        tr.addEventListener('click', () => {
+            const targetUrl = new URL(`movimentacao.html?id=${encodeURIComponent(item.ID)}`, location.href).href;
+            window.location.href = targetUrl;
+        });
+        tr.addEventListener('keydown', (e) => { if (e.key === 'Enter') { const targetUrl = new URL(`movimentacao.html?id=${encodeURIComponent(item.ID)}`, location.href).href; window.location.href = targetUrl; } });
+
+        const cols = [
+            item.ID || '',
+            item.DAP || '',
+            item.QNT_PRODUZIDA == null ? '' : item.QNT_PRODUZIDA,
+            item.VLR_UNITARIO == null ? '' : item.VLR_UNITARIO,
+            item.DATA_MOVIMENTACAO ? item.DATA_MOVIMENTACAO.split('T')[0] : '',
+            item.LATITUDE || '',
+            item.LONGITUDE || ''
+        ];
+
+        cols.forEach(c => {
+            const td = document.createElement('td');
+            td.textContent = c;
+            tr.appendChild(td);
+        });
+
+        tbody.appendChild(tr);
+    });
 };
 
 
 async function getProdutos() {
-     const columns = [
+    const columns = [
         { key: "ID", formatter: null },
         { key: "NOME", formatter: null },
     ];
@@ -105,7 +159,7 @@ function setDados(idTable, columns, result) {
         } else {
             display = raw == null ? "" : String(raw);
         };
-        
+
         value.textContent = display;
     });
 };
