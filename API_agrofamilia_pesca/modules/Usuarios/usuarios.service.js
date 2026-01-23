@@ -185,8 +185,26 @@ class UsuariosService {
     async login(data) {
         const user = await UsuariosRepository.login(data);
 
-        if (!user || !bcrypt.compareSync(data.SENHA, user.SENHA)) {
-            return { Error: 'Login ou senha inválidos' };
+        if (!user) {
+            throw new Erros('Login ou senha inválidos', 401);
+        };
+        
+        // Caso já está em hash
+        if (typeof user.SENHA === "string" && user.SENHA.startsWith("$2")) {
+            if (!bcrypt.compareSync(data.SENHA, user.SENHA)) {
+                throw new Erros('Login ou senha inválidos', 401);   
+            };
+
+        } else { //Caso a senha ainda esteja em texto puro
+            if (data.SENHA !== user.SENHA) {
+                throw new Erros('Login ou senha inválidos', 401);
+            };
+            
+            // Gera hash e atualiza no banco
+            const salt = bcrypt.genSaltSync(10);
+            const hashedPassword = bcrypt.hashSync(data.SENHA, salt);
+            
+            await UsuariosRepository.updateUsuario(user.ID, ({ SENHA: hashedPassword }) );
         };
 
         const token = jwt.sign({
