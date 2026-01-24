@@ -26,6 +26,7 @@ router.get("/login/:login", UsuariosController.findByLogin);
  */
 
 // Cria um novo usuario.
+router.post("/new", UsuariosController.createUsuario);
 
 
 /**
@@ -33,11 +34,13 @@ router.get("/login/:login", UsuariosController.findByLogin);
  */
 
 // Atualiza um usuario existente.
+router.put("/update/:id", UsuariosController.updateUsuario);
 
 /**
  * ROTAS DE REMOÇÃO (DELETE)
  */
 
 // Remove um usuario existente.
+router.delete("/delete/:id", UsuariosController.deleteUsuario);
 
 module.exports = router;
