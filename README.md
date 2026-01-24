@@ -1,75 +1,268 @@
-# Agrofamília Pesca (Grupo B)
+# **Agro Família Pesca (Grupo B)**
 
-Bem-vindo ao repositório do **Agrofamília Pesca**, um projeto desenvolvido para auxiliar a **Secretaria de Agricultura e Pesca** e associações locais no gerenciamento de dados de produtores e pescadores.
+Sistema de Gerenciamento da **Agricultura Familiar e Pesca Artesanal**, desenvolvido para apoiar Secretarias Municipais e Associações no controle de produtores, programas governamentais e movimentações produtivas.
 
-Este projeto nasceu como parte de um **curso de especialização em Back-end com Node.js**, desenvolvido pela equipe do **Grupo B**, sendo pioneiro em sua proposta para a região.
+Projeto acadêmico desenvolvido no **IFMA** como parte do curso de **Especialização em Back-end com Node.js**.
 
-## 🎯 Objetivo e Contexto
+## **Objetivo do Projeto**
 
-O sistema visa modernizar e facilitar o controle administrativo da Secretaria e Associações, sendo uma ferramenta para:
-- Gerenciar o cadastro e acesso de produtores rurais e pescadores.
-- Controlar informações vitais para o apoio à agricultura familiar e pesca artesanal.
-- Servir de base experimental para futuras implementações tecnológicas no setor público municipal.
+O **Agro Família Pesca** tem como objetivo centralizar e organizar dados relacionados à agricultura familiar e pesca artesanal, oferecendo:
 
-Atualmente, o foco do sistema é o **Gerenciamento de Acesso e Controle de Entidades (CRUD)**, garantindo que as informações base estejam seguras e organizadas.
+* Controle de acesso por nível de usuário
 
-## 🚀 Estrutura do Repositório
+* Segurança institucional
 
-O projeto está modularizado para facilitar o estudo e manutenção:
+* Organização modular
 
-- **`API_agrofamilia_pesca`**: Backend principal (Node.js + Express). Contém as regras de negócio, autenticação e acesso a dados.
-- **`API_Simplificada`**: Versão alternativa da API para fins didáticos.
-- **`consumo`**: Interface web simples para interação e testes dos endpoints da API(`API_Simplificada`).
+* Base sólida para futuras expansões tecnológicas no setor público
 
-## 🛠️ Tecnologias e Funcionalidades
 
-### Backend (Node.js)
-O sistema utiliza uma stack robusta baseada em JavaScript:
-- **Runtime**: Node.js
-- **Framework Web**: Express.js
-- **Banco de Dados**: MySQL (com Knex.js para queries flexíveis)
-- **Segurança**:
-  - Implementação de JWT (JSON Web Tokens) para sessões seguras.
-  - Hashing de senhas com `bcryptjs`.
-  - Controle de CORS.
-- **Outros**: `dotenv` para refatoração de configurações e `nodemon` para DX.
+## **Estrutura do Repositório**
 
-### Funcionalidades Atuais
-- ✅ **Gerenciamento de Acesso**: Sistema de login e autenticação.
-- ✅ **CRUD Completo**: Criação, leitura, atualização e exclusão de registros.
-- ✅ **Segurança**: Proteção de rotas e dados sensíveis.
+`grupo-b-ifma/`
 
-## ⚙️ Como Executar
+`├── API_agrofamilia_pesca/   # API principal (completa)`
 
-### Pré-requisitos
-- Node.js (LTS recomendado)
-- Servidor MySQL rodando
+`├── API_Simplificada/        # API reduzida (didática)`
 
-### 1. Configurando a API (`API_agrofamilia_pesca`)
+`├── consumo/                 # Front-end estático para testes`
 
-1. Acesse a pasta do backend:
-   ```bash
-   cd API_agrofamilia_pesca
-   ```
-2. Instale as dependências:
-   ```bash
-   npm install
-   ```
-3. Configure o banco de dados:
-   - Crie um arquivo `.env` na raiz da pasta `API_agrofamilia_pesca` com as credenciais do seu banco MySQL.
-4. Configure o Banco de Dados:
-   
-   O projeto possui scripts sql para criar e popular o banco.
-   Isso criará o banco `db_agrofamilia_pesca`, as tabelas, inserirá dados de teste e criar as views necessárias.
-   
-6. Execute o servidor:
-   ```bash
-   npm start
-   # ou
-   nodemon server.js
-   ```
+`├── dbConfig/                # Scripts SQL do banco de dados`
 
-## 🤝 Créditos
+`└── docs/                    # Documentação acadêmica e técnica`
 
-Desenvolvido por **Grupo B** como projeto de curso.
-Mantenedor: **Renã Cantanhede**
+### 
+
+### 
+
+### 
+
+### **Foco do Sistema**
+
+Este repositório possui múltiplos projetos, porém o **núcleo funcional e completo** está na pasta: **`API_agrofamilia_pesca`**
+
+## **Tecnologias Utilizadas**
+
+### **Backend**
+
+* **Node.js**
+
+* **Express.js**
+
+* **MySQL**
+
+* **Knex.js**
+
+* **JWT (JSON Web Token)**
+
+* **bcryptjs**
+
+* **dotenv**
+
+* **nodemon**
+
+### **Ferramentas de Teste**
+
+* Insomnia
+
+* Postman
+
+## **Requisitos do Sistema**
+
+* Node.js **14+**
+
+* MySQL
+
+* NPM ou Yarn
+
+* Insomnia ou Postman (para testes)
+
+## **Instalação e Execução**
+
+### **Clonar o repositório**
+
+`git clone https://github.com/rn-cantanhede/grupo-b-ifma`
+
+`cd API_agrofamilia_pesca`
+
+### **Instalar dependências**
+
+`npm install`
+
+## **Configuração do Banco de Dados**
+
+### **Criar arquivo `.env`**
+
+Na raiz de `API_agrofamilia_pesca`:
+
+`PORT=3000`
+
+`DB_HOST=localhost`
+
+`DB_USER=root`
+
+`DB_PASSWORD=senha`
+
+`DB_NAME=db_agrofamilia_pesca`
+
+`SESSION_SECRET=chave_secreta`
+
+### **Executar scripts SQL**
+
+Os scripts estão em `dbConfig/`:
+
+* `db_agrofamilia_pesca.sql` → Criação do banco e tabelas
+
+* `INSERTS.sql` → Dados iniciais
+
+* `VIEWS.sql` → Views de leitura
+
+## **Executando a API**
+
+`npm start`
+
+Ou em modo desenvolvimento:
+
+`nodemon server.js`
+
+Servidor iniciado em:
+
+`http://localhost:3000`
+
+## **Autenticação**
+
+### **Login**
+
+`POST /login`
+
+#### **Payload:**
+
+`{`
+
+  `"LOGIN": "admin",`
+
+  `"SENHA": "123456"`
+
+`}`
+
+Retorno:
+
+* JWT válido por **7 dias**
+
+* Token deve ser enviado no header `Authorization`
+
+## **Estrutura da API Principal**
+
+`API_agrofamilia_pesca/`
+
+`├── modules/`
+
+`│   ├── usuarios/`
+
+`│   ├── secretarias/`
+
+`│   ├── associacoes/`
+
+`│   ├── produtos/`
+
+`│   ├── movimentacoes/`
+
+`│   └── programas/`
+
+`├── shared/`
+
+`├── database/`
+
+`├── config/`
+
+`├── middleware/`
+
+`└── routes/`
+
+## **Padrão Arquitetural**
+
+A API segue uma **Arquitetura Monolítica Modular**, baseada em **camadas bem definidas**:
+
+* **Controller**
+
+  * Entrada da requisição
+
+  * Não contém regra de negócio
+
+* **Service**
+
+  * Regras de negócio
+
+  * Validações
+
+  * Controle de escopo
+
+* **Repository**
+
+  * Acesso ao banco
+
+  * Queries SQL / Knex
+
+* **Policy**
+
+  * Autorização por nível de acesso
+
+* **Shared**
+
+  * Recursos reutilizáveis
+
+    
+
+## **Controle de Acesso (RBAC)**
+
+| Nível | Perfil |
+| :---: | :---: |
+| 1 | Administrador |
+| 2 | Secretaria |
+| 3 | Associação |
+| 4 | Usuário |
+
+O sistema aplica **escopo automático de dados**, garantindo que cada usuário visualize apenas informações compatíveis com seu nível institucional.
+
+## **Boas Práticas Adotadas**
+
+* Controllers sem regra de negócio
+
+* Services concentram validações e lógica
+
+* Repositories não acessam `req` ou `res`
+
+* Uso de **views SQL para leitura**
+
+* Escrita apenas em tabelas base
+
+* Validação de IDs antes de operações destrutivas
+
+* Segurança em profundidade (*Defense in Depth*)
+
+
+## **Documentação**
+
+* **Documento Acadêmico Completo**: disponível em `docs/Documentação-Agro-família-Pesca.md`
+
+* **Manual Técnico Detalhado**: `docs/Manual-Tecnico.md`
+
+* Este README: visão geral e quick start
+
+
+## **Créditos**
+
+Projeto desenvolvido pelo **Grupo B – IFMA**
+
+**Autor / Mantenedor:**  
+ **Renã Cantanhede**
+
+* GitHub: [https://github.com/rn-cantanhede](https://github.com/rn-cantanhede)
+
+* LinkedIn: [https://www.linkedin.com/in/rn-cantanhede](https://www.linkedin.com/in/rn-cantanhede)
+
+
+## **Observação Final**
+
+Este projeto foi desenvolvido com **finalidade acadêmica**, mas segue padrões profissionais de mercado, podendo servir como base para sistemas institucionais e governamentais reais.
+
