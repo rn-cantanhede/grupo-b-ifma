@@ -3,6 +3,7 @@ require("dotenv").config();
 const app = require("./app");
 const knex = require("./database/connection");
 const connectionCheck = require("./database/connectionCheck");
+const createDB = require("./database/createDB");
 
 const PORT = process.env.PORT;
 
@@ -13,6 +14,13 @@ const PORT = process.env.PORT;
 
 (async function startServer() {
     try {
+        // Cria o banco caso não exista
+        await createDB();
+
+        // Só depois cria a conexão com o Knex
+        const knex = require("./database/connection");
+        const connectionCheck = require("./database/connectionCheck");
+
         await connectionCheck(knex);
 
         app.listen(PORT, () => {
@@ -20,7 +28,7 @@ const PORT = process.env.PORT;
         });
     } catch (error) {
         console.error("Erro na conexão");
-        console.error(error.message);
+        console.error(error);
         process.exit(1);
     }
 })();
