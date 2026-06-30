@@ -1,6 +1,6 @@
 {
   "name": "api_agrofamilia_pesca",
-  "version": "1.0.0",
+  "version": "V0.5.1-alpha",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
