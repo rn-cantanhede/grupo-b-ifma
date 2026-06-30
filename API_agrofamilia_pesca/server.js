@@ -23,6 +23,10 @@ const PORT = process.env.PORT;
 
         await connectionCheck(knex);
 
+        // Executa migrations e seeds
+        await knex.migrate.latest();
+        await knex.seed.run();
+
         app.listen(PORT, () => {
             console.log(`Servidor funcionando na porta: ${PORT}`);
         });

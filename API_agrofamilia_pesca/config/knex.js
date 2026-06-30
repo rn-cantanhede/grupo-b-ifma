@@ -19,6 +19,12 @@ const configs = {
             min: 2,
             max: 10
         },
+        migrations: {
+            directory: "./database/migrations"
+        },
+        seeds: {
+            directory: "./database/seeds"
+        },
     },
 
     development_ifma: {
