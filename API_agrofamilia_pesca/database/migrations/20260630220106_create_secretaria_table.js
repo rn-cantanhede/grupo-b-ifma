@@ -8,7 +8,6 @@ exports.up = function (knex) {
         table.string("NOME", 150).notNullable();
         table.string("CIDADE", 150);
         table.specificType("ESTADO", "CHAR(2)");
-        table.date("DATA_NASCIMENTO").notNullable();
         table.string("ENDERECO", 255);
     });
 };
