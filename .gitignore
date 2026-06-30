@@ -1,6 +1,9 @@
 /API_agrofamilia_pesca/node_modules
+/API_agrofamilia_pesca/.env
+/API_agrofamilia_pesca/.env.ifma
+/API_Simplificada/node_modules
+/API_Simplificada/.env
 /consumo/node_modules
 grupo-b-sozinho.code-workspace
 postman
 .postman
-/API_Simplificada/node_modules
