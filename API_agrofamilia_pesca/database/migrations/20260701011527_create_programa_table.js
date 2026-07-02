@@ -11,7 +11,14 @@ exports.up = function (knex) {
         table.date("DATA_FIM");
         table.string("ORIGEM_RECURSO", 255);
         table.decimal("VLR_REPASSE", 15,2);
-        table.integer("ID_SECRETARIA");
+        table.integer("ID_SECRETARIA").unsigned();
+
+        table
+            .foreign("ID_SECRETARIA")
+            .references("ID")
+            .inTable("SECRETARIA")
+            .onUpdate("CASCADE")
+            .onDelete("RESTRICT");
     });
 };
 

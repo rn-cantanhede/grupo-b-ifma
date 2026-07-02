@@ -7,8 +7,22 @@ exports.up = function (knex) {
         table.increments("ID").primary();
         table.string("NOME", 150).notNullable();
         table.string("ENDERECO", 255);
-        table.integer("ID_CATEGORIA"); 
-        table.integer("ID_SECRETARIA"); 
+        table.integer("ID_CATEGORIA").unsigned(); 
+        table.integer("ID_SECRETARIA").unsigned(); 
+
+        table
+            .foreign("ID_CATEGORIA")
+            .references("ID")
+            .inTable("CATEGORIA")
+            .onUpdate("CASCADE")
+            .onDelete("RESTRICT");
+
+        table
+            .foreign("ID_SECRETARIA")
+            .references("ID")
+            .inTable("SECRETARIA")
+            .onUpdate("CASCADE")
+            .onDelete("RESTRICT");
     });
 };
 
