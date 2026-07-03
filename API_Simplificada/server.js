@@ -2,6 +2,7 @@ const app = require("./app");
 const knex = require("./database/connection");
 const createDB = require("./database/createDB");
 const insertDB = require("./database/insertDB");
+const viewaDB = require("./database/viewsDB");
 
 const PORT = process.env.PORT;
 
@@ -17,6 +18,9 @@ const PORT = process.env.PORT;
 
         // Insere dados no database
         await insertDB();
+
+        // Cria as views do database
+        await viewaDB();
 
         // Só depois cria a conexão com o Knex
         const knex = require("./database/connection");
