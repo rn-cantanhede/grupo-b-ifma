@@ -107,15 +107,19 @@ Na raiz de `API_agrofamilia_pesca`:
 
 `SESSION_SECRET=chave_secreta`
 
-### **Executar scripts SQL**
+### Configuração do Banco de Dados
 
-Os scripts estão em `dbConfig/`:
+A criação e configuração do banco de dados é realizada automaticamente pela aplicação durante a inicialização.
 
-* `db_agrofamilia_pesca.sql` → Criação do banco e tabelas
+Os scripts SQL utilizados nesse processo estão localizados no diretório `dbConfig/`:
 
-* `INSERTS.sql` → Dados iniciais
+| Script | Descrição |
+| ------- | --------- |
+| `db_agrofamilia_pesca.sql` | Criação do banco de dados e das tabelas. |
+| `INSERTS.sql` | Inserção dos dados iniciais. |
+| `VIEWS.sql` | Criação das views utilizadas pela aplicação. |
 
-* `VIEWS.sql` → Views de leitura
+> **Observação:** Não é necessário executar esses scripts manualmente, pois a aplicação realiza esse processo automaticamente.
 
 ## **Executando a API**
 

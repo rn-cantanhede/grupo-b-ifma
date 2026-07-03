@@ -40,7 +40,7 @@ Após a instalação das dependências, o ambiente estará preparado para a conf
 
 O sistema utiliza um banco de dados relacional MySQL. A configuração da conexão é realizada por meio de variáveis de ambiente, definidas em um arquivo `.env` localizado na raiz da API principal.
 
-É necessário executar os scripts SQL fornecidos no diretório de configuração do banco de dados, responsáveis por:
+Durante a inicialização da aplicação, o sistema verifica a existência do banco de dados e de seus objetos, realizando automaticamente a criação da estrutura necessária, a inserção dos dados iniciais e a criação das *views*, quando aplicável. 
 
 * Criação do banco de dados e tabelas
 
@@ -48,7 +48,7 @@ O sistema utiliza um banco de dados relacional MySQL. A configuração da conex�
 
 * Criação de views utilizadas pela aplicação
 
-Esses scripts garantem que a estrutura do banco esteja alinhada com as necessidades da API e com o controle de escopo implementado.
+Essa abordagem simplifica a implantação do sistema, reduz a necessidade de configurações manuais e garante que a estrutura do banco de dados permaneça consistente com os requisitos da aplicação e com o controle de escopo implementado. 
 
 ## **5\. Execução da Aplicação**
 
