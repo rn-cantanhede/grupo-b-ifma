@@ -24,8 +24,15 @@ const PORT = process.env.PORT;
         await connectionCheck(knex);
 
         // Executa migrations e seeds
+        const CheckInsert = await knex("TIPO_PRODUTO").first();
+
         await knex.migrate.latest();
-        await knex.seed.run();
+        if (!CheckInsert) {
+            console.log("Inserindo dados no database");
+            await knex.seed.run();
+        } else {
+            console.log("Banco já está populado");
+        };
 
         app.listen(PORT, () => {
             console.log(`Servidor funcionando na porta: ${PORT}`);
