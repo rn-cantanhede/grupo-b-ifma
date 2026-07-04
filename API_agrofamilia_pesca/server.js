@@ -24,9 +24,10 @@ const PORT = process.env.PORT;
         await connectionCheck(knex);
 
         // Executa migrations e seeds
+        await knex.migrate.latest();
+        
         const CheckInsert = await knex("TIPO_PRODUTO").first();
 
-        await knex.migrate.latest();
         if (!CheckInsert) {
             console.log("Inserindo dados no database");
             await knex.seed.run();
