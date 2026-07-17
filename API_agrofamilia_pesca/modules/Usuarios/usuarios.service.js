@@ -99,25 +99,31 @@ class UsuariosService {
      * 
      */
     async createUsuario(usuario) {
-        const validations = [
-            { 
-                field: "ID_PESSOA", 
-                validation: UsuariosRepository.findByID_PESSOA, 
-                errorMsg: "ID_PESSOA invalido" 
-            },
-            { 
-                field: "ID_SECRETARIA", 
-                validation: UsuariosRepository.findByID_SECRETARIA, 
-                errorMsg: "ID_SECRETARIA invalido"
-            },
-        ];
 
-        await validationsUtils.validate(usuario, validations);
+        if (await UsuariosRepository.findByLogin(usuario.LOGIN) != undefined) {
+            throw new Erros("LOGIN invalido", 403);
+            
+        } else {
+            const validations = [
+                {
+                    field: "ID_PESSOA",
+                    validation: UsuariosRepository.findByID_PESSOA,
+                    errorMsg: "ID_PESSOA invalido"
+                },
+                {
+                    field: "ID_SECRETARIA",
+                    validation: UsuariosRepository.findByID_SECRETARIA,
+                    errorMsg: "ID_SECRETARIA invalido"
+                },
+            ];
 
-        const salt = bcrypt.genSaltSync(10);
-        usuario.SENHA = bcrypt.hashSync(usuario.SENHA, salt);
+            await validationsUtils.validate(usuario, validations);
 
-        return await UsuariosRepository.createUsuario(usuario);
+            const salt = bcrypt.genSaltSync(10);
+            usuario.SENHA = bcrypt.hashSync(usuario.SENHA, salt);
+
+            return await UsuariosRepository.createUsuario(usuario);
+        };
     };
 
     /**
@@ -139,15 +145,15 @@ class UsuariosService {
         if (!idUsuario) throw new Erros("ID inexistente", 404);
 
         const validations = [
-            { 
-                field: "ID_PESSOA", 
-                validation: UsuariosRepository.findByID_PESSOA, 
-                errorMsg: "ID_PESSOA invalido" 
+            {
+                field: "ID_PESSOA",
+                validation: UsuariosRepository.findByID_PESSOA,
+                errorMsg: "ID_PESSOA invalido"
             },
-            { 
-                field: "ID_SECRETARIA", 
-                validation: UsuariosRepository.findByID_SECRETARIA, 
-                errorMsg: "ID_SECRETARIA invalido" 
+            {
+                field: "ID_SECRETARIA",
+                validation: UsuariosRepository.findByID_SECRETARIA,
+                errorMsg: "ID_SECRETARIA invalido"
             },
         ];
 
@@ -188,23 +194,23 @@ class UsuariosService {
         if (!user) {
             throw new Erros('Login ou senha inválidos', 401);
         };
-        
+
         // Caso já está em hash
         if (typeof user.SENHA === "string" && user.SENHA.startsWith("$2")) {
             if (!bcrypt.compareSync(data.SENHA, user.SENHA)) {
-                throw new Erros('Login ou senha inválidos', 401);   
+                throw new Erros('Login ou senha inválidos', 401);
             };
 
         } else { //Caso a senha ainda esteja em texto puro
             if (data.SENHA !== user.SENHA) {
                 throw new Erros('Login ou senha inválidos', 401);
             };
-            
+
             // Gera hash e atualiza no banco
             const salt = bcrypt.genSaltSync(10);
             const hashedPassword = bcrypt.hashSync(data.SENHA, salt);
-            
-            await UsuariosRepository.updateUsuario(user.ID, ({ SENHA: hashedPassword }) );
+
+            await UsuariosRepository.updateUsuario(user.ID, ({ SENHA: hashedPassword }));
         };
 
         const token = jwt.sign({
