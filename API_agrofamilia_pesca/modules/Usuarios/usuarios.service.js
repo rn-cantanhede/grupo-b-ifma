@@ -92,6 +92,7 @@ class UsuariosService {
      * {
      *  "ID_PESSOA": "",
      *  "ID_SECRETARIA": "",
+     *  "ID_ASSOCIACAO": "",
      *  "NIVEL": "",
      *  "LOGIN": "",
      *  "SENHA": ""
@@ -100,49 +101,10 @@ class UsuariosService {
      */
     async createUsuario(usuario) {
 
+        //Verifica se já tem usuario com o LOGIN
         if (await UsuariosRepository.findByLogin(usuario.LOGIN) != undefined) {
             throw new Erros("LOGIN invalido", 403);
-            
-        } else {
-            const validations = [
-                {
-                    field: "ID_PESSOA",
-                    validation: UsuariosRepository.findByID_PESSOA,
-                    errorMsg: "ID_PESSOA invalido"
-                },
-                {
-                    field: "ID_SECRETARIA",
-                    validation: UsuariosRepository.findByID_SECRETARIA,
-                    errorMsg: "ID_SECRETARIA invalido"
-                },
-            ];
-
-            await validationsUtils.validate(usuario, validations);
-
-            const salt = bcrypt.genSaltSync(10);
-            usuario.SENHA = bcrypt.hashSync(usuario.SENHA, salt);
-
-            return await UsuariosRepository.createUsuario(usuario);
         };
-    };
-
-    /**
-     * Atualiza um usuário existente, aplicando validações e hash de senha se necessário.
-     * 
-     * Formato passado no body:
-     * 
-     * {
-     *  "ID_PESSOA": "",
-     *  "ID_SECRETARIA": "",
-     *  "NIVEL": "",
-     *  "LOGIN": "",
-     *  "SENHA": ""
-     * }
-     * 
-     */
-    async updateUsuario(id, usuario) {
-        const idUsuario = await UsuariosRepository.findById(id);
-        if (!idUsuario) throw new Erros("ID inexistente", 404);
 
         const validations = [
             {
@@ -159,6 +121,50 @@ class UsuariosService {
 
         await validationsUtils.validate(usuario, validations);
 
+        const salt = bcrypt.genSaltSync(10);
+        usuario.SENHA = bcrypt.hashSync(usuario.SENHA, salt);
+
+        return await UsuariosRepository.createUsuario(usuario);
+    };
+
+    /**
+     * Atualiza um usuário existente, aplicando validações e hash de senha se necessário.
+     * 
+     * Formato passado no body:
+     * 
+     * {
+     *  "ID_PESSOA": "",
+     *  "ID_SECRETARIA": "",
+     *  "ID_ASSOCIACAO": "",
+     *  "NIVEL": "",
+     *  "LOGIN": "",
+     *  "SENHA": ""
+     * }
+     * 
+     */
+    async updateUsuario(id, usuario) {
+
+        //Verifica se o ID existe no database
+        if (!await UsuariosRepository.findById(id)) {
+            throw new Erros("ID inexistente", 404);
+        };
+
+        const validations = [
+            {
+                field: "ID_PESSOA",
+                validation: UsuariosRepository.findByID_PESSOA,
+                errorMsg: "ID_PESSOA invalido"
+            },
+            {
+                field: "ID_SECRETARIA",
+                validation: UsuariosRepository.findByID_SECRETARIA,
+                errorMsg: "ID_SECRETARIA invalido"
+            },
+        ];
+
+        await validationsUtils.validate(usuario, validations);
+
+        // Atualiza no banco o hash da senha
         if (usuario.SENHA) {
             const salt = bcrypt.genSaltSync(10);
             usuario.SENHA = bcrypt.hashSync(usuario.SENHA, salt);
@@ -171,8 +177,11 @@ class UsuariosService {
      * Remove um usuário existente.
      */
     async deleteUsuario(id) {
-        const idUsuario = await UsuariosRepository.findByIdDelete(id);
-        if (!idUsuario) throw new Erros("ID inexistente", 404);
+        
+        //Verifica se o ID existe
+        if (!await UsuariosRepository.findByIdDelete(id)) {
+            throw new Erros("ID inexistente", 404);
+        };
 
         return await UsuariosRepository.deleteUsuario(id);
     };
@@ -189,9 +198,9 @@ class UsuariosService {
      * 
      */
     async login(data) {
-        const user = await UsuariosRepository.login(data);
 
-        if (!user) {
+        //Verifica dados do login
+        if (!await UsuariosRepository.login(data)) {
             throw new Erros('Login ou senha inválidos', 401);
         };
 
