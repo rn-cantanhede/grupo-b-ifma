@@ -198,11 +198,13 @@ class UsuariosService {
      * 
      */
     async login(data) {
+        const user = await UsuariosRepository.login(data);
 
         //Verifica dados do login
-        if (!await UsuariosRepository.login(data)) {
+        if (!user) {
             throw new Erros('Login ou senha inválidos', 401);
         };
+
 
         // Caso já está em hash
         if (typeof user.SENHA === "string" && user.SENHA.startsWith("$2")) {
