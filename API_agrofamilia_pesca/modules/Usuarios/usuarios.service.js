@@ -128,7 +128,7 @@ class UsuariosService {
     };
 
     /**
-     * Atualiza um usuário existente, aplicando validações e hash de senha se necessário.
+     * Atualiza um usuário existente, aplicando validações.
      * 
      * Formato passado no body:
      * 
@@ -137,8 +137,6 @@ class UsuariosService {
      *  "ID_SECRETARIA": "",
      *  "ID_ASSOCIACAO": "",
      *  "NIVEL": "",
-     *  "LOGIN": "",
-     *  "SENHA": ""
      * }
      * 
      */
@@ -164,20 +162,70 @@ class UsuariosService {
 
         await validationsUtils.validate(usuario, validations);
 
-        // Atualiza no banco o hash da senha
-        if (usuario.SENHA) {
-            const salt = bcrypt.genSaltSync(10);
-            usuario.SENHA = bcrypt.hashSync(usuario.SENHA, salt);
+        return await UsuariosRepository.updateUsuario(id, (
+            {
+                ID_PESSOA: usuario.ID_PESSOA, 
+                ID_SECRETARIA: usuario.ID_SECRETARIA, 
+                ID_ASSOCIACAO: usuario.ID_ASSOCIACAO, 
+                NIVEL: usuario.NIVEL
+            }
+        ));
+    };
+
+    /**
+     * Atualiza o login de um usuário existente, 
+     * aplicando validações e hash de senha se necessário.
+     * 
+     * Formato passado no body:
+     * 
+     * {
+     *  "LOGIN": "",
+     *  "SENHA": ""
+     * }
+     * 
+     */
+    async updateLogin(id, login) {
+
+        const user = await UsuariosRepository.login(login);
+
+        //Verifica se o ID existe no database
+        if (!user) {
+            throw new Erros("ID inexistente", 404);
         };
 
-        return await UsuariosRepository.updateUsuario(id, usuario);
+        const validations = [
+            {
+                field: "LOGIN",
+                validation: UsuariosRepository.findByLogin,
+                errorMsg: "LOGIN invalido"
+            },
+        ];
+
+        // Verifica se houver alteração na senha
+        if (bcrypt.compareSync(login.SENHA, user.SENHA)) {
+            throw new Erros("Senha precisa ser diferente da anterior", 403);
+
+        };
+
+        // Gera hash e atualiza no banco
+        const salt = bcrypt.genSaltSync(10);
+        const hashedPassword = bcrypt.hashSync(login.SENHA, salt);
+
+        await UsuariosRepository.updateUsuario(id, (
+            { LOGIN: login.LOGIN, SENHA: hashedPassword }
+        ));
+
+        return {
+            LOGIN: login.LOGIN,
+            SENHA: hashedPassword
+        };
     };
 
     /**
      * Remove um usuário existente.
      */
     async deleteUsuario(id) {
-        
+
         //Verifica se o ID existe
         if (!await UsuariosRepository.findByIdDelete(id)) {
             throw new Erros("ID inexistente", 404);

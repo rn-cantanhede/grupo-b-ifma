@@ -108,6 +108,19 @@ class UsuariosController {
     };
 
     /**
+     * Modifica dados de login
+     */
+    async updateLogin(req, res, next) {
+        try {
+            const result = await UsuariosService.updateLogin(req.params.id, req.body);
+            return res.status(200).json(result);
+        } catch (error) {
+            console.log(error);
+            return next(error);
+        };
+    };
+
+    /**
      * Deleta um usuario.
      */
     async deleteUsuario(req, res, next) {
