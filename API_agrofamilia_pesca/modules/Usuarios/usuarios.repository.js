@@ -105,6 +105,10 @@ class UsuariosRepository {
         return findBy("ID", id, false, "secretaria");
     };
 
+    findForUpdate(id) {
+        return findBy("ID", id, false, table);
+    };
+
     /**
      * Insere um novo usuario.
      */
