@@ -213,7 +213,7 @@ class UsuariosService {
         };
 
         // Compara LOGIN e SENHA com o database
-        if (filterLogin.LOGIN === user.LOGIN && 
+        if (filterLogin.LOGIN === user.LOGIN &&
             bcrypt.compareSync(filterLogin.SENHA, user.SENHA)) {
             throw new Erros("SENHA ou LOGIN precisam ser diferente da anterior", 403);
         };
@@ -239,14 +239,26 @@ class UsuariosService {
     /**
      * Remove um usuário existente.
      */
-    async deleteUsuario(id) {
+    async deleteUsuario(id, session) {
+        const user = await UsuariosRepository.findByIdDelete(id);
 
         //Verifica se o ID existe
-        if (!await UsuariosRepository.findByIdDelete(id)) {
+        if (!user) {
             throw new Erros("ID inexistente", 404);
         };
 
-        return await UsuariosRepository.deleteUsuario(id);
+        const {
+            ID_PESSOA, NIVEL, LOGIN, SENHA,
+            ...filterUser
+        } = user;
+
+        return baseScope.delete(
+            id, filterUser, session,
+            "secretaria", "ID_SECRETARIA",
+            UsuariosRepository.deleteUsuario
+        );
+
+        // return await UsuariosRepository.deleteUsuario(id);
     };
 
     /**
