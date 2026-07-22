@@ -99,7 +99,12 @@ class UsuariosController {
      */
     async updateUsuario(req, res, next) {
         try {
-            const result = await UsuariosService.updateUsuario(req.params.id, req.body);
+            const result = await UsuariosService.updateUsuario(
+                req.params.id, req.body, {
+                    nivel: req.user.nivel,
+                    secretaria: req.user.secretaria
+                }
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
@@ -112,7 +117,12 @@ class UsuariosController {
      */
     async updateLogin(req, res, next) {
         try {
-            const result = await UsuariosService.updateLogin(req.params.id, req.body);
+            const result = await UsuariosService.updateLogin(
+                req.params.id, req.body, {
+                    nivel: req.user.nivel,
+                    secretaria: req.user.secretaria
+                }
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);

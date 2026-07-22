@@ -6,6 +6,7 @@ const bcrypt = require("bcryptjs");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const UsuariosRepository = require("./usuarios.repository");
 const { findByIdName, find } = require("../../shared/Utils/findUtils");
+const baseScope = require("../../shared/base/baseScope");
 
 const secret = process.env.JWT_SECRET;
 
@@ -140,12 +141,7 @@ class UsuariosService {
      * }
      * 
      */
-    async updateUsuario(id, usuario) {
-
-        //Verifica se o ID existe no database
-        if (!await UsuariosRepository.findById(id)) {
-            throw new Erros("ID inexistente", 404);
-        };
+    async updateUsuario(id, usuario, session) {
 
         const validations = [
             {
@@ -158,18 +154,28 @@ class UsuariosService {
                 validation: UsuariosRepository.findByID_SECRETARIA,
                 errorMsg: "ID_SECRETARIA invalido"
             },
+            {
+                field: "ID_ASSOCIACAO",
+                validation: UsuariosRepository.findByIdAssociacao,
+                errorMsg: "ID_ASSOCIACAO invalido"
+            }
         ];
+
+        //Verifica se o ID existe no database
+        if (!await UsuariosRepository.findById(id)) {
+            throw new Erros("ID inexistente", 404);
+        };
 
         await validationsUtils.validate(usuario, validations);
 
-        return await UsuariosRepository.updateUsuario(id, (
-            {
-                ID_PESSOA: usuario.ID_PESSOA, 
-                ID_SECRETARIA: usuario.ID_SECRETARIA, 
-                ID_ASSOCIACAO: usuario.ID_ASSOCIACAO, 
-                NIVEL: usuario.NIVEL
-            }
-        ));
+        // Faz a mesma coisa que um delete usuario.LOGIN/usuario[LOGIN];
+        const { LOGIN, SENHA, ...filterUsuario } = usuario;
+
+        return baseScope.update(
+            id, filterUsuario, session,
+            "secretaria", "ID_SECRETARIA",
+            UsuariosRepository.updateUsuario
+        );
     };
 
     /**
@@ -184,15 +190,9 @@ class UsuariosService {
      * }
      * 
      */
-    async updateLogin(id, login) {
+    async updateLogin(id, login, session) {
 
-        const user = await UsuariosRepository.login(login);
-
-        //Verifica se o ID existe no database
-        if (!user) {
-            throw new Erros("ID inexistente", 404);
-        };
-
+        const user = await UsuariosRepository.findForUpdate(id);
         const validations = [
             {
                 field: "LOGIN",
@@ -201,24 +201,39 @@ class UsuariosService {
             },
         ];
 
-        // Verifica se houver alteração na senha
-        if (bcrypt.compareSync(login.SENHA, user.SENHA)) {
-            throw new Erros("Senha precisa ser diferente da anterior", 403);
+        // Faz a mesma coisa que um delete usuario.LOGIN/usuario[LOGIN];
+        const {
+            ID_PESSOA, ID_SECRETARIA, ID_ASSOCIACAO, NIVEL,
+            ...filterLogin
+        } = login;
 
+        //Verifica se o ID existe no database
+        if (!user) {
+            throw new Erros("ID inexistente", 404);
         };
 
-        // Gera hash e atualiza no banco
-        const salt = bcrypt.genSaltSync(10);
-        const hashedPassword = bcrypt.hashSync(login.SENHA, salt);
-
-        await UsuariosRepository.updateUsuario(id, (
-            { LOGIN: login.LOGIN, SENHA: hashedPassword }
-        ));
-
-        return {
-            LOGIN: login.LOGIN,
-            SENHA: hashedPassword
+        // Compara LOGIN e SENHA com o database
+        if (filterLogin.LOGIN === user.LOGIN && 
+            bcrypt.compareSync(filterLogin.SENHA, user.SENHA)) {
+            throw new Erros("SENHA ou LOGIN precisam ser diferente da anterior", 403);
         };
+
+        // Compara a SENHA. Se diferente do database cria o hash
+        if (!bcrypt.compareSync(filterLogin.SENHA, user.SENHA)) {
+            // Gera hash e atualiza no banco
+            const salt = bcrypt.genSaltSync(10);
+            const hashedPassword = bcrypt.hashSync(filterLogin.SENHA, salt);
+            filterLogin.SENHA = hashedPassword;
+        } else {
+            filterLogin.SENHA = user.SENHA
+        };
+
+        console.log(filterLogin);
+        return baseScope.update(
+            id, filterLogin, session,
+            "secretaria", "ID_SECRETARIA",
+            UsuariosRepository.updateUsuario
+        );
     };
 
     /**
