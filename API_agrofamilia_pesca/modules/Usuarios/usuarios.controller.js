@@ -135,7 +135,12 @@ class UsuariosController {
      */
     async deleteUsuario(req, res, next) {
         try {
-            const result = await UsuariosService.deleteUsuario(req.params.id);
+            const result = await UsuariosService.deleteUsuario(req.params.id,
+                {
+                    nivel: req.user.nivel,
+                    secretaria: req.user.secretaria
+                }
+            );
             return res.status(200).json(result);
         } catch (error) {
             console.log(error);
