@@ -303,7 +303,8 @@ class UsuariosService {
             id: user.ID_PESSOA,
             login: user.LOGIN,
             nivel: user.NIVEL,
-            secretaria: user.ID_SECRETARIA
+            secretaria: user.ID_SECRETARIA,
+            associacao: user.ID_ASSOCIACAO
         }, secret, { expiresIn: '7d' });
 
         return token;

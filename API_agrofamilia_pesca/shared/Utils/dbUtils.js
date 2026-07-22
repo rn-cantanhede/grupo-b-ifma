@@ -77,7 +77,7 @@ async function deleteData(id, table) {
 
 async function loginDB(login) {
     const result = await knex("usuario")
-        .select("ID", "LOGIN", "SENHA", "NIVEL", "ID_PESSOA", "ID_SECRETARIA")
+        .select("ID", "LOGIN", "SENHA", "NIVEL", "ID_PESSOA", "ID_SECRETARIA", "ID_ASSOCIACAO")
         .where({ LOGIN: login.LOGIN })
         .first();
 
