@@ -54,6 +54,34 @@ async function findByIdName(value, idMethod, nameMethod) {
 };
 
 /**
+ * Realiza busca dinâmica com base no tipo do valor recebido.
+ * Valores numéricos utilizam o método de busca por ID.
+ * Demais valores utilizam o método de busca por nome.
+ * Usado para aplicar escopo.
+ */
+
+async function findByScope(sessionID, sessionField, fieldID, fieldName,
+    value, method
+) {
+    if (!NumberOrString(value)) {
+        const stringConverted = convertString(value);
+        const result = await method(sessionID, sessionField, fieldID, value);
+
+        if (result == "" || result == undefined) {
+            throw new Erros("Não encontrado", 404);
+            
+        };        
+        return result;
+    };
+    
+    const result = await method(sessionID, sessionField, fieldName, value);
+    if (result == "" || result == undefined) {
+        throw new Erros("Não encontrado", 404);
+    };
+    return result;
+};
+
+/**
  * Executa busca por intervalo utilizando o método especificado.
  * Lança erro 404 caso nenhum registro seja retornado.
  */
@@ -131,6 +159,7 @@ function listUsers(usuarioObj, field, value) {
 module.exports = {
     find,
     findByIdName,
+    findByScope,
     findByInterval,
     VerifyNivel,
     listUsers,
