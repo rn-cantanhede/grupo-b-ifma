@@ -40,6 +40,22 @@ async function findBy(field, value, multiple = false, table) {
     };
 };
 
+async function findWithScope(
+    sessionID, sessionField, field, 
+    value, multiple = false, table) {
+    const result = await knex.select("")
+        .from(table)
+        .where(field, "like", `%${value}%`)
+        .andWhere(sessionField, sessionID)
+        .orderBy(field, "asc");
+
+    if (result.length) {
+        return multiple ? result : result[0];
+    } else {
+        return undefined;
+    };
+}
+
 /**
  * Insere dados na tabela informada.
  * Retorna o payload recebido após a operação.
@@ -88,12 +104,13 @@ async function loginDB(login) {
     return result;
 };
 
-module.exports = { 
-    findAll, 
-    findBy, 
-    findByInterval, 
-    insertData, 
-    updateData, 
-    deleteData, 
-    loginDB 
+module.exports = {
+    findAll,
+    findBy,
+    findByInterval,
+    findWithScope,
+    insertData,
+    updateData,
+    deleteData,
+    loginDB
 };
