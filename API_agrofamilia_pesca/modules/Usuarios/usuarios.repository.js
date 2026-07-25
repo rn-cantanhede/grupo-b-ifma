@@ -1,6 +1,6 @@
 // Importa as funções utilitárias responsáveis pelas operações básicas no banco de dados.
 // padronizando as operações de CRUD na aplicação.
-const { findAll, findBy, insertData, updateData, deleteData, loginDB } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, insertData, updateData, deleteData, loginDB, findWithScope } = require("../../shared/Utils/dbUtils");
 const table = "usuario";
 const view = "view_usuarios";
 
@@ -92,6 +92,35 @@ class UsuariosRepository {
     };
 
     /**
+     * Consulta pelo ID na view_usuarios limitando por escopo.
+     */
+    findByIdScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    };
+
+    /**
+     * Consulta pelo NOME na view_usuarios limitando por escopo.
+     */
+    findByNameScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    };
+
+    /**
+     * Consulta pelo nivel na view_usuarios limitando por escopo.
+     */
+    findByNivelScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    };
+
+    /**
+     * Consulta pelo Login na view_usuarios limitando por escopo.
+     */
+    findByLoginScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    };
+
+
+    /**
      * Consulta ID_PESSOA pelo ID na tabela pessoa.
      */
     findByID_PESSOA(id) {
@@ -103,6 +132,10 @@ class UsuariosRepository {
      */
     findByID_SECRETARIA(id) {
         return findBy("ID", id, false, "secretaria");
+    };
+
+    findForUpdate(id) {
+        return findBy("ID", id, false, table);
     };
 
     /**

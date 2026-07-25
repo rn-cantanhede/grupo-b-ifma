@@ -40,6 +40,9 @@ router.post("/new", UsuariosController.createUsuario);
 // Atualiza um usuario existente.
 router.put("/update/:id", UsuariosController.updateUsuario);
 
+
+router.put("/update/login/:id", UsuariosController.updateLogin);
+
 /**
  * ROTAS DE REMOÇÃO (DELETE)
  */

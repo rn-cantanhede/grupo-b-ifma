@@ -248,6 +248,7 @@ Consultar todos os usuários
 `{`  
   `"ID_PESSOA": 1,`  
   `"ID_SECRETARIA": 2,`  
+  `"ID_ASSOCIACAO": "1",`  
   `"NIVEL": 1,`  
   `"LOGIN": "usuario_admin",`  
   `"SENHA": "senha123"`  
@@ -259,7 +260,7 @@ Consultar todos os usuários
 
 * IDs informados são validados previamente.
 
-**Atualizar usuário**
+**Atualizar dados do usuário**
 
 **Rota:**  
  PUT `/usuarios/update/{id}`
@@ -269,9 +270,20 @@ Consultar todos os usuários
 `{`  
   `"ID_PESSOA": 1,`  
   `"ID_SECRETARIA": 2,`  
-  `"NIVEL": 2,`  
-  `"LOGIN": "novo_login",`  
-  `"SENHA": "nova_senha"`  
+  `"ID_ASSOCIACAO": "",`  
+  `"NIVEL": 2`  
+`}`
+
+**Atualizar login do usuário**
+
+**Rota:**  
+ PUT `/usuarios/update/login/{id}`
+
+**Payload da Requisição:**
+
+`{`  
+  `"LOGIN": "admin",`  
+  `"SENHA": "admin"`  
 `}`
 
 **Remover usuário**
