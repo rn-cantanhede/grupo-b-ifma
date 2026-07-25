@@ -6,6 +6,59 @@ const Erros = require("../errors/Errors");
  * Subistitudo aprimorado do BaseService, melhorando a performace e a logica
  */
 class baseScop {
+    async getAll(session, method = []) {
+
+        if (session.nivel === 1) {
+            return method[0]();
+        };
+
+        if (session.nivel === 2) {
+            return method[1](session.secretaria);
+
+        };
+        if (session.nivel === 2) {
+            return method[2](session.associacao);
+
+        } else {
+            return method[3](session.id);
+        };
+    };
+
+    async getFind(
+        session, sessionField = [], fieldID, fieldName, 
+        value, methodPrincipal = [], methodSecondary = []
+    ) {
+        if (session.nivel === 1) {
+            return methodPrincipal[0](
+                value,
+                methodSecondary[0],
+                methodSecondary[1]
+            );
+        };
+
+        if (session.nivel === 2) {
+            return methodPrincipal[1](
+                session.secretaria, sessionField[0], fieldID, fieldName, value,
+                methodSecondary[2],
+                methodSecondary[3]
+            );
+        };
+
+        if (session.nivel === 3) {
+            return methodPrincipal[1](
+                session.secretaria, sessionField[1], fieldID, fieldName, value,
+                methodSecondary[2],
+                methodSecondary[3]
+            );
+        } else {
+            return methodPrincipal[1](
+                session.secretaria, sessionField[2], fieldID, fieldName, value,
+                methodSecondary[2],
+                methodSecondary[3]
+            );
+        };
+    };
+
     async update(id, user, session, fieldSession, fieldUser, method) {
         if (session.nivel === 1) {
             return await method(id, user);

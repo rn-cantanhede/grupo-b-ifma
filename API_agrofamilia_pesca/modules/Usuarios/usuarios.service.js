@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const UsuariosRepository = require("./usuarios.repository");
-const { findByIdName, find } = require("../../shared/Utils/findUtils");
+const { findByIdName, find, findByScope } = require("../../shared/Utils/findUtils");
 const baseScope = require("../../shared/base/baseScope");
 
 const secret = process.env.JWT_SECRET;
@@ -28,37 +28,64 @@ class UsuariosService {
             throw new Erros("Acesso negado", 403);
         };
 
-        const usuarios = await UsuariosRepository.findAllUsuarios();
-        return BaseService.applyScope({ user, data: usuarios });
+        return baseScope.getAll(user, [
+            UsuariosRepository.findAllUsuarios,
+            UsuariosRepository.findByIdSecretaria,
+            UsuariosRepository.findByIdAssociacao,
+            UsuariosRepository.findById
+        ]);
     };
 
     /**
      * Busca usuário por ID ou Nome, respeitando a visibilidade do usuário.
      */
-    async find(value, user) {
-        if (!UsuarioPolicy.canGet(user)) {
+    async find(value, session) {
+        if (!UsuarioPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const usuarios = await findByIdName(
-            value,
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
+        const methodPrincipal = [findByIdName, findByScope];
+        const methodSecondary = [
             UsuariosRepository.findById,
-            UsuariosRepository.findByName
-        );
+            UsuariosRepository.findByName,
+            UsuariosRepository.findByIdScope,
+            UsuariosRepository.findByNameScope
+        ];
 
-        return BaseService.applyScope({ user, data: usuarios });
+        return baseScope.getFind(
+            session,
+            sessionField,
+            "ID", "NOME", value,
+            methodPrincipal,
+            methodSecondary
+        );
     };
 
     /**
      * Lista usuários filtrando pelo nível.
      */
-    async findByNivel(nivel, user) {
-        if (!UsuarioPolicy.canGet(user)) {
+    async findByNivel(nivel, session) {
+        if (!UsuarioPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const usuarios = await find(nivel, UsuariosRepository.findByNivel);
-        return BaseService.applyScope({ user, data: usuarios });
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID_PESSOA"];
+        const methodPrincipal = [find, findByScope];
+        const methodSecondary = [
+            UsuariosRepository.findByNivel,
+            UsuariosRepository.findByNivel,
+            UsuariosRepository.findByNivelScope,
+            UsuariosRepository.findByNivelScope
+        ];
+
+        return baseScope.getFind(
+            session,
+            sessionField,
+            "ID", "NIVEL", nivel,
+            methodPrincipal,
+            methodSecondary
+        );
     };
 
     /**
@@ -76,13 +103,27 @@ class UsuariosService {
     /**
      * Busca usuário pelo login.
      */
-    async findByLogin(login, user) {
-        if (!UsuarioPolicy.canGet(user)) {
+    async findByLogin(login, session) {
+        if (!UsuarioPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const usuarios = await find(login, UsuariosRepository.findByLogin);
-        return BaseService.applyScope({ user, data: usuarios });
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID_PESSOA"];
+        const methodPrincipal = [find, findByScope];
+        const methodSecondary = [
+            UsuariosRepository.findByLogin,
+            UsuariosRepository.findByLogin,
+            UsuariosRepository.findByLoginScope,
+            UsuariosRepository.findByLoginScope
+        ];
+
+        return baseScope.getFind(
+            session,
+            sessionField,
+            "ID", "LOGIN", login,
+            methodPrincipal,
+            methodSecondary
+        );
     };
 
     /**
