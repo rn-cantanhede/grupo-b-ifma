@@ -96,8 +96,11 @@ class UsuariosService {
             throw new Erros("Acesso negado", 403);
         };
 
-        const usuarios = await UsuariosRepository.findBySecretaria(secretaria);
-        return BaseService.applyScope({ user, data: usuarios });
+        return findByIdName(
+            secretaria,
+            UsuariosRepository.findByIdSecretaria,
+            UsuariosRepository.findBySecretaria
+        );
     };
 
     /**
