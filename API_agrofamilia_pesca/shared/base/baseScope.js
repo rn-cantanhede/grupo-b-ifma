@@ -6,57 +6,36 @@ const Erros = require("../errors/Errors");
  * Subistitudo aprimorado do BaseService, melhorando a performace e a logica
  */
 class baseScop {
-    async getAll(session, method = []) {
-
-        if (session.nivel === 1) {
-            return method[0]();
+    async permissions(session, actions) {
+        const permissions = {
+            1: ["admin"],
+            2: ["secretaria", session.secretaria],
+            3: ["associacao", session.associacao],
+            4: ["usuario", session.id]
         };
 
-        if (session.nivel === 2) {
-            return method[1](session.secretaria);
+        let permission = permissions[session.nivel];
 
+        if (permission === null || permission === undefined) {
+            permission = [];
         };
-        if (session.nivel === 2) {
-            return method[2](session.associacao);
 
-        } else {
-            return method[3](session.id);
+        const level = permission[0];
+        const value = permission[1];
+
+        if (typeof (actions[level]) !== "function") {
+            throw new Error("Permissão inválida");
         };
+
+        return actions[level](value);
     };
 
-    async getFind(
-        session, sessionField = [], fieldID, fieldName, 
-        value, methodPrincipal = [], methodSecondary = []
-    ) {
-        if (session.nivel === 1) {
-            return methodPrincipal[0](
-                value,
-                methodSecondary[0],
-                methodSecondary[1]
-            );
-        };
+    async getAll(session, actions) {
+        return this.permissions(session, actions);
+    };
 
-        if (session.nivel === 2) {
-            return methodPrincipal[1](
-                session.secretaria, sessionField[0], fieldID, fieldName, value,
-                methodSecondary[2],
-                methodSecondary[3]
-            );
-        };
-
-        if (session.nivel === 3) {
-            return methodPrincipal[1](
-                session.secretaria, sessionField[1], fieldID, fieldName, value,
-                methodSecondary[2],
-                methodSecondary[3]
-            );
-        } else {
-            return methodPrincipal[1](
-                session.secretaria, sessionField[2], fieldID, fieldName, value,
-                methodSecondary[2],
-                methodSecondary[3]
-            );
-        };
+    async getFind(session, actions) {
+        return this.permissions(session, actions);
     };
 
     async update(id, user, session, fieldSession, fieldUser, method) {
