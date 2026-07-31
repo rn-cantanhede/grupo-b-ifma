@@ -28,12 +28,12 @@ class UsuariosService {
             throw new Erros("Acesso negado", 403);
         };
 
-        return baseScope.getAll(user, [
-            UsuariosRepository.findAllUsuarios,
-            UsuariosRepository.findByIdSecretaria,
-            UsuariosRepository.findByIdAssociacao,
-            UsuariosRepository.findById
-        ]);
+        return baseScope.getAll(user, {
+            admin: UsuariosRepository.findAllUsuarios,
+            secretaria: UsuariosRepository.findByIdSecretaria,
+            associacao: UsuariosRepository.findByIdAssociacao,
+            usuario: UsuariosRepository.findById
+        });
     };
 
     /**
@@ -45,21 +45,37 @@ class UsuariosService {
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
-        const methodPrincipal = [findByIdName, findByScope];
-        const methodSecondary = [
-            UsuariosRepository.findById,
-            UsuariosRepository.findByName,
-            UsuariosRepository.findByIdScope,
-            UsuariosRepository.findByNameScope
-        ];
 
-        return baseScope.getFind(
-            session,
-            sessionField,
-            "ID", "NOME", value,
-            methodPrincipal,
-            methodSecondary
-        );
+        return baseScope.getFind(session, {
+            admin: () =>
+                findByIdName(
+                    value,
+                    UsuariosRepository.findById,
+                    UsuariosRepository.findByName
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "ID",
+                    "NOME",
+                    value,
+                    UsuariosRepository.findByIdScope,
+                    UsuariosRepository.findByNameScope
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "ID",
+                    "NOME",
+                    value,
+                    UsuariosRepository.findByIdScope,
+                    UsuariosRepository.findByNameScope
+                ),
+        });
     };
 
     /**
@@ -71,36 +87,51 @@ class UsuariosService {
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID_PESSOA"];
-        const methodPrincipal = [find, findByScope];
-        const methodSecondary = [
-            UsuariosRepository.findByNivel,
-            UsuariosRepository.findByNivel,
-            UsuariosRepository.findByNivelScope,
-            UsuariosRepository.findByNivelScope
-        ];
 
-        return baseScope.getFind(
-            session,
-            sessionField,
-            "ID", "NIVEL", nivel,
-            methodPrincipal,
-            methodSecondary
-        );
+        return baseScope.getFind(session, {
+            admin: () =>
+                find(
+                    nivel,
+                    UsuariosRepository.findByNivel
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "ID",
+                    "NIVEL",
+                    nivel,
+                    UsuariosRepository.findByNivelScope
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "ID",
+                    "NIVEL",
+                    nivel,
+                    UsuariosRepository.findByNivelScope
+                ),
+        });
     };
 
     /**
      * Lista usuários filtrando pela secretaria.
      */
-    async findBySecretaria(secretaria, user) {
-        if (!UsuarioPolicy.canGet(user)) {
+    async findBySecretaria(secretaria, session) {
+        if (!UsuarioPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return findByIdName(
-            secretaria,
-            UsuariosRepository.findByIdSecretaria,
-            UsuariosRepository.findBySecretaria
-        );
+        return baseScope.getFind(session, {
+            admin: () => findByIdName(
+                secretaria,
+                UsuariosRepository.findByIdSecretaria,
+                UsuariosRepository.findBySecretaria
+            ),
+        });
     };
 
     /**
@@ -112,21 +143,34 @@ class UsuariosService {
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID_PESSOA"];
-        const methodPrincipal = [find, findByScope];
-        const methodSecondary = [
-            UsuariosRepository.findByLogin,
-            UsuariosRepository.findByLogin,
-            UsuariosRepository.findByLoginScope,
-            UsuariosRepository.findByLoginScope
-        ];
 
-        return baseScope.getFind(
-            session,
-            sessionField,
-            "ID", "LOGIN", login,
-            methodPrincipal,
-            methodSecondary
-        );
+        return baseScope.getFind(session, {
+            admin: () =>
+                find(
+                    login,
+                    UsuariosRepository.findByLogin
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "ID",
+                    "LOGIN",
+                    login,
+                    UsuariosRepository.findByLoginScope
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "ID",
+                    "LOGIN",
+                    login,
+                    UsuariosRepository.findByLoginScope
+                ),
+        });
     };
 
     /**
