@@ -3,8 +3,27 @@ const cors = require("cors");
 const routers = require("./routes/index");
 const errorHandle = require("./middleware/errorHandle");
 const session = require("express-session");
+const pinoHttp = require("pino-http");
+const logger = require("./config/logger");
 
 const app = express();
+
+app.use(
+    pinoHttp({
+        logger,
+
+        serializers: {
+            req(req) {
+                return {
+                    id: req.id,
+                    method: req.method,
+                    url: req.url,
+                    remoteAddress: req.remoteAddress
+                }
+            }
+        }
+    })
+);
 
 /**
  * Habilita o middleware de CORS para controle de acesso entre origens.
