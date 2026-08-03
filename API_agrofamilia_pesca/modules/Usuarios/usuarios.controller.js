@@ -352,7 +352,7 @@ class UsuariosController {
                     return next(err);
                 };
 
-                res.clearCookie("teste");
+                res.clearCookie("__Host-auth");
 
                 req.log.info({
                     event: "AUTH_LOGOUT",
