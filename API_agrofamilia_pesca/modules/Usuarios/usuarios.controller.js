@@ -320,7 +320,6 @@ class UsuariosController {
                 event: "AUTH_LOGIN",
                 resource: "usuario",
                 action: "login",
-                usuarioId: req.user.id
             }, "Login realizado");
 
             return res.status(200).json({
