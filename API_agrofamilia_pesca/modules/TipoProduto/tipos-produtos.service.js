@@ -5,6 +5,7 @@ const validationsUtils = require("../../shared/Utils/validationsUtils");
 const TiposProdutosRepository = require("./tipos-produtos.repository");
 const { findByIdName } = require("../../shared/Utils/findUtils");
 const associadosRepository = require("../Associados/associados.repository");
+const baseScope = require("../../shared/base/baseScope");
 
 /**
  * Camada de serviço responsável pela regra de negócio
@@ -19,27 +20,55 @@ class TiposProdutosService {
     /**
      * Retorna todos os tipos de produto cadastrados com filtro de escopo.
      */
-    async findallTipoProduto(user) {
-        if (!TiposProdutosPolicy.canGet(user)) {
+    async findallTipoProduto(session) {
+        if (!TiposProdutosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return await TiposProdutosRepository.findallTipoProduto();
+        return baseScope.getAll(session, {
+            admin: TiposProdutosRepository.findallTipoProduto,
+            secretaria: TiposProdutosRepository.findallTipoProduto,
+            associacao: TiposProdutosRepository.findallTipoProduto,
+            usuario: TiposProdutosRepository.findallTipoProduto,
+        });
     };
 
     /**
      * Busca tipo de produto por ID ou Nome.
      */
-    async find(value, user) {
-        if (!TiposProdutosPolicy.canGet(user)) {
+    async find(value, session) {
+        if (!TiposProdutosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return await findByIdName(
-            value,
-            TiposProdutosRepository.findById,
-            TiposProdutosRepository.findByName
-        );
+        return baseScope.getFind(session, {
+            admin: () =>
+                findByIdName(
+                    value,
+                    TiposProdutosRepository.findById,
+                    TiposProdutosRepository.findByName
+                ),
+
+            secretaria: () =>
+                findByIdName(
+                    value,
+                    TiposProdutosRepository.findById,
+                    TiposProdutosRepository.findByName
+                ),
+
+            associacao: () =>
+                findByIdName(
+                    value,
+                    TiposProdutosRepository.findById,
+                    TiposProdutosRepository.findByName
+                ),
+            usuario: () =>
+                findByIdName(
+                    value,
+                    TiposProdutosRepository.findById,
+                    TiposProdutosRepository.findByName
+                ),
+        });
     };
 
     /**
