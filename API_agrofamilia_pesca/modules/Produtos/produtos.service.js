@@ -4,6 +4,7 @@ const validationsUtils = require("../../shared/Utils/validationsUtils");
 const ProdutosRepository = require("./produtos.repository");
 const associadosRepository = require("../Associados/associados.repository");
 const { findByIdName } = require("../../shared/Utils/findUtils");
+const baseScope = require("../../shared/base/baseScope");
 
 /**
  * Camada de serviço responsável pela regra de negócio
@@ -18,28 +19,56 @@ class ProdutosService {
      * Retorna a lista completa de produtos.
      */
 
-    async findAllProdutos(user) {
-        if (!ProdutosPolicy.canGet(user)) {
+    async findAllProdutos(session) {
+        if (!ProdutosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return await ProdutosRepository.findAllProdutos();
+        return baseScope.getAll(session, {
+            admin: ProdutosRepository.findAllProdutos,
+            secretaria: ProdutosRepository.findAllProdutos,
+            associacao: ProdutosRepository.findAllProdutos,
+            usuario: ProdutosRepository.findAllProdutos,
+        });
     };
 
     /**
      * Busca um produto pelo ID ou pelo nome.
      */
 
-    async find(value, user) {
-        if (!ProdutosPolicy.canGet(user)) {
+    async find(value, session) {
+        if (!ProdutosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return findByIdName(
-            value,
-            ProdutosRepository.findById,
-            ProdutosRepository.findByName
-        );
+        return baseScope.getFind(session, {
+            admin: () =>
+                findByIdName(
+                    value,
+                    ProdutosRepository.findById,
+                    ProdutosRepository.findByName
+                ),
+
+            secretaria: () =>
+                findByIdName(
+                    value,
+                    ProdutosRepository.findById,
+                    ProdutosRepository.findByName
+                ),
+
+            associacao: () =>
+                findByIdName(
+                    value,
+                    ProdutosRepository.findById,
+                    ProdutosRepository.findByName
+                ),
+            usuario: () =>
+                findByIdName(
+                    value,
+                    ProdutosRepository.findById,
+                    ProdutosRepository.findByName
+                ),
+        });
     };
 
     /**
