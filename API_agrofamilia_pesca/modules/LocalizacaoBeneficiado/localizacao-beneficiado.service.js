@@ -4,7 +4,8 @@ const LocalizacaoPolicy = require("./policies/localizacao.policy");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const associadosRepository = require("../Associados/associados.repository");
 const LocalizacaoBeneficiadoRepository = require("./localizacao-beneficiado.repository");
-const { findByIdName, find, VerifyNivel, listUsers } = require("../../shared/Utils/findUtils");
+const { findByIdName, find, VerifyNivel, listUsers, findByScope } = require("../../shared/Utils/findUtils");
+const baseScope = require("../../shared/base/baseScope");
 
 /**
  * Service responsável pela regra de negócio
@@ -26,27 +27,66 @@ class LocalizacaoBeneficiadoService {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await LocalizacaoBeneficiadoRepository.findAllLocalizacao();
-
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getAll(user, {
+            admin: LocalizacaoBeneficiadoRepository.findAllLocalizacao,
+            secretaria: LocalizacaoBeneficiadoRepository.findByIdSecretaria,
+            associacao: LocalizacaoBeneficiadoRepository.findByIdAssociacao,
+            usuario: LocalizacaoBeneficiadoRepository.findById
+        });
     };
 
     /**
      * Busca uma localização beneficiada por ID ou Nome.
      */
 
-    async find(value, user) {
-        if (!LocalizacaoPolicy.canGet(user)) {
+    async find(value, session) {
+        if (!LocalizacaoPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await findByIdName(
-            value,
-            LocalizacaoBeneficiadoRepository.findById,
-            LocalizacaoBeneficiadoRepository.findByName
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, {
+            admin: () =>
+                findByIdName(
+                    value,
+                    LocalizacaoBeneficiadoRepository.findById,
+                    LocalizacaoBeneficiadoRepository.findByName
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "ID",
+                    "NOME",
+                    value,
+                    LocalizacaoBeneficiadoRepository.findByIdScope,
+                    LocalizacaoBeneficiadoRepository.findByNameScope
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "ID",
+                    "NOME",
+                    value,
+                    LocalizacaoBeneficiadoRepository.findByIdScope,
+                    LocalizacaoBeneficiadoRepository.findByNameScope
+                ),
+
+            usuario: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "ID",
+                    "NOME",
+                    value,
+                    LocalizacaoBeneficiadoRepository.findByIdScope,
+                    LocalizacaoBeneficiadoRepository.findByNameScope
+                ),
+        });
     };
 
     /**
@@ -54,17 +94,54 @@ class LocalizacaoBeneficiadoService {
      * pelo nome da associação.
      */
 
-    async findbyAssociacao(associacao, user) {
-        if (!LocalizacaoPolicy.canGet(user)) {
+    async findbyAssociacao(associacao, session) {
+        if (!LocalizacaoPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await find(
-            associacao,
-            LocalizacaoBeneficiadoRepository.findbyAssociacao
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, {
+            admin: () =>
+                findByIdName(
+                    associacao,
+                    LocalizacaoBeneficiadoRepository.findByIdAssociacao,
+                    LocalizacaoBeneficiadoRepository.findbyAssociacao
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "ID_ASSOCIACAO",
+                    "ASSOCIACAO",
+                    associacao,
+                    LocalizacaoBeneficiadoRepository.findByIdAssociacaoScope,
+                    LocalizacaoBeneficiadoRepository.findByNameAssociacaoScope
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "ID_ASSOCIACAO",
+                    "ASSOCIACAO",
+                    associacao,
+                    LocalizacaoBeneficiadoRepository.findByIdScope,
+                    LocalizacaoBeneficiadoRepository.findByNameScope
+                ),
+
+            usuario: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "ID_ASSOCIACAO",
+                    "ASSOCIACAO",
+                    associacao,
+                    LocalizacaoBeneficiadoRepository.findByIdScope,
+                    LocalizacaoBeneficiadoRepository.findByNameScope
+                ),
+        });
     };
 
     /**
