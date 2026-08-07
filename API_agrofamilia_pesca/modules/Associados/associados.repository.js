@@ -1,6 +1,6 @@
 // Importa as funções utilitárias responsáveis pelas operações básicas no banco de dados.
 // padronizando as operações de CRUD na aplicação.
-const { findAll, findBy, findByInterval, insertData, updateData, deleteData } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, findByInterval, insertData, updateData, deleteData, findWithScope } = require("../../shared/Utils/dbUtils");
 const table = "view_pessoas";
 
 /**
@@ -107,7 +107,7 @@ class AssociadosRepository {
      * Lista associados filtrando pelo ID da secretaria.
      */
     findbyIdSecretaria(id) {
-        return findBy("ID_SECRETARIA", id, false, table);
+        return findBy("ID_SECRETARIA", id, true, table);
     };
 
     /**
@@ -140,6 +140,41 @@ class AssociadosRepository {
 
     findID_ASSOCIACAO(id) {
         return findBy("ID", id, false, "associacao");
+    };
+
+     /**
+     * Consulta pelo ID limitando por escopo.
+     */
+    findByIdScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    };
+
+    /**
+     * Consulta pelo NOME limitando por escopo.
+     */
+    findByNameScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    };
+
+    /**
+     * Consulta pelo caf limitando por escopo.
+     */
+    findByCafScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    };
+
+    /**
+     * Consulta pelo caf limitando por escopo.
+     */
+    findByDapScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    };
+
+    /**
+     * Consulta pela validade do caf limitando por escopo.
+     */
+    findByDataCafScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
     };
 
     /**
