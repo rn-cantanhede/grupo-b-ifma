@@ -4,7 +4,8 @@ const AssociacoesPolicy = require("./policies/associacoes.policy");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const pessoasRepository = require("../Pessoas/pessoas.repository");
 const AssociacoesRepository = require("./associacoes.repository");
-const { findByIdName, find } = require("../../shared/Utils/findUtils");
+const { findByIdName, find, findByScope } = require("../../shared/Utils/findUtils");
+const baseScope = require("../../shared/base/baseScope");
 
 /**
  * Camada de serviço responsável pela regra de negócio
@@ -24,56 +25,113 @@ class AssociacoesService {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await AssociacoesRepository.findAllAssociacoes();
-
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getAll(user, {
+            admin: AssociacoesRepository.findAllAssociacoes,
+            secretaria: AssociacoesRepository.findbyIdSecretaria,
+            associacao: AssociacoesRepository.findById,
+            usuario: AssociacoesRepository.findById
+        });
     };
 
     /**
      * Busca uma associação por ID ou por nome.
      */
-    async find(value, user) {
-        if (!AssociacoesPolicy.canGet(user)) {
+    async find(value, session) {
+        if (!AssociacoesPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await findByIdName(
-            value,
-            AssociacoesRepository.findById,
-            AssociacoesRepository.findByName
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, {
+            admin: () =>
+                findByIdName(
+                    value,
+                    AssociacoesRepository.findById,
+                    AssociacoesRepository.findByName
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "ID",
+                    "NOME",
+                    value,
+                    AssociacoesRepository.findByIdScope,
+                    AssociacoesRepository.findByNameScope
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "ID",
+                    "NOME",
+                    value,
+                    AssociacoesRepository.findByIdScope,
+                    AssociacoesRepository.findByNameScope
+                ),
+        });
     };
 
     /**
      * Busca associações vinculadas a uma categoria específica.
      */
-    async findByCategoria(categoria, user) {
-        if (!AssociacoesPolicy.canGet(user)) {
+    async findByCategoria(categoria, session) {
+        if (!AssociacoesPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await find(
-            categoria,
-            AssociacoesRepository.findbyCategoria
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, {
+            admin: () =>
+                find(
+                    categoria,
+                    AssociacoesRepository.findbyCategoria
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "CATEGORIA",
+                    "CATEGORIA",
+                    categoria,
+                    AssociacoesRepository.findByCategoriaScope
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "CATEGORIA",
+                    "CATEGORIA",
+                    categoria,
+                    AssociacoesRepository.findByCategoriaScope
+                ),
+        });
     };
 
     /**
      * Busca associações vinculadas a uma secretaria específica.
      */
-    async findbySecretaria(secretaria, user) {
-        if (!AssociacoesPolicy.canGet(user)) {
+    async findbySecretaria(secretaria, session) {
+        if (!AssociacoesPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return await find(
-            secretaria,
-            AssociacoesRepository.findbySecretaria
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
+
+        return baseScope.getFind(session, {
+            admin: () =>
+                findByIdName(
+                    secretaria,
+                    AssociacoesRepository.findbyIdSecretaria,
+                    AssociacoesRepository.findbySecretaria
+                ),
+        });
     };
 
     /**
@@ -185,7 +243,7 @@ class AssociacoesService {
             throw new Erros("ID invalido", 404);
         };
 
-       const targetUser = await pessoasRepository.findId(user.id);
+        const targetUser = await pessoasRepository.findId(user.id);
 
         const Alluser = {
             id: user.id,
