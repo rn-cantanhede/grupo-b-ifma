@@ -4,7 +4,8 @@ const AgriculturaPolicy = require("./policies/agricultura.policy");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const associadosRepository = require("../Associados/associados.repository");
 const AgriculturaFamiliarRepository = require("./agricultura-familiar.repository");
-const { findByIdName, find } = require("../../shared/Utils/findUtils");
+const { findByIdName, find, findByScope } = require("../../shared/Utils/findUtils");
+const baseScope = require("../../shared/base/baseScope");
 
 /**
  * Camada de serviço responsável pela regra de negócio
@@ -19,79 +20,176 @@ class AgriculturaFamiliarService {
     /**
      * Retorna todos os registros de agricultura familiar.
      */
-    async findAllAgriculturaFamiliar(user) {
-        if (!AgriculturaPolicy.canGet(user)) {
+    async findAllAgriculturaFamiliar(session) {
+        if (!AgriculturaPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await AgriculturaFamiliarRepository.findAllAgriculturaFamiliar();
-
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getAll(session, {
+            admin: AgriculturaFamiliarRepository.findAllAgriculturaFamiliar,
+            secretaria: AgriculturaFamiliarRepository.findByIdSecretaria,
+            associacao: AgriculturaFamiliarRepository.findByIdAssociacao,
+            usuario: AgriculturaFamiliarRepository.findByIdPessoa,
+        });
     };
 
     /**
      * Busca um registro por ID ou por nome.
      */
-    async find(value, user) {
-        if (!AgriculturaPolicy.canGet(user)) {
+    async find(value, session) {
+        if (!AgriculturaPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await findByIdName(
-            value,
-            AgriculturaFamiliarRepository.findById,
-            AgriculturaFamiliarRepository.findByName
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, {
+            admin: () =>
+                findByIdName(
+                    value,
+                    AgriculturaFamiliarRepository.findById,
+                    AgriculturaFamiliarRepository.findByName
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "ID",
+                    "NOME",
+                    value,
+                    AgriculturaFamiliarRepository.findByIdScope,
+                    AgriculturaFamiliarRepository.findByNameScope
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "ID",
+                    "NOME",
+                    value,
+                    AgriculturaFamiliarRepository.findByIdScope,
+                    AgriculturaFamiliarRepository.findByNameScope
+                ),
+        });
     };
 
     /**
      * Busca registros pelo número do CAF.
      */
-    async findbyCaf(caf, user) {
-        if (!AgriculturaPolicy.canGet(user)) {
+    async findbyCaf(caf, session) {
+        if (!AgriculturaPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await find(
-            caf,
-            AgriculturaFamiliarRepository.findbyCaf
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, {
+            admin: () =>
+                find(
+                    caf,
+                    AgriculturaFamiliarRepository.findbyCaf
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "CAF",
+                    "CAF",
+                    caf,
+                    AgriculturaFamiliarRepository.findByCafScope
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "CAF",
+                    "CAF",
+                    caf,
+                    AgriculturaFamiliarRepository.findByCafScope
+                ),
+        });
     };
 
     /**
      * Busca registros pelo número da DAP.
      */
-    async findbyDap(dap, user) {
-        if (!AgriculturaPolicy.canGet(user)) {
+    async findbyDap(dap, session) {
+        if (!AgriculturaPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await find(
-            dap,
-            AgriculturaFamiliarRepository.findbyDap
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, {
+            admin: () =>
+                find(
+                    dap,
+                    AgriculturaFamiliarRepository.findbyDap
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "DAP",
+                    "DAP",
+                    dap,
+                    AgriculturaFamiliarRepository.findByDapScope
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "DAP",
+                    "DAP",
+                    dap,
+                    AgriculturaFamiliarRepository.findByDapScope
+                ),
+        });
     };
 
     /**
      * Busca registros vinculados a um programa específico.
      */
-    async findbyPrograma(programa, user) {
-        if (!AgriculturaPolicy.canGet(user)) {
+    async findbyPrograma(programa, session) {
+        if (!AgriculturaPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await find(
-            programa,
-            AgriculturaFamiliarRepository.findbyPrograma
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, {
+            admin: () =>
+                find(
+                    programa,
+                    AgriculturaFamiliarRepository.findbyPrograma
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "PROGRAMA",
+                    "PROGRAMA",
+                    programa,
+                    AgriculturaFamiliarRepository.findByProgramaScope
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "PROGRAMA",
+                    "PROGRAMA",
+                    programa,
+                    AgriculturaFamiliarRepository.findByProgramaScope
+                ),
+        });
     };
 
     /**
