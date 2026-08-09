@@ -1,6 +1,6 @@
 // Importa as funções utilitárias responsáveis pelas operações básicas no banco de dados.
 // padronizando as operações de CRUD na aplicação.
-const { findAll, findBy, insertData, updateData, deleteData } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, insertData, updateData, deleteData, findWithScope } = require("../../shared/Utils/dbUtils");
 const table = "view_agricultura_familiar";
 
 /**
@@ -99,6 +99,41 @@ class AgriculturaFamiliarRepository {
      */
     findID_PROGRAMA(id) {
         return findBy("ID", id, false, "programa");
+    };
+
+     /**
+     * Consulta pelo ID limitando por escopo.
+     */
+    findByIdScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    };
+
+    /**
+     * Consulta pelo NOME limitando por escopo.
+     */
+    findByNameScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    };
+
+    /**
+     * Consulta pelo caf limitando por escopo.
+     */
+    findByCafScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    };
+
+    /**
+     * Consulta pelo dap limitando por escopo.
+     */
+    findByDapScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    };
+
+    /**
+     * Consulta pelo programa limitando por escopo.
+     */
+    findByProgramaScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
     };
 
     /**

@@ -4,7 +4,8 @@ const AssociadosPolicy = require("./policies/associados.policy");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const AssociadosRepository = require("./associados.repository");
 const associadosRepository = require("./associados.repository");
-const { find, findByInterval, findByIdName } = require("../../shared/Utils/findUtils");
+const { find, findByInterval, findByIdName, findByScope } = require("../../shared/Utils/findUtils");
+const baseScope = require("../../shared/base/baseScope");
 
 /**
  * Camada de serviço responsável pela regra de negócio
@@ -20,99 +21,223 @@ class AssociadosService {
      * Retorna todos os associados cadastrados.
      */
 
-    async findAllAssociados(user) {
-        if (!AssociadosPolicy.canGet(user)) {
+    async findAllAssociados(session) {
+        if (!AssociadosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await AssociadosRepository.findAllAssociados();
-
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getAll(session, {
+            admin: AssociadosRepository.findAllAssociados,
+            secretaria: AssociadosRepository.findByIdSecretaria,
+            associacao: AssociadosRepository.findbyIdAssociacao,
+            usuario: AssociadosRepository.findById,
+        });
     };
 
     /**
      * Busca associado por ID ou Nome, conforme o tipo de entrada.
      */
 
-    async find(value, user) {
-        if (!AssociadosPolicy.canGet(user)) {
+    async find(value, session) {
+        if (!AssociadosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await findByIdName(value,
-            AssociadosRepository.findById,
-            AssociadosRepository.findByName
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, {
+            admin: () =>
+                findByIdName(
+                    value,
+                    AssociadosRepository.findById,
+                    AssociadosRepository.findByName
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "ID",
+                    "NOME",
+                    value,
+                    AssociadosRepository.findByIdScope,
+                    AssociadosRepository.findByNameScope
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "ID",
+                    "NOME",
+                    value,
+                    AssociadosRepository.findByIdScope,
+                    AssociadosRepository.findByNameScope
+                ),
+        });
     };
 
     /**
      * Busca associado pelo CAF.
      */
 
-    async findbyCaf(caf, user) {
-        if (!AssociadosPolicy.canGet(user)) {
+    async findbyCaf(caf, session) {
+        if (!AssociadosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await find(
-            caf,
-            AssociadosRepository.findbyCaf
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, {
+            admin: () =>
+                find(
+                    caf,
+                    AssociadosRepository.findbyCaf
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "CAF",
+                    "CAF",
+                    caf,
+                    AssociadosRepository.findByCafScope
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "CAF",
+                    "CAF",
+                    caf,
+                    AssociadosRepository.findByCafScope
+                ),
+        });
     };
 
     /**
      * Busca associado pelo DAP.
      */
 
-    async findbyDap(dap, user) {
-        if (!AssociadosPolicy.canGet(user)) {
+    async findbyDap(dap, session) {
+        if (!AssociadosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await find(
-            dap,
-            AssociadosRepository.findbyDap
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, {
+            admin: () =>
+                find(
+                    dap,
+                    AssociadosRepository.findbyDap
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "DAP",
+                    "DAP",
+                    dap,
+                    AssociadosRepository.findByDapScope
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "DAP",
+                    "DAP",
+                    dap,
+                    AssociadosRepository.findByDapScope
+                ),
+        });
     };
 
     /**
      * Lista associados filtrando pela associação.
      */
 
-    async findbyAssociacao(associacao, user) {
-        if (!AssociadosPolicy.canGet(user)) {
+    async findbyAssociacao(associacao, session) {
+        if (!AssociadosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await find(
-            associacao,
-            AssociadosRepository.findbyAssociacao
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, {
+            admin: () =>
+                findByIdName(
+                    associacao,
+                    AssociadosRepository.findbyIdAssociacao,
+                    AssociadosRepository.findbyAssociacao
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "ID_ASSOCIACAO",
+                    "ASSOCIACAO",
+                    associacao,
+                    AssociadosRepository.findByIdScope,
+                    AssociadosRepository.findByNameScope
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "ID_ASSOCIACAO",
+                    "ASSOCIACAO",
+                    associacao,
+                    AssociadosRepository.findByIdScope,
+                    AssociadosRepository.findByNameScope
+                ),
+        });
     };
 
     /**
      * Busca associados pela data exata de validade do CAF.
      */
 
-    async findbyData(data, user) {
-        if (!AssociadosPolicy.canGet(user)) {
+    async findbyData(data, session) {
+        if (!AssociadosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await find(
-            data,
-            AssociadosRepository.findbyDataCaf
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, {
+            admin: () =>
+                find(
+                    data,
+                    AssociadosRepository.findbyDataCaf
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "VALIDADE_CAF",
+                    "VALIDADE_CAF",
+                    data,
+                    AssociadosRepository.findByDataCafScope,
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "VALIDADE_CAF",
+                    "VALIDADE_CAF",
+                    data,
+                    AssociadosRepository.findByDataCafScope
+                ),
+        });
     };
 
     /**

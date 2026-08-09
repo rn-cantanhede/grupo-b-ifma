@@ -1,6 +1,6 @@
 // Importa as funções utilitárias responsáveis pelas operações básicas no banco de dados.
 // padronizando as operações de CRUD na aplicação.
-const { findAll, findBy, insertData, updateData, deleteData } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, insertData, updateData, deleteData, findWithScope } = require("../../shared/Utils/dbUtils");
 const table = "view_localizacao_beneficiado";
 
 /**
@@ -27,6 +27,14 @@ class LocalizacaoBeneficiadoRepository {
     
     findById(id) {
         return findBy("ID", id, false, table);
+    };
+
+    /**
+     * Busca uma localização beneficiada pelo ID.
+     */
+    
+    findByIdAssociacao(id) {
+        return findBy("ID_ASSOCIACAO", id, true, table);
     };
 
     /**
@@ -89,6 +97,34 @@ class LocalizacaoBeneficiadoRepository {
     
     findID_ASSOCIADO(id) {
         return findBy("ID", id, false, "associado");
+    };
+
+     /**
+     * Consulta pelo ID limitando por escopo.
+     */
+    findByIdScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    };
+
+    /**
+     * Consulta pelo NOME limitando por escopo.
+     */
+    findByNameScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    };
+
+    /**
+     * Consulta pelo ID_ASSOCIACAO limitando por escopo.
+     */
+    findByIdAssociacaoScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    };
+
+    /**
+     * Consulta pelo ID_ASSOCIACAO limitando por escopo.
+     */
+    findByNameAssociacaoScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
     };
 
     /**

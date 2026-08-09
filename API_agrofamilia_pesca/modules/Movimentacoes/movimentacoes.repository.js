@@ -1,6 +1,6 @@
 // Importa as funções utilitárias responsáveis pelas operações básicas no banco de dados.
 // padronizando as operações de CRUD na aplicação.
-const { findAll, findBy, findByInterval, insertData, updateData, deleteData } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, findByInterval, insertData, updateData, deleteData, findWithScope } = require("../../shared/Utils/dbUtils");
 const table = "view_produto_movimentacao";
 
 /**
@@ -42,7 +42,7 @@ class MovimentacoesRepository {
      */
 
     findByIdSecretaria(id) {
-        return findBy("ID_SECRETARIA", id, false, table);
+        return findBy("ID_SECRETARIA", id, true, table);
     };
 
     /**
@@ -51,6 +51,14 @@ class MovimentacoesRepository {
 
     findByIdPessoa(id) {
         return findBy("ID_PESSOA", id, false, table);
+    };
+
+    /**
+     * Busca uma movimentação específica pelo ID_PESSO na view.
+     */
+
+    findByIdAssociado(id) {
+        return findBy("ID_ASSOCIADO", id, false, table);
     };
 
     /**
@@ -107,6 +115,34 @@ class MovimentacoesRepository {
 
     findID_PRODUTO(id) {
         return findBy("ID", id, false, "produto");
+    };
+
+    /**
+     * onsulta pelo ID limitando por escopo.
+     */
+    findByIdScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    };
+
+    /**
+     * Consulta pelo DAP limitando por escopo.
+     */
+    findByDapScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    };
+
+    /**
+     * onsulta pelo PRODUTO limitando por escopo.
+     */
+    findByProdutoScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    };
+
+    /**
+     * onsulta pelo DATA_MOVIMENTACAO limitando por escopo.
+     */
+    findByDataScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
     };
 
     /**
