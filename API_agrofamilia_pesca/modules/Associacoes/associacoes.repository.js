@@ -1,6 +1,6 @@
 // Importa as funções utilitárias responsáveis pelas operações básicas no banco de dados.
 // padronizando as operações de CRUD na aplicação.
-const { findAll, findBy, insertData, updateData, deleteData } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, insertData, updateData, deleteData, findWithScope } = require("../../shared/Utils/dbUtils");
 const table = "view_associacoes";
 
 /**
@@ -38,12 +38,15 @@ class Associacoes {
      * Busca associações pelo nome.
      */
     findByName(name) {
-        return findBy("NOME", name, false, table);
+        return findBy("NOME", name, true, table);
     };
 
+    /**
+     * Busca associações pelo id da secretaria.
+     */
     findbyIdSecretaria(id) {
         return findBy("ID_SECRETARIA", id, false, table);
-    }
+    };
 
     /**
      * Busca associações pela categoria.
@@ -71,7 +74,28 @@ class Associacoes {
      */
     findID_CATEGORIA(id) {
         return findBy("ID", id, false, "categoria");
-    }
+    };
+
+     /**
+     * Consulta pelo ID limitando por escopo.
+     */
+    findByIdScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    };
+
+    /**
+     * Consulta pelo NOME limitando por escopo.
+     */
+    findByNameScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    };
+
+    /**
+     * Consulta pela categoria limitando por escopo.
+     */
+    findByCategoriaScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    };
 
     /**
      * Cria uma nova associação.

@@ -4,7 +4,8 @@ const MovimentacoesPolicy = require("./policies/movimentacoes.policy");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const MovimentacoesRepository = require("./movimentacoes.repository");
 const associadosRepository = require("../Associados/associados.repository");
-const { find, findByInterval, convertString } = require("../../shared/Utils/findUtils");
+const { find, findByInterval, convertString, findByScope } = require("../../shared/Utils/findUtils");
+const baseScope = require("../../shared/base/baseScope");
 
 /**
  * Camada de serviço responsável pela regra de negócio
@@ -20,73 +21,177 @@ class MovimentacoesService {
      * Retorna todas as movimentações registradas.
      */
 
-    async findAllMovimentacoes(user) {
-        if (!MovimentacoesPolicy.canGet(user)) {
+    async findAllMovimentacoes(session) {
+        if (!MovimentacoesPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const result = await MovimentacoesRepository.findAllMovimentacoes();
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getAll(session, {
+            admin: MovimentacoesRepository.findAllMovimentacoes,
+            secretaria: MovimentacoesRepository.findByIdSecretaria,
+            associacao: MovimentacoesRepository.findByIdAssociado,
+            usuario: MovimentacoesRepository.findByIdPessoa
+        });
     };
 
     /**
      * Busca uma movimentação pelo ID.
      */
 
-    async findById(id, user) {
-        if (!MovimentacoesPolicy.canGet(user)) {
+    async findById(value, session) {
+        if (!MovimentacoesPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await find(
-            id,
-            MovimentacoesRepository.findById
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, {
+            admin: () =>
+                find(
+                    value,
+                    MovimentacoesRepository.findById
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "ID",
+                    "ID",
+                    value,
+                    MovimentacoesRepository.findByIdScope
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "ID",
+                    "ID",
+                    value,
+                    MovimentacoesRepository.findByIdScope
+                ),
+
+            usuario: (id) =>
+                findByScope(
+                    id,
+                    sessionField[2],
+                    "ID",
+                    "ID",
+                    value,
+                    MovimentacoesRepository.findByIdScope
+                ),
+        });
     };
 
     /**
      * Busca movimentações associadas a um DAP específico.
      */
 
-    async findbyDap(dap, user) {
-        if (!MovimentacoesPolicy.canGet(user)) {
+    async findbyDap(dap, session) {
+        if (!MovimentacoesPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await find(
-            dap,
-            MovimentacoesRepository.findbyDap
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, {
+            admin: () =>
+                find(
+                    dap,
+                    MovimentacoesRepository.findbyDap
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "DAP",
+                    "DAP",
+                    dap,
+                    MovimentacoesRepository.findByDapScope
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "DAP",
+                    "DAP",
+                    dap,
+                    MovimentacoesRepository.findByDapScope
+                ),
+
+            usuario: (id) =>
+                findByScope(
+                    id,
+                    sessionField[2],
+                    "DAP",
+                    "DAP",
+                    dap,
+                    MovimentacoesRepository.findByDapScope
+                ),
+        });
     };
 
     /**
      * Busca movimentações associadas a um produto específico.
      */
 
-    async findbyProduto(produto, user) {
-        if (!MovimentacoesPolicy.canGet(user)) {
+    async findbyProduto(produto, session) {
+        if (!MovimentacoesPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await find(
-            convertString(produto),
-            MovimentacoesRepository.findbyProduto
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, {
+            admin: () =>
+                find(
+                    produto,
+                    MovimentacoesRepository.findbyProduto
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "PRODUTO",
+                    "PRODUTO",
+                    produto,
+                    MovimentacoesRepository.findByProdutoScope
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "PRODUTO",
+                    "PRODUTO",
+                    produto,
+                    MovimentacoesRepository.findByProdutoScope
+                ),
+
+            usuario: (id) =>
+                findByScope(
+                    id,
+                    sessionField[2],
+                    "PRODUTO",
+                    "PRODUTO",
+                    produto,
+                    MovimentacoesRepository.findByProdutoScope
+                ),
+        });
     };
 
     /**
      * Busca movimentações ocorridas em uma data específica.
      */
 
-    async findbyData(data, user) {
-        if (!MovimentacoesPolicy.canGet(user)) {
+    async findbyData(data, session) {
+        if (!MovimentacoesPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -95,7 +200,45 @@ class MovimentacoesService {
             MovimentacoesRepository.findbyData
         );
 
-        return BaseService.applyScope({ user, data: result });
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
+
+        return baseScope.getFind(session, {
+            admin: () =>
+                find(
+                    data,
+                    MovimentacoesRepository.findbyData
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "DATA_MOVIMENTACAO",
+                    "DATA_MOVIMENTACAO",
+                    data,
+                    MovimentacoesRepository.findByDataScope,
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "DATA_MOVIMENTACAO",
+                    "DATA_MOVIMENTACAO",
+                    data,
+                    MovimentacoesRepository.findByDataScope
+                ),
+
+            usuario: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "DATA_MOVIMENTACAO",
+                    "DATA_MOVIMENTACAO",
+                    data,
+                    MovimentacoesRepository.findByDataScope
+                ),
+        });
     };
 
     /**

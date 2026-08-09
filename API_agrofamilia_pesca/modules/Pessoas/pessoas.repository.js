@@ -1,6 +1,6 @@
 // Importa as funções utilitárias responsáveis pelas operações básicas no banco de dados.
 // padronizando as operações de CRUD na aplicação.
-const { findAll, findBy, findByInterval, insertData, updateData, deleteData } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, findByInterval, insertData, updateData, deleteData, findWithScope } = require("../../shared/Utils/dbUtils");
 const table = "pessoa";
 const view = "view_pessoas";
 
@@ -37,7 +37,7 @@ class PessoasRepository {
      * Busca pessoas pelo id da secretaria.
      */
     findByIdSecretaria(id) {
-        return findBy("ID_SECRETARIA", id, false, view);
+        return findBy("ID_SECRETARIA", id, true, view);
     };
 
     /**
@@ -77,6 +77,34 @@ class PessoasRepository {
 
     findByInicioFim(inicio, fim) {
         return findByInterval("DATA_NASCIMENTO", inicio, fim, view);
+    };
+    
+    /**
+     * Consulta pelo ID na view_usuarios limitando por escopo.
+     */
+    findByIdScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    };
+
+    /**
+     * Consulta pelo NOME na view_usuarios limitando por escopo.
+     */
+    findByNameScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    };
+
+    /**
+     * Consulta pelo GENERO na view_usuarios limitando por escopo.
+     */
+    findByGeneroScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    };
+
+    /**
+     * Consulta pelo DATA na view_usuarios limitando por escopo.
+     */
+    findByDataScope(sessionID, sessionField, fieldID, value) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
     };
 
     /**

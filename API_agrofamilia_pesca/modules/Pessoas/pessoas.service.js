@@ -4,7 +4,8 @@ const PessoasPolicy = require("./policies/pessoas.policy");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const PessoasRepository = require("./pessoas.repository");
 const associadosRepository = require("../Associados/associados.repository");
-const { find, findByInterval, findByIdName, VerifyNivel, listUsers } = require("../../shared/Utils/findUtils");
+const { find, findByInterval, findByIdName, VerifyNivel, listUsers, findByScope } = require("../../shared/Utils/findUtils");
+const baseScope = require("../../shared/base/baseScope");
 
 class PessoasService {
     /**
@@ -21,55 +22,135 @@ class PessoasService {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await PessoasRepository.findAllPessoas();
-
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getAll(user, {
+            admin: PessoasRepository.findAllPessoas,
+            secretaria: PessoasRepository.findByIdSecretaria,
+            associacao: PessoasRepository.findByIdAssociacaao,
+            usuario: PessoasRepository.findById
+        });
     };
 
     /**
      * Busca uma pessoa pelo ID ou pelo nome.
      */
 
-    async find(value, user) {
-        if (!PessoasPolicy.canGet(user)) {
+    async find(value, session) {
+        if (!PessoasPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await findByIdName(
-            value,
-            PessoasRepository.findById,
-            PessoasRepository.findByName
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, {
+            admin: () =>
+                findByIdName(
+                    value,
+                    PessoasRepository.findById,
+                    PessoasRepository.findByName
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "ID",
+                    "NOME",
+                    value,
+                    PessoasRepository.findByIdScope,
+                    PessoasRepository.findByNameScope
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "ID",
+                    "NOME",
+                    value,
+                    PessoasRepository.findByIdScope,
+                    PessoasRepository.findByNameScope
+                ),
+        });
     };
 
     /**
      * Busca pessoas filtrando pelo gênero.
      */
 
-    async findbyGenero(genero, user) {
-        if (!PessoasPolicy.canGet(user)) {
+    async findbyGenero(genero, session) {
+        if (!PessoasPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await find(genero, PessoasRepository.findbyGenero);
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, {
+            admin: () =>
+                find(
+                    genero,
+                    PessoasRepository.findbyGenero
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "ID",
+                    "GENERO",
+                    genero,
+                    PessoasRepository.findByGeneroScope,
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "ID",
+                    "GENERO",
+                    genero,
+                    PessoasRepository.findByGeneroScope
+                ),
+        });
     };
 
     /**
      * Busca pessoas pela data de nascimento.
      */
 
-    async findbyData(data, user) {
-        if (!PessoasPolicy.canGet(user)) {
+    async findbyData(data, session) {
+        if (!PessoasPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await find(data, PessoasRepository.findbyData);
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, {
+            admin: () =>
+                find(
+                    data,
+                    PessoasRepository.findbyData
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "DATA_NASCIMENTO",
+                    "DATA_NASCIMENTO",
+                    data,
+                    PessoasRepository.findByDataScope,
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "DATA_NASCIMENTO",
+                    "DATA_NASCIMENTO",
+                    data,
+                    PessoasRepository.findByDataScope
+                ),
+        });
     };
 
     /**
