@@ -86,7 +86,7 @@ class SecretariasController {
                 resource: "secretaria",
                 action: "find",
                 usuarioId: req.user.id,
-                target: req.params.nivel
+                target: req.params.estado
             }, "Secretaria consultada por estado");
 
             return res.status(200).json(result);
@@ -96,7 +96,7 @@ class SecretariasController {
                 resource: "secretaria",
                 action: "find",
                 usuarioID: req.user.id,
-                target: req.params.nivel
+                target: req.params.estado
             }, "Erro ao buscar secretaria por estado");
 
             console.log(error);
@@ -120,7 +120,7 @@ class SecretariasController {
                 resource: "secretaria",
                 action: "find",
                 usuarioId: req.user.id,
-                target: req.params.nivel
+                target: req.params.cidade
             }, "Secretaria consultada por cidade");
 
 
@@ -131,7 +131,7 @@ class SecretariasController {
                 resource: "secretaria",
                 action: "find",
                 usuarioID: req.user.id,
-                target: req.params.nivel
+                target: req.params.cidade
             }, "Erro ao buscar secretaria por cidade");
 
             console.log(error);
