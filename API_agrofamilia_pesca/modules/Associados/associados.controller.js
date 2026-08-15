@@ -14,8 +14,23 @@ class AssociadosController {
     async AllAssociados(req, res) {
         try {
             const view = await AssociadosService.findAllAssociados(req.user);
+
+            req.log.info({
+                event: "ASSOCIADO_LIST",
+                resource: "associado",
+                action: "list",
+                usuarioID: req.user.id
+            }, "Listagem dos associados");
+
             return res.status(200).json(view);
         } catch (error) {
+            req.log.error({
+                event: "ASSOCIADO_LIST_ERROR",
+                resource: "associado",
+                action: "list",
+                usuarioID: req.user.id
+            }, "Erro ao listar os associados");
+
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });
         };
@@ -31,8 +46,25 @@ class AssociadosController {
                 req.params.value,
                 req.user
             );
+
+            req.log.info({
+                event: "ASSOCIADO_FIND",
+                resource: "associado",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.value
+            }, "Associado consultado por id ou nome");
+
             res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "ASSOCIADO_FIND_ERROR",
+                resource: "associado",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.value
+            }, "Erro ao buscar associado por id ou nome");
+
             console.log(error);
             return next(error);
         };
@@ -48,8 +80,25 @@ class AssociadosController {
                 req.params.caf,
                 req.user
             );
+
+            req.log.info({
+                event: "ASSOCIADO_FIND",
+                resource: "associado",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.caf
+            }, "Associado consultado por CAF");
+
             res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "ASSOCIADO_FIND_ERROR",
+                resource: "associado",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.caf
+            }, "Erro ao buscar associado por CAF");
+
             console.log(error);
             return next(error)
         };
@@ -65,8 +114,25 @@ class AssociadosController {
                 req.params.dap,
                 req.user
             );
+
+            req.log.info({
+                event: "ASSOCIADO_FIND",
+                resource: "associado",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.dap
+            }, "Associado consultado por DAP");
+
             res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "ASSOCIADO_FIND_ERROR",
+                resource: "associado",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.dap
+            }, "Erro ao buscar associado por DAP");
+
             console.log(error);
             return next(error);
         };
@@ -82,8 +148,25 @@ class AssociadosController {
                 req.params.associacao,
                 req.user
             );
+
+            req.log.info({
+                event: "ASSOCIADO_FIND",
+                resource: "associado",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.associacao
+            }, "Associado consultado por associação");
+
             res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "ASSOCIADO_FIND_ERROR",
+                resource: "associado",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.dap
+            }, "Erro ao buscar associado por associação");
+
             console.log(error);
             return next(error);
         };
@@ -99,8 +182,25 @@ class AssociadosController {
                 req.params.data,
                 req.user
             );
+
+            req.log.info({
+                event: "ASSOCIADO_FIND",
+                resource: "associado",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.data
+            }, "Associado consultado por data de validade do CAF");
+
             res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "ASSOCIADO_FIND_ERROR",
+                resource: "associado",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.data
+            }, "Erro ao buscar associado por data de validade do CAF");
+
             console.log(error);
             return next(error);
         };
@@ -117,8 +217,31 @@ class AssociadosController {
                 req.params.fim,
                 req.user
             );
+
+            req.log.info({
+                event: "ASSOCIADO_FIND",
+                resource: "associado",
+                action: "find",
+                usuarioId: req.user.id,
+                target: {
+                    inicio: req.params.inicio,
+                    fim: req.params.fim
+                }
+            }, "Associado consultado por intervalo de validade do CAF");
+
             res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "ASSOCIADO_FIND_ERROR",
+                resource: "associado",
+                action: "find",
+                usuarioId: req.user.id,
+                target: {
+                    inicio: req.params.inicio,
+                    fim: req.params.fim
+                }
+            }, "Erro ao buscar associado por intervalo de validade do CAF");
+
             console.log(error);
             return next(error);
         };
@@ -134,8 +257,23 @@ class AssociadosController {
                 req.body,
                 req.user
             );
+
+            req.log.info({
+                event: "ASSOCIADO_CREATE",
+                resource: "associado",
+                action: "create",
+                usuarioId: req.user.id,
+            }, "Associado criado");
+
             res.status(201).json(result);
         } catch (error) {
+            req.log.error({
+                event: "ASSOCIADO_CREATE_ERROR",
+                resource: "associado",
+                action: "create",
+                usuarioId: req.user.id,
+            }, "Erro ao criar associado");
+            
             console.log(error);
             return next(error);
         };
@@ -148,12 +286,29 @@ class AssociadosController {
     async updateAssociado(req, res, next) {
         try {
             const result = await AssociadosService.updateAssociado(
-                req.params.id, 
+                req.params.id,
                 req.body,
                 req.user
             );
+
+            req.log.info({
+                event: "ASSOCIADO_UPDATE",
+                resource: "associado",
+                action: "update",
+                usuarioId: req.user.id,
+                targetId: req.params.id
+            }, "Associado atualizado");
+
             res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "ASSOCIADO_UPDATE_ERROR",
+                resource: "associado",
+                action: "update",
+                usuarioId: req.user.id,
+                targetId: req.params.id
+            }, "Erro ao atualizar associado");
+
             console.log(error);
             return next(error);
         };
@@ -169,8 +324,25 @@ class AssociadosController {
                 req.params.id,
                 req.user
             );
+
+            req.log.info({
+                event: "ASSOCIADO_DELETE",
+                resource: "associado",
+                action: "delete",
+                usuarioId: req.user.id,
+                targetId: req.params.id
+            }, "Associado excluído");
+
             res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "ASSOCIADO_DELETE_ERROR",
+                resource: "associado",
+                action: "delete",
+                usuarioId: req.user.id,
+                targetId: req.params.id
+            }, "Erro ao apagar associado");
+
             console.log(error);
             return next(error);
         };

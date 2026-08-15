@@ -13,8 +13,23 @@ class AgriculturaFamiliarController {
     async AllAgriculturaFamiliar(req, res) {
         try {
             const result = await AgriculturaFamiliarService.findAllAgriculturaFamiliar(req.user);
+            
+            req.log.info({
+                event: "AGRICULTURA_LIST",
+                resource: "agricultura_familiar",
+                action: "list",
+                usuarioId: req.user.id
+            }, "Listagem dos membros da agricultura familiar");
+
             res.status(200).json(result);
         } catch (error) {
+            req.log.Error({
+                event: "AGRICULTURA_LIST_ERROR",
+                resource: "agricultura_familiar",
+                action: "list",
+                usuarioId: req.user.id
+            }, "Erro ao listar os membros da agricultura familiar");
+
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });
         };
@@ -29,8 +44,25 @@ class AgriculturaFamiliarController {
                 req.params.value,
                 req.user
             );
+
+            req.log.info({
+                event: "AGRICULTURA_FIND",
+                resource: "agricultura_familiar",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.value
+            }, "Membro da agricultura familiar consultado por id ou nome");
+
             res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "AGRICULTURA_FIND_ERROR",
+                resource: "agricultura_familiar",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.value
+            }, "Erro ao buscar membro da agricultura familiar consultado por id ou nome");
+
             console.log(error);
             return next(error);
         };
@@ -45,8 +77,25 @@ class AgriculturaFamiliarController {
                 req.params.caf,
                 req.user
             );
+
+            req.log.info({
+                event: "AGRICULTURA_FIND",
+                resource: "agricultura_familiar",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.caf
+            }, "Membro da agricultura familiar consultado por CAF");
+
             res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "AGRICULTURA_FIND_ERROR",
+                resource: "agricultura_familiar",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.caf
+            }, "Erro ao buscar membro da agricultura familiar consultado por CAF");
+
             console.log(error);
             return next(error);
         };
@@ -61,8 +110,25 @@ class AgriculturaFamiliarController {
                 req.params.dap,
                 req.user
             );
+
+            req.log.info({
+                event: "AGRICULTURA_FIND",
+                resource: "agricultura_familiar",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.dap
+            }, "Membro da agricultura familiar consultado por DAP");
+
             res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "AGRICULTURA_FIND_ERROR",
+                resource: "agricultura_familiar",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.dap
+            }, "Erro ao buscar membro da agricultura familiar consultado por DAP");
+
             console.log(error);
             return next(error);
         };
@@ -77,8 +143,25 @@ class AgriculturaFamiliarController {
                 req.params.programa,
                 req.user
             );
+
+            req.log.info({
+                event: "AGRICULTURA_FIND",
+                resource: "agricultura_familiar",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.programa
+            }, "Membro da agricultura familiar consultado por programa");
+
             res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "AGRICULTURA_FIND_ERROR",
+                resource: "agricultura_familiar",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.programa
+            }, "Erro ao buscar membro da agricultura familiar consultado por programa");
+
             console.log(error);
             return next(error);
         };
@@ -93,8 +176,23 @@ class AgriculturaFamiliarController {
                 req.body,
                 req.user
             );
+
+            req.log.info({
+                event: "AGRICULTURA_CREATE",
+                resource: "agricultura_familiar",
+                action: "create",
+                usuarioId: req.user.id,
+            }, "Membro da agricultura familiar criado");
+
             res.status(201).json(result);
         } catch (error) {
+            req.log.error({
+                event: "AGRICULTURA_CREATE_ERROR",
+                resource: "agricultura_familiar",
+                action: "create",
+                usuarioId: req.user.id,
+            }, "Erro ao criar membro da agricultura familiar");
+
             console.log(error);
             return next(error);
         };
@@ -110,8 +208,25 @@ class AgriculturaFamiliarController {
                 req.body,
                 req.user
             );
+
+            req.log.info({
+                event: "AGRICULTURA_UPDATE",
+                resource: "agricultura_familiar",
+                action: "update",
+                usuarioId: req.user.id,
+                targetId: req.params.id
+            }, "Membro da agricultura familiar atualizado");
+
             res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "AGRICULTURA_UPDATE_ERROR",
+                resource: "agricultura_familiar",
+                action: "update",
+                usuarioId: req.user.id,
+                targetId: req.params.id
+            }, "Erro ao atualizar membro da agricultura familiar");
+
             console.log(error);
             return next(error);
         };
@@ -126,8 +241,25 @@ class AgriculturaFamiliarController {
                 req.params.id,
                 req.user
             );
+
+            req.log.info({
+                event: "AGRICULTURA_DELETE",
+                resource: "agricultura_familiar",
+                action: "delete",
+                usuarioId: req.user.id,
+                targetId: req.params.id
+            }, "Membro da agricultura familiar excluído");
+
             res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "AGRICULTURA_DELETE_ERROR",
+                resource: "agricultura_familiar",
+                action: "delete",
+                usuarioId: req.user.id,
+                targetId: req.params.id
+            }, "Erro ao apagar membro da agricultura familiar");
+
             console.log(error);
             return next(error);
         };

@@ -14,8 +14,23 @@ class CategoriasController {
     async AllCategorias(req, res) {
         try {
             const categorias = await CategoriasService.findAllCategorias(req.user);
+
+            req.log.info({
+                event: "CATEGORIA_LIST",
+                resource: "categoria",
+                action: "list",
+                usuarioID: req.user.id
+            }, "Listagem das categorias");
+
             return res.status(200).json(categorias);
         } catch (error) {
+            req.log.error({
+                event: "CATEGORIA_LIST_ERROR",
+                resource: "categoria",
+                action: "list",
+                usuarioID: req.user.id
+            }, "Erro ao listar as categorias");
+
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });
         };
@@ -31,8 +46,25 @@ class CategoriasController {
                 req.params.value,
                 req.user
             );
+
+            req.log.info({
+                event: "CATEGORIA_FIND",
+                resource: "categoria",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.value
+            }, "Categoria consultada por id ou nome");
+
             return res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "CATEGORIA_FIND_ERROR",
+                resource: "categoria",
+                action: "find",
+                usuarioID: req.user.id,
+                target: req.params.value
+            }, "Erro ao buscar categoria");
+
             console.log(error);
             return next(error);
         };
@@ -48,8 +80,23 @@ class CategoriasController {
                 req.body,
                 req.user
             );
+
+            req.log.info({
+                event: "CATEGORIA_CREATE",
+                resource: "categoria",
+                action: "create",
+                usuarioId: req.user.id,
+            }, "Categoria criada");
+
             return res.status(201).json(result);
         } catch (error) {
+            req.log.error({
+                event: "CATEGORIA_CREATE_ERROR",
+                resource: "categoria",
+                action: "create",
+                usuarioId: req.user.id,
+            }, "Erro ao criar categoria");
+
             console.log(error);
             return next(error);
         };
@@ -66,8 +113,25 @@ class CategoriasController {
                 req.body,
                 req.user
             );
+
+            req.log.info({
+                event: "CATEGORIA_UPDATE",
+                resource: "categoria",
+                action: "update",
+                usuarioId: req.user.id,
+                targetId: req.params.id
+            }, "Categoria atualizada");
+
             return res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "CATEGORIA_UPDATE_ERROR",
+                resource: "categoria",
+                action: "update",
+                usuarioId: req.user.id,
+                targetId: req.params.id
+            }, "Erro ao atualizar categoria");
+
             console.log(error);
             return next(error);
         };
@@ -83,8 +147,25 @@ class CategoriasController {
                 req.params.id,
                 req.user
             );
+
+            req.log.info({
+                event: "CATEGORIA_DELETE",
+                resource: "categoria",
+                action: "delete",
+                usuarioId: req.user.id,
+                targetId: req.params.id
+            }, "Categoria excluída");
+
             return res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "CATEGORIA_DELETE_ERROR",
+                resource: "categoria",
+                action: "delete",
+                usuarioId: req.user.id,
+                targetId: req.params.id
+            }, "Erro ao apagar categoria");
+
             console.log(error);
             return next(error);
         };
