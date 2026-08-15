@@ -15,8 +15,23 @@ class ProgramasController {
     async AllProgramas(req, res) {
         try {
             const programas = await ProgramasService.findAllProgramas(req.user);
+
+            req.log.info({
+                event: "PROGRAMA_LIST",
+                resource: "programa",
+                action: "list",
+                usuarioID: req.user.id
+            }, "Listagem dos programas");
+
             return res.status(200).json(programas);
         } catch (error) {
+            req.log.error({
+                event: "PROGRAMA_LIST_ERROR",
+                resource: "programa",
+                action: "list",
+                usuarioID: req.user.id
+            }, "Erro ao listar os programas");
+
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });
         };
@@ -33,8 +48,25 @@ class ProgramasController {
                 req.params.value,
                 req.user
             );
+
+            req.log.info({
+                event: "PROGRAMA_FIND",
+                resource: "programa",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.value
+            }, "Programa consultado por id ou nome");
+
             return res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "PROGRAMA_FIND_ERROR",
+                resource: "programa",
+                action: "find",
+                usuarioID: req.user.id,
+                target: req.params.value
+            }, "Erro ao buscar programa");
+
             console.log(error);
             return next(error);
         };
@@ -50,8 +82,25 @@ class ProgramasController {
                 req.params.secretaria,
                 req.user
             );
+
+            req.log.info({
+                event: "PROGRAMA_FIND",
+                resource: "programa",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.secretaria
+            }, "Programa consultado por secretaria");
+
             return res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "PROGRAMA_FIND_ERROR",
+                resource: "programa",
+                action: "find",
+                usuarioID: req.user.id,
+                target: req.params.secretaria
+            }, "Erro ao buscar programa por secretaria");
+
             console.log(error);
             return next(error);
         };
@@ -67,8 +116,25 @@ class ProgramasController {
                 req.params.estado,
                 req.user
             );
+
+            req.log.info({
+                event: "PROGRAMA_FIND",
+                resource: "programa",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.estado
+            }, "Programa consultado por estado");
+
             return res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "PROGRAMA_FIND_ERROR",
+                resource: "programa",
+                action: "find",
+                usuarioID: req.user.id,
+                target: req.params.estado
+            }, "Erro ao buscar programa por estado");
+
             console.log(error);
             return next(error);
         };
@@ -84,8 +150,25 @@ class ProgramasController {
                 req.params.recurso,
                 req.user
             );
+
+            req.log.info({
+                event: "PROGRAMA_FIND",
+                resource: "programa",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.recurso
+            }, "Programa consultado por origem do recurso");
+
             return res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "PROGRAMA_FIND_ERROR",
+                resource: "programa",
+                action: "find",
+                usuarioID: req.user.id,
+                target: req.params.recurso
+            }, "Erro ao buscar programa por origem do recurso");
+
             console.log(error);
             return next(error);
         };
@@ -101,8 +184,25 @@ class ProgramasController {
                 req.params.data,
                 req.user
             );
+
+            req.log.info({
+                event: "PROGRAMA_FIND",
+                resource: "programa",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.data
+            }, "Programa consultado por data de inicio");
+
             return res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "PROGRAMA_FIND_ERROR",
+                resource: "programa",
+                action: "find",
+                usuarioID: req.user.id,
+                target: req.params.data
+            }, "Erro ao buscar programa por data de inicio");
+
             console.log(error);
             return next(error);
         };
@@ -118,8 +218,25 @@ class ProgramasController {
                 req.params.data,
                 req.user
             );
+
+            req.log.info({
+                event: "PROGRAMA_FIND",
+                resource: "programa",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.data
+            }, "Programa consultado por data de termino");
+
             return res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "PROGRAMA_FIND_ERROR",
+                resource: "programa",
+                action: "find",
+                usuarioID: req.user.id,
+                target: req.params.data
+            }, "Erro ao buscar programa por data de termino");
+
             console.log(error);
             return next(error);
         };
@@ -135,8 +252,23 @@ class ProgramasController {
                 req.body,
                 req.user
             );
+
+            req.log.info({
+                event: "PROGRAMA_CREATE",
+                resource: "programa",
+                action: "create",
+                usuarioId: req.user.id,
+            }, "Programa criado");
+
             return res.status(201).json(result);
         } catch (error) {
+            req.log.error({
+                event: "PROGRAMA_CREATE_ERROR",
+                resource: "programa",
+                action: "create",
+                usuarioId: req.user.id
+            }, "Erro ao criar programa");
+
             console.log(error);
             return next(error);
         };
@@ -149,12 +281,29 @@ class ProgramasController {
     async updatePrograma(req, res, next) {
         try {
             const result = await ProgramasService.updatePrograma(
-                req.params.id, 
+                req.params.id,
                 req.body,
                 req.user
             );
+
+            req.log.info({
+                event: "PROGRAMA_UPDATE",
+                resource: "programa",
+                action: "update",
+                usuarioId: req.user.id,
+                targetId: req.params.id
+            }, "Programa atualizada");
+
             return res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "PROGRAMA_UPDATE_ERROR",
+                resource: "programa",
+                action: "update",
+                usuarioId: req.user.id,
+                targetId: req.params.id
+            }, "Erro ao atualizar programa");
+
             console.log(error);
             return next(error);
         };
@@ -170,8 +319,25 @@ class ProgramasController {
                 req.params.id,
                 req.user
             );
+
+            req.log.info({
+                event: "PROGRAMA_DELETE",
+                resource: "programa",
+                action: "delete",
+                usuarioId: req.user.id,
+                targetId: req.params.id
+            }, "Programa excluída");
+
             return res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "PROGRAMA_DELETE_ERROR",
+                resource: "programa",
+                action: "delete",
+                usuarioId: req.user.id,
+                targetId: req.params.id
+            }, "Erro ao apagar programa");
+
             console.log(error);
             return next(error);
         };

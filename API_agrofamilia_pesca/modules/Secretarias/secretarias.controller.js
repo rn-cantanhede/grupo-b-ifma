@@ -14,8 +14,23 @@ class SecretariasController {
     async AllSecretarias(req, res) {
         try {
             const secretarias = await SecretariasService.findAllProgramas(req.user);
+
+            req.log.info({
+                event: "SECRETARIA_LIST",
+                resource: "secretaria",
+                action: "list",
+                usuarioID: req.user.id
+            }, "Listagem das secretarias");
+
             return res.status(200).json(secretarias);
         } catch (error) {
+            req.log.error({
+                event: "SECRETARIA_LIST_ERROR",
+                resource: "secretaria",
+                action: "list",
+                usuarioID: req.user.id
+            }, "Erro ao listar as secretarias");
+
             console.log(error);
             return res.status(500).json({ Error: "Erro interno no servidor" });
         };
@@ -28,11 +43,28 @@ class SecretariasController {
     async findSecretarias(req, res, next) {
         try {
             const result = await SecretariasService.find(
-                req.params.value, 
+                req.params.value,
                 req.user
             );
+
+            req.log.info({
+                event: "SECRETARIA_FIND",
+                resource: "secretaria",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.value
+            }, "Secretaria consultada por id ou nome");
+
             return res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "SECRETARIA_FIND_ERROR",
+                resource: "secretaria",
+                action: "find",
+                usuarioID: req.user.id,
+                target: req.params.value
+            }, "Erro ao buscar secretaria");
+
             console.log(error);
             return next(error);
         };
@@ -45,11 +77,28 @@ class SecretariasController {
     async findEstadoSecretarias(req, res, next) {
         try {
             const result = await SecretariasService.findbyEstado(
-                req.params.estado, 
+                req.params.estado,
                 req.user
             );
+
+            req.log.info({
+                event: "SECRETARIA_FIND",
+                resource: "secretaria",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.estado
+            }, "Secretaria consultada por estado");
+
             return res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "SECRETARIA_FIND_ERROR",
+                resource: "secretaria",
+                action: "find",
+                usuarioID: req.user.id,
+                target: req.params.estado
+            }, "Erro ao buscar secretaria por estado");
+
             console.log(error);
             return next(error);
         };
@@ -65,8 +114,26 @@ class SecretariasController {
                 req.params.cidade,
                 req.user
             );
+
+            req.log.info({
+                event: "SECRETARIA_FIND",
+                resource: "secretaria",
+                action: "find",
+                usuarioId: req.user.id,
+                target: req.params.cidade
+            }, "Secretaria consultada por cidade");
+
+
             return res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "SECRETARIA_FIND_ERROR",
+                resource: "secretaria",
+                action: "find",
+                usuarioID: req.user.id,
+                target: req.params.cidade
+            }, "Erro ao buscar secretaria por cidade");
+
             console.log(error);
             return next(error);
         };
@@ -82,8 +149,23 @@ class SecretariasController {
                 req.body,
                 req.user
             );
+
+            req.log.info({
+                event: "SECRETARIA_CREATE",
+                resource: "secretaria",
+                action: "create",
+                usuarioId: req.user.id,
+            }, "Secretaria criada");
+
             return res.status(201).json(result);
         } catch (error) {
+            req.log.error({
+                event: "SECRETARIA_CREATE_ERROR",
+                resource: "secretaria",
+                action: "create",
+                usuarioId: req.user.id
+            }, "Erro ao criar secretaria");
+
             console.log(error);
             return next(error);
         };
@@ -96,12 +178,29 @@ class SecretariasController {
     async updateSecretaria(req, res, next) {
         try {
             const result = await SecretariasService.updateSecretaria(
-                req.params.id, 
+                req.params.id,
                 req.body,
                 req.user
             );
+
+            req.log.info({
+                event: "SECRETARIA_UPDATE",
+                resource: "secretaria",
+                action: "update",
+                usuarioId: req.user.id,
+                targetId: req.params.id
+            }, "Secretaria atualizada");
+
             return res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "SECRETARIA_UPDATE_ERROR",
+                resource: "secretaria",
+                action: "update",
+                usuarioId: req.user.id,
+                targetId: req.params.id
+            }, "Erro ao atualizar secretaria");
+
             console.log(error);
             return next(error);
         };
@@ -110,15 +209,32 @@ class SecretariasController {
     /**
      * Remove uma secretaria existente.
      */
-    
+
     async deleteSecretaria(req, res, next) {
         try {
             const result = await SecretariasService.deleteSecretaria(
                 req.params.id,
                 req.user
             );
+
+            req.log.info({
+                event: "SECRETARIA_DELETE",
+                resource: "secretaria",
+                action: "delete",
+                usuarioId: req.user.id,
+                targetId: req.params.id
+            }, "Secretaria excluída");
+
             return res.status(200).json(result);
         } catch (error) {
+            req.log.error({
+                event: "SECRETARIA_DELETE_ERROR",
+                resource: "secretaria",
+                action: "delete",
+                usuarioId: req.user.id,
+                targetId: req.params.id
+            }, "Erro ao apagar secretaria");
+
             console.log(error);
             return next(error);
         };

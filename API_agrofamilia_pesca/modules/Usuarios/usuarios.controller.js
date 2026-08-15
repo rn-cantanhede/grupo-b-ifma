@@ -15,7 +15,7 @@ class UsuariosController {
             const view = await UsuariosService.findAllUsuarios(req.user);
             req.log.info({
                 event: "USER_LIST",
-                resource: "user",
+                resource: "usuario",
                 action: "list",
                 usuarioID: req.user.id
             }, "Listagem de usuários");
@@ -24,7 +24,7 @@ class UsuariosController {
         } catch (error) {
             req.log.error({
                 event: "USER_LIST_ERROR",
-                resource: "user",
+                resource: "usuario",
                 action: "list",
                 usuarioID: req.user.id
             }, "Erro ao listar usuários");
@@ -46,7 +46,7 @@ class UsuariosController {
 
             req.log.info({
                 event: "USER_FIND",
-                resource: "user",
+                resource: "usuario",
                 action: "find",
                 usuarioId: req.user.id,
                 target: req.params.value
@@ -56,7 +56,7 @@ class UsuariosController {
         } catch (error) {
             req.log.error({
                 event: "USER_FIND_ERROR",
-                resource: "user",
+                resource: "usuario",
                 action: "find",
                 usuarioID: req.user.id,
                 target: req.params.value
@@ -79,7 +79,7 @@ class UsuariosController {
 
             req.log.info({
                 event: "USER_FIND",
-                resource: "user",
+                resource: "usuario",
                 action: "find",
                 usuarioId: req.user.id,
                 target: req.params.nivel
@@ -89,7 +89,7 @@ class UsuariosController {
         } catch (error) {
             req.log.error({
                 event: "USER_FIND_ERROR",
-                resource: "user",
+                resource: "usuario",
                 action: "find",
                 usuarioID: req.user.id,
                 target: req.params.nivel
@@ -112,7 +112,7 @@ class UsuariosController {
 
             req.log.info({
                 event: "USER_FIND",
-                resource: "user",
+                resource: "usuario",
                 action: "find",
                 usuarioId: req.user.id,
                 target: req.params.secretaria
@@ -122,7 +122,7 @@ class UsuariosController {
         } catch (error) {
             req.log.error({
                 event: "USER_FIND_ERROR",
-                resource: "user",
+                resource: "usuario",
                 action: "find",
                 usuarioId: req.user.id,
                 target: req.params.secretaria
@@ -142,7 +142,7 @@ class UsuariosController {
 
             req.log.info({
                 event: "USER_FIND",
-                resource: "user",
+                resource: "usuario",
                 action: "find",
                 usuarioId: req.user.id,
                 target: req.params.login
@@ -152,7 +152,7 @@ class UsuariosController {
         } catch (error) {
             req.log.error({
                 event: "USER_FIND_ERROR",
-                resource: "user",
+                resource: "usuario",
                 action: "find",
                 usuarioId: req.user.id,
                 target: req.params.login
@@ -172,7 +172,7 @@ class UsuariosController {
 
             req.log.info({
                 event: "USER_CREATE",
-                resource: "user",
+                resource: "usuario",
                 action: "create",
                 usuarioId: req.user.id,
             }, "Usuário criado");
@@ -181,7 +181,7 @@ class UsuariosController {
         } catch (error) {
             req.log.error({
                 event: "USER_CREATE_ERROR",
-                resource: "user",
+                resource: "usuario",
                 action: "create",
                 usuarioId: req.user.id
             }, "Erro ao criar usuario");
@@ -204,7 +204,7 @@ class UsuariosController {
 
             req.log.info({
                 event: "USER_UPDATE",
-                resource: "user",
+                resource: "usuario",
                 action: "update",
                 usuarioId: req.user.id,
                 targetId: req.params.id
@@ -214,7 +214,7 @@ class UsuariosController {
         } catch (error) {
             req.log.error({
                 event: "USER_UPDATE_ERROR",
-                resource: "user",
+                resource: "usuario",
                 action: "update",
                 usuarioId: req.user.id,
                 targetId: req.params.id
@@ -238,7 +238,7 @@ class UsuariosController {
 
             req.log.info({
                 event: "LOGIN_UPDATE",
-                resource: "login",
+                resource: "usuario",
                 action: "update",
                 usuarioId: req.user.id,
                 targetId: req.params.id
@@ -248,7 +248,7 @@ class UsuariosController {
         } catch (error) {
             req.log.error({
                 event: "LOGIN_UPDATE_ERROR",
-                resource: "user",
+                resource: "usuario",
                 action: "update",
                 usuarioId: req.user.id,
                 targetId: req.params.id
@@ -273,7 +273,7 @@ class UsuariosController {
 
             req.log.info({
                 event: "USER_DELETE",
-                resource: "login",
+                resource: "usuario",
                 action: "delete",
                 usuarioId: req.user.id,
                 targetId: req.params.id
@@ -283,7 +283,7 @@ class UsuariosController {
         } catch (error) {
             req.log.error({
                 event: "USER_DELETE_ERROR",
-                resource: "user",
+                resource: "usuario",
                 action: "delete",
                 usuarioId: req.user.id,
                 targetId: req.params.id
@@ -306,7 +306,7 @@ class UsuariosController {
             if (!user) {
                 req.log.warn({
                     event: "AUTH_LOGIN_FAILED",
-                    resource: "authentication",
+                    resource: "usuario",
                     action: "login",
                     reason: "INVALID_CREDENTIALS"
                 }, "Falha na autenticação");
@@ -318,9 +318,8 @@ class UsuariosController {
 
             req.log.info({
                 event: "AUTH_LOGIN",
-                resource: "authentication",
+                resource: "usuario",
                 action: "login",
-                usuarioId: req.user.id
             }, "Login realizado");
 
             return res.status(200).json({
@@ -330,7 +329,7 @@ class UsuariosController {
         } catch (error) {
             req.log.warn({
                 event: "AUTH_LOGIN_ERROR",
-                resource: "authentication",
+                resource: "usuario",
                 action: "login",
                 reason: "INVALID_CREDENTIALS"
             }, "Falha na autenticação");
@@ -356,7 +355,7 @@ class UsuariosController {
 
                 req.log.info({
                     event: "AUTH_LOGOUT",
-                    resource: "authentication",
+                    resource: "usuario",
                     action: "logout",
                     usuarioId: req.user.id
                 }, "Logout realizado");
@@ -366,7 +365,7 @@ class UsuariosController {
         } catch (error) {
             req.log.info({
                 event: "AUTH_LOGOUT_FAILED",
-                resource: "authentication",
+                resource: "usuario",
                 action: "logout",
                 usuarioId: req.user.id
             }, "Falha no logout");
