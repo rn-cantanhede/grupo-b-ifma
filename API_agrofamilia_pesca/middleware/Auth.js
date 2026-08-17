@@ -12,6 +12,13 @@ module.exports = function auth(req, res, next) {
     const secret = process.env.JWT_SECRET;
 
     if (!authToken) {
+        req.log.warn({
+            event: "AUTH_TOKEN_WARN",
+            resource: "authentication",
+            action: "login",
+            usuarioId: req.user.id,
+        }, "Token não informado");
+
         return next(new Erros("Token não informado", 401));
     };
 
@@ -21,8 +28,23 @@ module.exports = function auth(req, res, next) {
     try {
         const decoded = jwt.verify(token, secret);
         req.user = decoded;
+
+        req.log.info({
+            event: "AUTH_TOKEN",
+            resource: "authentication",
+            action: "login",
+            usuarioId: req.user.id,
+        }, "Token válido");
+
         return next();
     } catch (error) {
+        req.log.error({
+            event: "AUTH_TOKEN_ERROR",
+            resource: "authentication",
+            action: "login",
+            usuarioId: req.user.id,
+        }, "Token inválido ou expirado");
+
         console.log(error);
         return next(new Erros("Token inválido ou expirado", 401));
     };
