@@ -27,15 +27,7 @@ O **Agro Família Pesca** tem como objetivo centralizar e organizar dados relaci
 
 `├── consumo/                 # Front-end estático para testes`
 
-`├── dbConfig/                # Scripts SQL do banco de dados`
-
 `└── docs/                    # Documentação acadêmica e técnica`
-
-### 
-
-### 
-
-### 
 
 ### **Foco do Sistema**
 
@@ -46,19 +38,25 @@ Este repositório possui múltiplos projetos, porém o **núcleo funcional e com
 ### **Backend**
 
 * **Node.js**
-
+  
 * **Express.js**
-
+  
 * **MySQL**
-
+  
 * **Knex.js**
-
+  
 * **JWT (JSON Web Token)**
-
+  
 * **bcryptjs**
-
+  
+* **Pino**
+  
+* **Pino HTTP**
+  
+* **express-rate-limit**
+  
 * **dotenv**
-
+  
 * **nodemon**
 
 ### **Ferramentas de Teste**
@@ -69,7 +67,7 @@ Este repositório possui múltiplos projetos, porém o **núcleo funcional e com
 
 ## **Requisitos do Sistema**
 
-* Node.js **14+**
+* Node.js
 
 * MySQL
 
@@ -109,17 +107,11 @@ Na raiz de `API_agrofamilia_pesca`:
 
 ### Configuração do Banco de Dados
 
-A criação e configuração do banco de dados é realizada automaticamente pela aplicação durante a inicialização.
+A aplicação realiza automaticamente a configuração da estrutura do banco de dados durante a inicialização.
 
-Os scripts SQL utilizados nesse processo estão localizados no diretório `dbConfig/`:
+O versionamento da estrutura utiliza Knex Migrations, enquanto os dados iniciais são gerenciados através de Knex Seeds.
 
-| Script | Descrição |
-| ------- | --------- |
-| `db_agrofamilia_pesca.sql` | Criação do banco de dados e das tabelas. |
-| `INSERTS.sql` | Inserção dos dados iniciais. |
-| `VIEWS.sql` | Criação das views utilizadas pela aplicação. |
-
-> **Observação:** Não é necessário executar esses scripts manualmente, pois a aplicação realiza esse processo automaticamente.
+Não é necessário executar scripts SQL manualmente para preparar o banco de dados.
 
 ## **Executando a API**
 
@@ -135,25 +127,26 @@ Servidor iniciado em:
 
 ## **Autenticação**
 
-### **Login**
+A autenticação utiliza **JWT (JSON Web Token)**.
+
+### Login
 
 `POST /login`
 
-#### **Payload:**
+#### Payload
 
-`{`
-
-  `"LOGIN": "admin",`
-
-  `"SENHA": "123456"`
-
-`}`
+```json
+{
+  "LOGIN": "admin",
+  "SENHA": "senha_1"
+}
+```
 
 Retorno:
 
 * JWT válido por **7 dias**
 
-* Token deve ser enviado no header `Authorization`
+* Token deve ser enviado no header `Authorization: Bearer <token>`
 
 ## **Estrutura da API Principal**
 
@@ -183,50 +176,83 @@ Retorno:
 
 `└── routes/`
 
-## **Padrão Arquitetural**
+### **Padrão Arquitetural**
 
-A API segue uma **Arquitetura Monolítica Modular**, baseada em **camadas bem definidas**:
+A API segue uma **Arquitetura Monolítica Modular**, baseada em camadas bem definidas:
 
-* **Controller**
+- **Controller**
+  - Entrada e resposta das requisições
+  - Não contém regras de negócio
 
-  * Entrada da requisição
+- **Service**
+  - Regras de negócio
+  - Validações
+  - Orquestração das operações
 
-  * Não contém regra de negócio
+- **Repository**
+  - Acesso ao banco
 
-* **Service**
+- **BaseScope**
+  - Aplicação dos filtros de escopo diretamente nas consultas
+  - Restrição dos dados de acordo com o contexto de acesso do usuário
 
-  * Regras de negócio
+- **Policy**
+  - Autorização por nível de acesso
 
-  * Validações
+- **Shared**
+  - Recursos reutilizáveis
 
-  * Controle de escopo
+## **Controle de Escopo de Dados**
 
-* **Repository**
+A API utiliza o `BaseScope` para aplicar restrições de acesso diretamente nas consultas ao banco de dados.
 
-  * Acesso ao banco
+Diferentemente da abordagem anterior, na qual os dados eram consultados e filtrados posteriormente pela aplicação, o `BaseScope` incorpora as condições de escopo à própria consulta.
 
-  * Queries SQL / Knex
+Isso proporciona:
 
-* **Policy**
+- Redução da quantidade de dados retornados pelo banco;
+- Menor processamento desnecessário na aplicação;
+- Melhor desempenho das consultas;
+- Maior isolamento dos dados;
+- Redução do risco de exposição de registros fora do escopo autorizado.
 
-  * Autorização por nível de acesso
+Os endpoints que realizam consultas respeitam o escopo de acesso do usuário, incluindo o escopo **`own`**, que limita a consulta aos dados pertencentes ao próprio usuário quando aplicável.
 
-* **Shared**
+## **Controle de Acesso**
 
-  * Recursos reutilizáveis
+A API utiliza dois mecanismos complementares:
 
-    
+### RBAC — Role-Based Access Control
 
-## **Controle de Acesso (RBAC)**
+Define quais operações cada nível de usuário pode executar.
 
 | Nível | Perfil |
-| :---: | :---: |
+|---|---|
 | 1 | Administrador |
 | 2 | Secretaria |
 | 3 | Associação |
 | 4 | Usuário |
 
-O sistema aplica **escopo automático de dados**, garantindo que cada usuário visualize apenas informações compatíveis com seu nível institucional.
+### Data Scoping
+
+Além da autorização por nível, as consultas aos dados são restringidas pelo **BaseScope**, garantindo que o usuário acesse somente registros pertencentes ao seu escopo de acesso.
+
+O escopo `own`, por exemplo, limita a consulta aos registros pertencentes ao próprio usuário quando aplicável.
+
+## **Segurança**
+
+A API utiliza múltiplas camadas de proteção, incluindo:
+
+- Autenticação baseada em `JWT`;
+- Senhas protegidas com `bcryptjs`;
+- Controle de acesso baseado em RBAC;
+- Escopo de dados aplicado diretamente nas consultas;
+- Rate limiting na rota de login;
+- Validação de IDs antes de operações destrutivas;
+- Logs estruturados para auditoria e diagnóstico;
+- Política de segurança documentada em `SECURITY.md`.
+
+A aplicação segue o princípio de **Defense in Depth**, combinando diferentes mecanismos de proteção em suas camadas.
 
 ## **Boas Práticas Adotadas**
 
@@ -243,6 +269,16 @@ O sistema aplica **escopo automático de dados**, garantindo que cada usuário v
 * Validação de IDs antes de operações destrutivas
 
 * Segurança em profundidade (*Defense in Depth*)
+  
+* Logs estruturados com `Pino`
+  
+* Logging HTTP com `Pino HTTP`
+  
+* Rate limiting para autenticação
+  
+* Aplicação de escopo diretamente nas consultas
+  
+* Separação entre autorização e regras de negócio
 
 
 ## **Documentação**
