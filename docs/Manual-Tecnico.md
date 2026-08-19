@@ -40,15 +40,13 @@ Após a instalação das dependências, o ambiente estará preparado para a conf
 
 O sistema utiliza um banco de dados relacional MySQL. A configuração da conexão é realizada por meio de variáveis de ambiente, definidas em um arquivo `.env` localizado na raiz da API principal.
 
-Durante a inicialização da aplicação, o sistema verifica a existência do banco de dados e de seus objetos, realizando automaticamente a criação da estrutura necessária, a inserção dos dados iniciais e a criação das *views*, quando aplicável. 
+Durante a inicialização da aplicação, a estrutura do banco é gerenciada através de **Knex Migrations**, responsáveis pelo versionamento das alterações do esquema.
 
-* Criação do banco de dados e tabelas
+Os dados iniciais são gerenciados através de **Knex Seeds**.
 
-* Inserção de dados iniciais
+As migrations e seeds permitem reproduzir e controlar a evolução do banco de dados sem depender da execução manual de scripts SQL. 
 
-* Criação de views utilizadas pela aplicação
-
-Essa abordagem simplifica a implantação do sistema, reduz a necessidade de configurações manuais e garante que a estrutura do banco de dados permaneça consistente com os requisitos da aplicação e com o controle de escopo implementado. 
+As **views** utilizadas pela aplicação são criadas e mantidas de acordo com a estrutura definida para o banco.
 
 ## **5\. Execução da Aplicação**
 
@@ -74,41 +72,101 @@ Essa organização promove alta coesão e baixo acoplamento entre os componentes
 
 O sistema adota uma arquitetura monolítica modular baseada no padrão Layered Architecture. As camadas são bem definidas:
 
-* Controllers são responsáveis apenas pelo controle de fluxo HTTP e resposta ao cliente.
+* **Controllers:** responsáveis pelo fluxo HTTP, recebimento das requisições e construção das respostas.
 
-* Services concentram toda a lógica de negócio, validações e aplicação de escopo.
+* **Services**: concentram as regras de negócio, validações e orquestração das operações.
 
-* Repositories encapsulam o acesso ao banco de dados, isolando a lógica SQL.
+* **Repositories:** encapsulam o acesso ao banco de dados e as consultas realizadas através do Knex.
 
-* Policies implementam as regras de autorização e controle de acesso.
+* **Policies**: implementam as regras de autorização baseadas no nível de acesso do usuário
+
+* **Services**: concentram as regras de negócio, validações e orquestração das operações.
+
+* **BaseScope**: Responsável pela aplicação dos filtros de escopo diretamente nas consultas ao banco de dados. O **BaseScope** substitui a abordagem anterior em que os dados eram consultados e filtrados posteriormente pelo **BaseService**. Essa mudança reduz o volume de dados retornados e processados pela aplicação.
 
 Esse padrão garante clareza, manutenibilidade e segurança no desenvolvimento.
 
 ## **8\. Autenticação e Segurança**
 
-O sistema utiliza autenticação baseada em JWT (JSON Web Token), permitindo sessões stateless e seguras. Os tokens possuem validade de sete dias e carregam informações essenciais para autorização, como nível de acesso e vínculo institucional.
+O sistema utiliza autenticação baseada em **JWT (JSON Web Token)**, permitindo sessões stateless e seguras. Os tokens possuem validade de sete dias e carregam informações essenciais para autorização, como nível de acesso e vínculo institucional.
 
 As senhas são armazenadas de forma criptografada utilizando bcrypt, com uso de salt para aumentar a segurança.
 
-#### **8.1 Tratamento de Senhas em Texto (Legacy Passwords)**
+### **8.1 Tratamento de Senhas em Texto (Legacy Passwords)**
 
-O sistema **Agro Família Pesca** oferece suporte à autenticação de usuários cujas senhas foram armazenadas em texto simples, garantindo compatibilidade com registros antigos **sem comprometer a segurança.**
+O sistema oferece compatibilidade temporária com usuários cujas senhas foram armazenadas em texto simples em versões anteriores.
 
-No processo de login, o sistema recupera as credenciais do usuário e verifica se o valor armazenado no campo de senha está no formato de hash bcrypt. Essa verificação é feita dinamicamente durante a autenticação.
+Durante o login, caso a credencial legada seja validada com sucesso, a senha é imediatamente convertida para um **hash bcrypt** e atualizada no banco.
 
-Caso a senha **não esteja criptografada**, o sistema valida o acesso por comparação direta entre a senha informada e o valor armazenado. Após a validação bem-sucedida, **a senha é automaticamente convertida** para o formato bcrypt e atualizada no banco de dados, eliminando a necessidade de intervenção manual.
+Essa estratégia permite realizar uma migração gradual das credenciais legadas, reduzindo a exposição associada ao armazenamento em texto simples sem exigir uma migração manual de todos os usuários.
 
-Se a senha já estiver criptografada, a autenticação é realizada normalmente utilizando o mecanismo de comparação segura do bcrypt. Em ambos os cenários, o sistema mantém o mesmo fluxo de geração de token JWT e controle de acesso por nível e escopo.
+No processo de login, o sistema recupera as credenciais do usuário e verifica se o valor armazenado no campo de senha está no formato de hash **bcrypt**. Essa verificação é feita dinamicamente durante a autenticação.
+
+Caso a senha **não esteja criptografada**, o sistema valida o acesso por comparação direta entre a senha informada e o valor armazenado. Após a validação bem-sucedida, **a senha é automaticamente convertida** para o formato **bcrypt** e atualizada no banco de dados, eliminando a necessidade de intervenção manual.
+
+Se a senha já estiver criptografada, a autenticação é realizada normalmente utilizando o mecanismo de comparação segura do **bcrypt**. Em ambos os cenários, o sistema mantém o mesmo fluxo de geração de token **JWT** e controle de acesso por nível e escopo.
 
 **Essa abordagem garante:**
 
 * **Continuidade** do funcionamento do sistema;  
 * **Migração automática** para padrões modernos de segurança;  
 * **Redução de riscos** associados ao armazenamento de senhas em texto simples;  
-* **Facilidade de manutenção** e evolução do sistema.  
-   
+* **Facilidade de manutenção** e evolução do sistema.
+
+### **8.2 Rate Limiting**
+
+A rota de login utiliza **express-rate-limit** para limitar a quantidade de tentativas de autenticação em determinado intervalo.
+
+O mecanismo reduz a exposição da API a tentativas automatizadas de autenticação e ataques de força bruta.
+
+O rate limiter é aplicado especificamente ao processo de login, permitindo um controle mais rigoroso sobre operações de autenticação.
+
+### **8.3 Logs Estruturados**
+
+A aplicação utiliza **Pino** e **Pino HTTP** para geração de logs estruturados.
+
+O sistema permite registrar informações sobre eventos e requisições da API de maneira padronizada, facilitando:
+
+* Diagnóstico de problemas;  
+* Monitoramento;  
+* Análise de comportamento da aplicação;  
+* Auditoria;  
+* Investigação de eventos de segurança.
+
+Os arquivos de log são mantidos fora do controle de versão através do **.gitignore**.
+
+### **8.4 Camadas de Segurança**
+
+A API utiliza múltiplos mecanismos complementares:
+
+* Autenticação:  
+  *    JWT  
+  *    bcrypt  
+      
+* Autorização:  
+  *    RBAC  
+  *    Policies
+
+
+* Controle de dados:  
+  *    BaseScope  
+  *    Escopo \`own\`
+
+
+* Proteção contra abuso:  
+  *    Rate Limiting
+
+
+* Observabilidade:  
+  *    Logs estruturados  
+  *    Pino  
+  *    Pino HTTP
 
 ## **9\. Controle de Acesso e Escopo**
+
+O sistema utiliza dois mecanismos complementares:
+
+### **9.1 RBAC**
 
 O controle de acesso é baseado no modelo RBAC (Role-Based Access Control), com quatro níveis hierárquicos:
 
@@ -120,23 +178,35 @@ O controle de acesso é baseado no modelo RBAC (Role-Based Access Control), com 
 
 * Usuário
 
+O nível define quais operações podem ser executadas pelo usuário.
+
+### **9.2 Data Scoping**
+
 Além do nível, o sistema aplica escopo de dados, garantindo que cada usuário visualize apenas informações compatíveis com sua Secretaria ou Associação. Esse controle é implementado na camada de serviço por meio de um mecanismo de escopo centralizado.
 
 ## **10\. Padrões e Boas Práticas**
 
-Durante o desenvolvimento do sistema, foram adotadas as seguintes boas práticas:
+Além da autorização, a API aplica restrições sobre os próprios dados que podem ser consultados.
 
-* Controllers sem regras de negócio
+Esse mecanismo é implementado através do **BaseScope**, que adiciona os filtros de escopo diretamente às consultas realizadas no banco.
 
-* Validações centralizadas na camada de serviço
+Dessa forma, a aplicação não realiza uma consulta ampla para posteriormente filtrar os resultados. O banco já recebe a consulta com as restrições correspondentes ao contexto do usuário.
 
-* Uso de views SQL para operações de leitura
+Os endpoints que realizam consultas utilizam esse mecanismo de forma transversal.
 
-* Operações de escrita realizadas apenas em tabelas base
+Quando aplicável, o escopo **own** limita a consulta aos dados pertencentes ao próprio usuário.
 
-* Validação de existência de registros antes de operações destrutivas
+Essa abordagem proporciona:
 
-* Separação clara entre autenticação, autorização e persistência
+* Maior segurança;
+
+* Menor quantidade de dados retornados;
+
+* Menor processamento na aplicação;
+
+* Melhor desempenho das consultas;
+
+* Padronização da regra de acesso aos dados.
 
 ## **11\. Manutenção e Evolução**
 
@@ -198,7 +268,7 @@ Responsável por autenticar o usuário no sistema e gerar o token JWT que será 
 
   * Secretaria vinculada
 
-* O controle de acesso é aplicado nas camadas de **Service** e **Policy**, não no Controller.
+* O Controller é responsável pelo fluxo HTTP. A autorização é determinada pelas **Policies**, enquanto o controle de escopo dos dados é aplicado pelo **BaseScope** durante a construção das consultas.
 
 ### **12.2 Módulo Usuários**
 
