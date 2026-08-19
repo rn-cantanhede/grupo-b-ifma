@@ -65,6 +65,7 @@ Responsável por receber requisições HTTP, validar parâmetros básicos e enca
   * Aplicar regras de negócio  
   * Validar permissões  
   * Orquestrar chamadas ao repositório  
+  * Coordenar operações que dependem do contexto de acesso  
     
 
 #### **4.2.3 Camada de Persistência (Repository Layer)**
@@ -78,14 +79,35 @@ Abstrai o acesso ao banco de dados, encapsulando consultas SQL e operações CRU
 
 #### **4.2.4 Camada Compartilhada (Shared)**
 
-Contém recursos reutilizáveis por todo o sistema.
+Contém componentes e recursos reutilizáveis por diferentes módulos da aplicação.
 
 * **Exemplos**:  
   * BaseService  
+  * BaseScope  
   * Errors  
   * validationsUtils  
-  * LevelPolicy  
-    
+  * LevelPolicy
+
+#### **4.2.5 Controle de Escopo (BaseScope)**
+
+O sistema utiliza o componente **BaseScope** para aplicar restrições de acesso diretamente nas consultas realizadas ao banco de dados.
+
+A implementação atual substitui a abordagem anterior utilizada pelo **BaseService**, na qual os dados eram consultados primeiro e filtrados posteriormente pela aplicação.
+
+Com o **BaseScope**, as condições de escopo são incorporadas à própria consulta, permitindo que o banco de dados retorne somente os registros compatíveis com o contexto de acesso do usuário.
+
+Essa abordagem proporciona:
+
+* Redução da quantidade de dados retornados pelo banco;  
+* Redução do processamento realizado pela aplicação;  
+* Melhoria da performance das consultas;  
+* Maior isolamento dos dados;  
+* Redução do risco de carregamento de informações fora do escopo autorizado.
+
+
+O mecanismo é aplicado de forma transversal aos endpoints que realizam consultas, e não apenas ao módulo de usuários.
+
+Quando aplicável, o escopo **own** restringe a consulta aos registros pertencentes ao próprio usuário.
 
 ## **5\. Controle de Acesso e Segurança**
 
@@ -111,7 +133,9 @@ Essa solução demonstra um equilíbrio entre usabilidade, segurança e manuten�
 
 ### **5.2 Autorização (RBAC)**
 
-O modelo de autorização é baseado em **RBAC (Role-Based Access Control)** combinado com **escopo contextual**.
+O RBAC define as permissões associadas ao nível do usuário, enquanto o escopo contextual restringe os registros que podem ser acessados dentro dessas permissões.
+
+Assim, autorização e filtragem de dados são tratadas como mecanismos complementares.
 
 **Níveis de Acesso**
 
@@ -124,7 +148,36 @@ O modelo de autorização é baseado em **RBAC (Role-Based Access Control)** com
 
 ### **5.3 Escopo de Dados**
 
-O sistema utiliza o padrão **Scope**, implementado no BaseService.applyScope, garantindo que cada usuário visualize apenas dados compatíveis com sua Secretária ou Associação.
+Além do controle de acesso baseado em papéis (RBAC), a API utiliza **escopo contextual de dados**.
+
+O mecanismo é implementado através do **BaseScope**, responsável por aplicar os filtros de acesso diretamente nas consultas ao banco de dados.
+
+Dessa forma, os endpoints que realizam consultas retornam somente informações compatíveis com o escopo do usuário autenticado.
+
+Entre os escopos utilizados está o **own**, que restringe o acesso aos dados pertencentes ao próprio usuário quando essa regra se aplica ao recurso consultado.
+
+A aplicação do escopo diretamente na consulta substitui a abordagem anterior, na qual os dados eram recuperados e filtrados posteriormente pela aplicação.
+
+Essa mudança melhora:
+
+* **Performance**, reduzindo o volume de dados transferidos e processados;  
+* **Segurança**, evitando o carregamento desnecessário de registros fora do escopo;  
+* **Padronização**, centralizando a aplicação das regras de escopo;  
+* **Manutenibilidade**, reduzindo a duplicação da lógica de filtragem entre os módulos.
+
+### **5.4 Rate Limiting**
+
+A rota de autenticação possui um mecanismo de rate limiting utilizando  **express-rate-limit**.
+
+O objetivo é limitar a quantidade de tentativas de login realizadas em determinado intervalo, reduzindo a exposição da API a ataques de força bruta e tentativas automatizadas de autenticação.
+
+### **5.5 Observabilidade e Logs**
+
+A API utiliza **Pino** e **Pino HTTP** para geração de logs estruturados.
+
+O mecanismo permite registrar eventos e requisições de forma padronizada, facilitando diagnóstico, monitoramento e auditoria da aplicação.
+
+Os logs são armazenados em diretório próprio, que não é versionado no repositório.
 
 ## **6\. Diagrama Conceitual (Descrição)**
 
@@ -132,27 +185,31 @@ O sistema utiliza o padrão **Scope**, implementado no BaseService.applyScope, g
 
 Cliente
 
-  ↓
+   ↓
 
 Router
 
-  ↓
+   ↓
 
 Controller
 
-  ↓
+   ↓
 
 Service
 
-  ↓
+   ↓
 
-Policy \+ Scope
+Policy
 
-  ↓
+   ↓
+
+BaseScope
+
+   ↓
 
 Repository
 
-  ↓
+   ↓
 
 Banco de Dados (MySQL)
 
@@ -321,7 +378,9 @@ Esses relacionamentos são implementados através de **chaves estrangeiras**, ga
 
 ### **7.5 Uso de Views**
 
-O sistema utiliza **views SQL** como camada de abstração para consultas.
+As **views** são utilizadas como camada de abstração para determinadas consultas de leitura, enquanto o **BaseScope** é responsável por aplicar as restrições contextuais de acesso diretamente às consultas.
+
+Dessa forma, as **views** organizam e simplificam consultas complexas, enquanto o mecanismo de escopo controla quais registros podem ser retornados ao usuário.
 
 **Objetivos do uso de Views:**
 
@@ -487,7 +546,15 @@ O diagrama abaixo representa a **estrutura lógica do banco de dados**, com suas
 
 ![][image1]
 
-### 
+### **7.11 Versionamento do Banco de Dados**
+
+A estrutura do banco de dados é versionada utilizando **Knex Migrations**.
+
+As migrações permitem acompanhar e reproduzir a evolução do esquema do banco de dados de forma controlada.
+
+Os dados iniciais da aplicação são gerenciados através de  **Knex Seeds**, permitindo separar a definição da estrutura do banco da carga inicial de dados.
+
+Esse mecanismo substitui a dependência de execução manual de scripts SQL para configuração inicial do banco.
 
 ## **8\. Considerações Finais**
 
@@ -495,7 +562,11 @@ O desenvolvimento do projeto **Agro Família Pesc**a evidencia a aplicação pr�
 
 A adoção de uma **estrutura modular**, com clara separação entre Controllers, Services, Repositories e Policies, contribui diretamente para a **manutenibilidade, extensibilidade e legibilidade do sistema**. Essa organização reduz o acoplamento entre componentes, facilita a identificação de responsabilidades e **promove boas práticas** alinhadas à engenharia de software moderna.
 
-Além disso, o uso de escopo de dados baseado no contexto do usuário garante que as informações sejam acessadas de forma **segura e adequada** aos diferentes níveis hierárquicos do sistema (Admin, Secretaria, Associação e Usuário). Tal abordagem demonstra maturidade técnica no tratamento de requisitos de segurança e privacidade, especialmente relevantes em sistemas de natureza institucional e governamental.
+Além disso, a implementação do **BaseScope** representa uma evolução importante na arquitetura de segurança do sistema. Os filtros de escopo passaram a ser aplicados diretamente nas consultas ao banco de dados, substituindo a abordagem anterior de filtragem posterior dos resultados.
+
+Essa alteração permite reduzir o volume de dados retornados e processados pela aplicação, contribuindo simultaneamente para a melhoria da performance e para o fortalecimento do isolamento dos dados.
+
+O mecanismo é aplicado de forma transversal aos endpoints que realizam consultas, permitindo que o acesso seja limitado de acordo com o contexto institucional do usuário, incluindo o escopo **own** quando aplicável.
 
 Do ponto de vista acadêmico, o projeto atende plenamente aos objetivos propostos, integrando teoria e prática de forma coerente. Do ponto de vista técnico, o sistema apresenta-se como uma base sólida para futuras expansões, podendo evoluir para incluir funcionalidades como:
 
