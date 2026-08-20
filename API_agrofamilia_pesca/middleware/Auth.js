@@ -15,8 +15,7 @@ module.exports = function auth(req, res, next) {
         req.log.warn({
             event: "AUTH_TOKEN_WARN",
             resource: "authentication",
-            action: "login",
-            usuarioId: req.user.id,
+            action: "login"
         }, "Token não informado");
 
         return next(new Erros("Token não informado", 401));
@@ -41,8 +40,7 @@ module.exports = function auth(req, res, next) {
         req.log.error({
             event: "AUTH_TOKEN_ERROR",
             resource: "authentication",
-            action: "login",
-            usuarioId: req.user.id,
+            action: "login"
         }, "Token inválido ou expirado");
 
         console.log(error);
