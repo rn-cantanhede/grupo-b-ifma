@@ -2,59 +2,132 @@ const knex = require("../../database/connection");
 
 /**
  * Retorna todos os registros da tabela informada.
- * Operação genérica para consultas completas.
+ * Operação genérica para consultas completas com paginação.
  */
 
-async function findAll(table) {
-    return await knex.select("").table(table);
+async function findAll(table, page, limit) {
+    const offset = (page - 1) * limit;
+    const result = await knex.select("")
+        .from(table)
+        .limit(limit)
+        .offset(offset);
+    const count = await knex(table).count("* as count");
+    const total = count;
+
+    if (!result.length) {
+        return undefined;
+    };
+    
+    return { result, total };
 };
 
 /**
  * Retorna registros cujo ano do campo especificado
- * esteja dentro do intervalo informado.
+ * esteja dentro do intervalo informado com paginação.
  */
 
-async function findByInterval(field, inicio, fim, table) {
+async function findByInterval(field, inicio, fim, table, page, limit) {
+    const offset = (page - 1) * limit;
     const result = await knex.select("")
         .from(table)
-        .whereRaw(`YEAR(??) BETWEEN ? AND ?`, [field, inicio, fim]);
+        .whereRaw(`YEAR(??) BETWEEN ? AND ?`, [field, inicio, fim])
+        .limit(limit)
+        .offset(offset);
 
-    return result;
+    const count = await knex(table).count("* as count");
+    const total = count;
+
+    if (!result.length) {
+        return undefined;
+    };
+
+    return { result, total };
 };
 
 /**
- * Executa busca por correspondência parcial em um campo.
+ * Executa busca por correspondência parcial em um campo com paginação.
  * Caso `multiple` seja falso, retorna apenas o primeiro resultado.
  */
 
-async function findBy(field, value, multiple = false, table) {
-    const result = await knex.select("")
-        .from(table)
-        .where(field, "like", `%${value}%`)
-        .orderBy(field, "asc");
+async function findBy(field, value, multiple = false, table, page, limit) {
+    const offset = (page - 1) * limit;
+    let query = knex.select("").from(table);
+    let countQuery = knex(table);
 
-    if (result.length) {
-        return multiple ? result : result[0];
+    if (isNaN(value)) {
+        query = query.where(field, "like", `%${value}%`);
     } else {
+        query = query.where(field, value);
+    };
+
+    const result = await query
+        .from(table)
+        .orderBy(field, "asc")
+        .limit(limit)
+        .offset(offset);
+
+    if (isNaN(value)) {
+        countQuery = countQuery.where(field, "like", `%${value}%`);
+    } else {
+        countQuery = countQuery.where(field, value);
+    };
+
+    const total = await countQuery.count("* as count");
+
+    if (!result.length) {
         return undefined;
     };
+
+    return multiple ? { result, total } : { result: result[0], total };
 };
 
-async function findWithScope(
-    sessionID, sessionField, field, 
-    value, multiple = false, table) {
-    const result = await knex.select("")
-        .from(table)
-        .where(field, "like", `%${value}%`)
-        .andWhere(sessionField, sessionID)
-        .orderBy(field, "asc");
+/**
+ * Executa busca por correspondência aplicando escopo com paginação.
+ * Caso `multiple` seja falso, retorna apenas o primeiro resultado.
+*/
 
-    if (result.length) {
-        return multiple ? result : result[0];
+async function findWithScope(
+    sessionID,
+    sessionField,
+    field,
+    value,
+    multiple = false,
+    table,
+    page,
+    limit
+) {
+    const offset = (page - 1) * limit;
+    let query = knex.select("").from(table);
+    let countQuery = knex(table);
+
+    if (isNaN(value)) {
+        query = query.where(field, "like", `%${value}%`);
     } else {
+        query = query.where(field, value);
+    };
+
+    const result = await query
+        .andWhere(sessionField, sessionID)
+        .orderBy(field, "asc")
+        .limit(limit)
+        .offset(offset);
+
+    if (isNaN(value)) {
+        countQuery = countQuery.where(field, "like", `%${value}%`);
+    } else {
+        countQuery = countQuery.where(field, value);
+    };
+
+    const total = await countQuery
+        .andWhere(sessionField, sessionID)
+        .count("* as count");
+
+    if (!result.length) {
         return undefined;
     };
-}
+
+    return multiple ? { result, total } : { result: result[0], total };
+};
 
 /**
  * Insere dados na tabela informada.
