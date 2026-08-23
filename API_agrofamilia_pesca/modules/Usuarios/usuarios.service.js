@@ -23,12 +23,12 @@ class UsuariosService {
     /**
      * Retorna todos os usuários cadastrados, filtrados pelo escopo do usuário.
      */
-    async findAllUsuarios(user) {
-        if (!UsuarioPolicy.canGet(user)) {
+    async findAllUsuarios(session, page, limit) {
+        if (!UsuarioPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
-
-        return baseScope.getAll(user, {
+        
+        return baseScope.getAll(session, page, limit, {
             admin: UsuariosRepository.findAllUsuarios,
             secretaria: UsuariosRepository.findByIdSecretaria,
             associacao: UsuariosRepository.findByIdAssociacao,
@@ -39,17 +39,17 @@ class UsuariosService {
     /**
      * Busca usuário por ID ou Nome, respeitando a visibilidade do usuário.
      */
-    async find(value, session) {
+    async find(value, session, page, limit) {
         if (!UsuarioPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 findByIdName(
-                    value,
+                    value, page, limit,
                     UsuariosRepository.findById,
                     UsuariosRepository.findByName
                 ),
@@ -81,17 +81,17 @@ class UsuariosService {
     /**
      * Lista usuários filtrando pelo nível.
      */
-    async findByNivel(nivel, session) {
+    async findByNivel(nivel, session, page, limit) {
         if (!UsuarioPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID_PESSOA"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 find(
-                    nivel,
+                    nivel, page, limit,
                     UsuariosRepository.findByNivel
                 ),
 
@@ -120,14 +120,14 @@ class UsuariosService {
     /**
      * Lista usuários filtrando pela secretaria.
      */
-    async findBySecretaria(secretaria, session) {
+    async findBySecretaria(secretaria, session, page, limit) {
         if (!UsuarioPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () => findByIdName(
-                secretaria,
+                secretaria, page, limit,
                 UsuariosRepository.findByIdSecretaria,
                 UsuariosRepository.findBySecretaria
             ),
@@ -137,17 +137,17 @@ class UsuariosService {
     /**
      * Busca usuário pelo login.
      */
-    async findByLogin(login, session) {
+    async findByLogin(login, session, page, limit) {
         if (!UsuarioPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID_PESSOA"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 find(
-                    login,
+                    login, page, limit,
                     UsuariosRepository.findByLogin
                 ),
 
