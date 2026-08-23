@@ -28,8 +28,8 @@ function NumberOrString(value) {
  * Lança erro 404 quando o resultado não é encontrado.
  */
 
-async function find(value, method) {
-    const result = await method(value);
+async function find(value, page, limit, method) {
+    const result = await method(value, page, limit);
 
     if (!result) {
         throw new Erros("Não encontrado", 404);
@@ -44,13 +44,13 @@ async function find(value, method) {
  * Demais valores utilizam o método de busca por nome.
  */
 
-async function findByIdName(value, idMethod, nameMethod) {
+async function findByIdName(value, page, limit, idMethod, nameMethod) {
     if (NumberOrString(value)) {
         const stringConverted = convertString(value);
-        return find(stringConverted, nameMethod);
+        return find(stringConverted, page, limit, nameMethod);
     };
 
-    return find(value, idMethod);
+    return find(value, page, limit, idMethod);
 };
 
 /**
