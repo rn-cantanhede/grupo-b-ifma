@@ -61,11 +61,11 @@ async function findByIdName(value, page, limit, idMethod, nameMethod) {
  */
 
 async function findByScope(sessionID, sessionField, fieldID, fieldName,
-    value, method
+    value, page, limit, method
 ) {
     if (!NumberOrString(value)) {
         const stringConverted = convertString(value);
-        const result = await method(sessionID, sessionField, fieldID, value);
+        const result = await method(sessionID, sessionField, fieldID, value, page, limit);
 
         if (result == "" || result == undefined) {
             throw new Erros("Não encontrado", 404);
@@ -74,7 +74,7 @@ async function findByScope(sessionID, sessionField, fieldID, fieldName,
         return result;
     };
     
-    const result = await method(sessionID, sessionField, fieldName, value);
+    const result = await method(sessionID, sessionField, fieldName, value, page, limit);
     if (result == "" || result == undefined) {
         throw new Erros("Não encontrado", 404);
     };
