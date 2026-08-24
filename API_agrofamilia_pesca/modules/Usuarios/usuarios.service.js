@@ -61,6 +61,8 @@ class UsuariosService {
                     "ID",
                     "NOME",
                     value,
+                    page, 
+                    limit,
                     UsuariosRepository.findByIdScope,
                     UsuariosRepository.findByNameScope
                 ),
@@ -102,6 +104,8 @@ class UsuariosService {
                     "ID",
                     "NIVEL",
                     nivel,
+                    page, 
+                    limit,
                     UsuariosRepository.findByNivelScope
                 ),
 
@@ -158,6 +162,8 @@ class UsuariosService {
                     "ID",
                     "LOGIN",
                     login,
+                    page, 
+                    limit,
                     UsuariosRepository.findByLoginScope
                 ),
 
