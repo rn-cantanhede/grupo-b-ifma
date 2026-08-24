@@ -94,29 +94,29 @@ class UsuariosRepository {
     /**
      * Consulta pelo ID na view_usuarios limitando por escopo.
      */
-    findByIdScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, false, view);
+    findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, false, view, page, limit);
     };
 
     /**
      * Consulta pelo NOME na view_usuarios limitando por escopo.
      */
-    findByNameScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
     };
 
     /**
      * Consulta pelo nivel na view_usuarios limitando por escopo.
      */
-    findByNivelScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    findByNivelScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit,);
     };
 
     /**
      * Consulta pelo Login na view_usuarios limitando por escopo.
      */
-    findByLoginScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    findByLoginScope(sessionID, sessionField, fieldID, value, page, limit,) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
     };
 
 
