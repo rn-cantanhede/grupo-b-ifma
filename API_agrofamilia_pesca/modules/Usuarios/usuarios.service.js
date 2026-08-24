@@ -307,19 +307,19 @@ class UsuariosService {
         };
 
         // Compara LOGIN e SENHA com o database
-        if (filterLogin.LOGIN === user.LOGIN &&
-            bcrypt.compareSync(filterLogin.SENHA, user.SENHA)) {
+        if (filterLogin.LOGIN === user.result.LOGIN &&
+            bcrypt.compareSync(filterLogin.SENHA, user.result.SENHA)) {
             throw new Erros("SENHA ou LOGIN precisam ser diferente da anterior", 403);
         };
 
         // Compara a SENHA. Se diferente do database cria o hash
-        if (!bcrypt.compareSync(filterLogin.SENHA, user.SENHA)) {
+        if (!bcrypt.compareSync(filterLogin.SENHA, user.result.LOGIN)) {
             // Gera hash e atualiza no banco
             const salt = bcrypt.genSaltSync(10);
             const hashedPassword = bcrypt.hashSync(filterLogin.SENHA, salt);
             filterLogin.SENHA = hashedPassword;
         } else {
-            filterLogin.SENHA = user.SENHA
+            filterLogin.SENHA = user.result.LOGIN
         };
 
         console.log(filterLogin);
@@ -344,7 +344,7 @@ class UsuariosService {
         const {
             ID_PESSOA, NIVEL, LOGIN, SENHA,
             ...filterUser
-        } = user;
+        } = user.result;
 
         return baseScope.delete(
             id, filterUser, session,
@@ -373,7 +373,6 @@ class UsuariosService {
         if (!user) {
             throw new Erros('Login ou senha inválidos', 401);
         };
-
 
         // Caso já está em hash
         if (typeof user.SENHA === "string" && user.SENHA.startsWith("$2")) {
