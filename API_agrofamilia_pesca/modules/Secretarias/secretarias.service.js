@@ -1,4 +1,3 @@
-const BaseService = require("../../shared/base/BaseService");
 const Erros = require("../../shared/errors/Errors");
 const SecretariasPolicy = require("./policies/secretarias.policy");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
@@ -19,12 +18,12 @@ class SecretariasService {
     /**
      * Retorna todas as secretarias cadastradas, filtradas pelo escopo do usuário.
      */
-    async findAllProgramas(session) {
+    async findAllProgramas(session, page, limit) {
         if (!SecretariasPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return baseScope.getAll(session, {
+        return baseScope.getAll(session, page, limit, {
             admin: SecretariasRepository.findAllSecretarias,
         });
     };
@@ -32,15 +31,17 @@ class SecretariasService {
     /**
      * Busca secretaria por ID ou Nome, respeitando a visibilidade do usuário.
      */
-    async find(value, session) {
+    async find(value, session, page, limit) {
         if (!SecretariasPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 findByIdName(
                     value,
+                    page, 
+                    limit,
                     SecretariasRepository.findById,
                     SecretariasRepository.findByName
                 ),
@@ -50,15 +51,15 @@ class SecretariasService {
     /**
      * Lista secretarias filtrando pelo estado.
      */
-    async findbyEstado(estado, session) {
+    async findbyEstado(estado, session, page, limit) {
         if (!SecretariasPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 find(
-                    estado,
+                    estado, page, limit,
                     SecretariasRepository.findbyEstado
                 ),
         });
@@ -67,15 +68,15 @@ class SecretariasService {
     /**
      * Lista secretarias filtrando pela cidade.
      */
-    async findbyCidade(cidade, session) {
+    async findbyCidade(cidade, session, page, limit) {
         if (!SecretariasPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 find(
-                    cidade,
+                    cidade, page, limit,
                     SecretariasRepository.findbyCidade
                 ),
         });
