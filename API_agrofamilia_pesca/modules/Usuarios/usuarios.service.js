@@ -1,6 +1,5 @@
 const Erros = require("../../shared/errors/Errors");
 const UsuarioPolicy = require("./policies/usuario.policy");
-const BaseService = require("../../shared/base/BaseService");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
@@ -74,6 +73,8 @@ class UsuariosService {
                     "ID",
                     "NOME",
                     value,
+                    page, 
+                    limit,
                     UsuariosRepository.findByIdScope,
                     UsuariosRepository.findByNameScope
                 ),
@@ -116,6 +117,8 @@ class UsuariosService {
                     "ID",
                     "NIVEL",
                     nivel,
+                    page, 
+                    limit,
                     UsuariosRepository.findByNivelScope
                 ),
         });
@@ -174,6 +177,8 @@ class UsuariosService {
                     "ID",
                     "LOGIN",
                     login,
+                    page, 
+                    limit,
                     UsuariosRepository.findByLoginScope
                 ),
         });
