@@ -17,16 +17,16 @@ class TiposProdutosRepository {
      * Retorna todos os tipos de produto cadastrados.
      */
 
-    findallTipoProduto() {
-        return findAll(table);
+    findallTipoProduto(page, limit) {
+        return findAll(table, page, limit);
     };
 
     /**
      * Consulta tipo de produto pelo ID.
      */
 
-    findById(id) {
-        return findBy("ID", id, false, table);
+    findById(id, page, limit) {
+        return findBy("ID", id, false, table, page, limit);
     };
 
     /**
@@ -34,8 +34,8 @@ class TiposProdutosRepository {
      * Retorna múltiplos resultados.
      */
 
-    findByName(name) {
-        return findBy("NOME", name, true, table);
+    findByName(name, page, limit) {
+        return findBy("NOME", name, true, table, page, limit);
     };
 
     /**
