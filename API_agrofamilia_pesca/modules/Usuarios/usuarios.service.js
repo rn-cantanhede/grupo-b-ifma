@@ -322,7 +322,6 @@ class UsuariosService {
             filterLogin.SENHA = user.result.LOGIN
         };
 
-        console.log(filterLogin);
         return baseScope.update(
             id, filterLogin, session,
             "secretaria", "ID_SECRETARIA",
