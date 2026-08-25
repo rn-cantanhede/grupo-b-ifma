@@ -13,7 +13,11 @@ class TipoProdutoController {
 
     async findallTipoProduto(req, res) {
         try {
-            const tipos = await TiposProdutosService.findallTipoProduto(req.user);
+            const tipos = await TiposProdutosService.findallTipoProduto(
+                req.user,
+                req.query.page || 1,
+                req.query.limit || 10
+            );
 
             req.log.info({
                 event: "TIPO_LIST",
@@ -44,7 +48,9 @@ class TipoProdutoController {
         try {
             const result = await TiposProdutosService.find(
                 req.params.value,
-                req.user
+                req.user,
+                req.query.page || 1,
+                req.query.limit || 10
             );
 
             req.log.info({
