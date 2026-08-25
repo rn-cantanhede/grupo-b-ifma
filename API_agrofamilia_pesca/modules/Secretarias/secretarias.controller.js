@@ -13,7 +13,11 @@ class SecretariasController {
 
     async AllSecretarias(req, res) {
         try {
-            const secretarias = await SecretariasService.findAllProgramas(req.user);
+            const secretarias = await SecretariasService.findAllProgramas(
+                req.user,
+                req.query.page,
+                req.query.limit
+            );
 
             req.log.info({
                 event: "SECRETARIA_LIST",
@@ -44,7 +48,9 @@ class SecretariasController {
         try {
             const result = await SecretariasService.find(
                 req.params.value,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -78,7 +84,9 @@ class SecretariasController {
         try {
             const result = await SecretariasService.findbyEstado(
                 req.params.estado,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -112,7 +120,9 @@ class SecretariasController {
         try {
             const result = await SecretariasService.findbyCidade(
                 req.params.cidade,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
