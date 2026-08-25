@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const pagination = require("../../../middleware/pagination");
 const TipoProdutoController = require("../tipos-produtos.controller");
 
 /**
