@@ -9,10 +9,10 @@ const TipoProdutoController = require("../tipos-produtos.controller");
  */
 
 //Retorna todos os tipos de produto.
-router.get("/", TipoProdutoController.findallTipoProduto);
+router.get("/", pagination, TipoProdutoController.findallTipoProduto);
 
 //Busca tipo de produto por ID ou Nome.
-router.get("/:value", TipoProdutoController.findTipoProduto);
+router.get("/:value", pagination, TipoProdutoController.findTipoProduto);
 
 /**
  *  
