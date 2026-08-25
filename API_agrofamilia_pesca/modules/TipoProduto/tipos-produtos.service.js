@@ -84,14 +84,13 @@ class TiposProdutosService {
     async insertCategoria(data, user) {
 
         const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
-
-        if (!TiposProdutosPolicy.canPost(user, targetUser)) {
+        if (!TiposProdutosPolicy.canPost(user, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
-
+        
         const validations = [];
         await validationsUtils.validate(data, validations);
-
+        
         return await TiposProdutosRepository.insertCategoria(data);
     };
 
@@ -101,7 +100,7 @@ class TiposProdutosService {
     async updateCategoria(id, data, user) {
         const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
 
-        if (!TiposProdutosPolicy.canUpdate(user, targetUser)) {
+        if (!TiposProdutosPolicy.canUpdate(user, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -117,7 +116,7 @@ class TiposProdutosService {
     async deleteTipoProduto(id, user) {
         const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
 
-        if (!TiposProdutosPolicy.canDelete(user, targetUser)) {
+        if (!TiposProdutosPolicy.canDelete(user, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
