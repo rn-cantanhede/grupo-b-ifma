@@ -17,16 +17,16 @@ class SecretariasRepository {
      * Retorna todas as secretarias cadastradas.
      */
 
-    findAllSecretarias() {
-        return findAll(table);
+    findAllSecretarias(page, limit) {
+        return findAll(table, page, limit);
     };
 
     /**
      * Consulta secretaria pelo ID.
      */
 
-    findById(id) {
-        return findBy("ID", id, false, table);
+    findById(id, page, limit) {
+        return findBy("ID", id, false, table, page, limit);
     };
 
     /**
@@ -34,24 +34,24 @@ class SecretariasRepository {
      * Retorna múltiplos resultados.
      */
 
-    findByName(name) {
-        return findBy("NOME", name, true, table);
+    findByName(name, page, limit) {
+        return findBy("NOME", name, true, table, page, limit);
     };
 
     /**
      * Lista secretarias filtrando pelo estado.
      */
 
-    findbyEstado(estado) {
-        return findBy("ESTADO", estado, true, table);
+    findbyEstado(estado, page, limit) {
+        return findBy("ESTADO", estado, true, table, page, limit);
     };
 
     /**
      * Lista secretarias filtrando pela cidade.
      */
 
-    findbyCidade(cidade) {
-        return findBy("CIDADE", cidade, true, table);
+    findbyCidade(cidade, page, limit) {
+        return findBy("CIDADE", cidade, true, table, page, limit);
     };
 
     /**
