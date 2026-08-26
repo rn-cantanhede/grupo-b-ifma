@@ -94,7 +94,7 @@ class ProdutosService {
     async createProduto(produto, user) {
         const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
 
-        if (!ProdutosPolicy.canPost(user, targetUser)) {
+        if (!ProdutosPolicy.canPost(user, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -135,11 +135,10 @@ class ProdutosService {
             login: user.login,
             nivel: user.nivel,
             secretaria: user.secretaria,
-            associacao: targetUser.ID_ASSOCIACAO
+            associacao: targetUser.result.ID_ASSOCIACAO
         };
 
-
-        if (!ProdutosPolicy.canUpdate(Alluser, targetUser)) {
+        if (!ProdutosPolicy.canUpdate(Alluser, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -171,11 +170,11 @@ class ProdutosService {
             login: user.login,
             nivel: user.nivel,
             secretaria: user.secretaria,
-            associacao: targetUser.ID_ASSOCIACAO
+            associacao: targetUser.result.ID_ASSOCIACAO
         };
 
 
-        if (!ProdutosPolicy.canUpdate(Alluser, targetUser)) {
+        if (!ProdutosPolicy.canUpdate(Alluser, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -185,7 +184,7 @@ class ProdutosService {
         if (!idProduto) {
             throw new Erros("ID não existe", 404);
         };
-
+        
         // Remove definitivamente
         return await ProdutosRepository.deleteProduto(id);
     };
