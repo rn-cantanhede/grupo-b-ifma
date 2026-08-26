@@ -19,12 +19,12 @@ class ProdutosService {
      * Retorna a lista completa de produtos.
      */
 
-    async findAllProdutos(session) {
+    async findAllProdutos(session, page, limit) {
         if (!ProdutosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return baseScope.getAll(session, {
+        return baseScope.getAll(session, page, limit, {
             admin: ProdutosRepository.findAllProdutos,
             secretaria: ProdutosRepository.findAllProdutos,
             associacao: ProdutosRepository.findAllProdutos,
@@ -36,15 +36,17 @@ class ProdutosService {
      * Busca um produto pelo ID ou pelo nome.
      */
 
-    async find(value, session) {
+    async find(value, session, page, limit) {
         if (!ProdutosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 findByIdName(
                     value,
+                    page, 
+                    limit,
                     ProdutosRepository.findById,
                     ProdutosRepository.findByName
                 ),
@@ -52,6 +54,8 @@ class ProdutosService {
             secretaria: () =>
                 findByIdName(
                     value,
+                    page, 
+                    limit,
                     ProdutosRepository.findById,
                     ProdutosRepository.findByName
                 ),
@@ -59,12 +63,16 @@ class ProdutosService {
             associacao: () =>
                 findByIdName(
                     value,
+                    page, 
+                    limit,
                     ProdutosRepository.findById,
                     ProdutosRepository.findByName
                 ),
             usuario: () =>
                 findByIdName(
                     value,
+                    page, 
+                    limit,
                     ProdutosRepository.findById,
                     ProdutosRepository.findByName
                 ),
