@@ -13,6 +13,6 @@ const PessoasController = require("../pessoas.controller");
  * Apenas o admin tem acesso a todas as pessoas.
  * O resto das rotas seguem a mesma logica.
  */
-router.get("/", PessoasController.AllPessoas);
+router.get("/", pagination,PessoasController.AllPessoas);
 
 module.exports = router;
