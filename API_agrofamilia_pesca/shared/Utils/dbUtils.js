@@ -45,6 +45,40 @@ async function findByInterval(field, inicio, fim, table, page, limit) {
 };
 
 /**
+ * Retorna registros cujo ano do campo especificado
+ * esteja dentro do intervalo informado com escopo e paginação.
+ */
+async function findByIntervalWithScope(
+    sessionID, 
+    sessionField, 
+    field, 
+    inicio, 
+    fim, 
+    multiple = false, 
+    table, 
+    page, 
+    limit
+) {
+    const offset = (page - 1) * limit;
+    const result = await knex.select("")
+        .from(table)
+        .whereRaw(`YEAR(??) BETWEEN ? AND ?`, [field, inicio, fim])
+        .andWhere(sessionField, sessionID)
+        // .andWhere(sessionID, sessionField)
+        .limit(limit)
+        .offset(offset);
+
+    const count = await knex(table).where(sessionField, sessionID).count("* as count");
+    const total = count;
+
+    if (!result.length) {
+        return undefined;
+    };
+
+    return multiple ? { result, total } : { result: result[0], total };
+};
+
+/**
  * Executa busca por correspondência parcial em um campo com paginação.
  * Caso `multiple` seja falso, retorna apenas o primeiro resultado.
  */
@@ -181,6 +215,7 @@ module.exports = {
     findAll,
     findBy,
     findByInterval,
+    findByIntervalWithScope,
     findWithScope,
     insertData,
     updateData,
