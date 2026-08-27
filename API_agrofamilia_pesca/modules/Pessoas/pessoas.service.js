@@ -1,10 +1,9 @@
 const Erros = require("../../shared/errors/Errors");
-const BaseService = require("../../shared/base/BaseService");
 const PessoasPolicy = require("./policies/pessoas.policy");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const PessoasRepository = require("./pessoas.repository");
 const associadosRepository = require("../Associados/associados.repository");
-const { find, findByInterval, findByIdName, VerifyNivel, listUsers, findByScope } = require("../../shared/Utils/findUtils");
+const { find, findByInterval, findByIdName, findByScope, findByIntervalScope } = require("../../shared/Utils/findUtils");
 const baseScope = require("../../shared/base/baseScope");
 
 class PessoasService {
@@ -17,12 +16,12 @@ class PessoasService {
      * pois tem como filtrar os dados por associacao
      * e secretaria, diferente da tabela Pessoa
      */
-    async findAllPessoas(user) {
-        if (!PessoasPolicy.canGet(user)) {
+    async findAllPessoas(session, page, limit) {
+        if (!PessoasPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return baseScope.getAll(user, {
+        return baseScope.getAll(session, page, limit, {
             admin: PessoasRepository.findAllPessoas,
             secretaria: PessoasRepository.findByIdSecretaria,
             associacao: PessoasRepository.findByIdAssociacaao,
@@ -34,17 +33,19 @@ class PessoasService {
      * Busca uma pessoa pelo ID ou pelo nome.
      */
 
-    async find(value, session) {
+    async find(value, session, page, limit) {
         if (!PessoasPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 findByIdName(
                     value,
+                    page,
+                    limit,
                     PessoasRepository.findById,
                     PessoasRepository.findByName
                 ),
@@ -56,6 +57,8 @@ class PessoasService {
                     "ID",
                     "NOME",
                     value,
+                    page,
+                    limit,
                     PessoasRepository.findByIdScope,
                     PessoasRepository.findByNameScope
                 ),
@@ -67,6 +70,8 @@ class PessoasService {
                     "ID",
                     "NOME",
                     value,
+                    page,
+                    limit,
                     PessoasRepository.findByIdScope,
                     PessoasRepository.findByNameScope
                 ),
@@ -77,17 +82,19 @@ class PessoasService {
      * Busca pessoas filtrando pelo gênero.
      */
 
-    async findbyGenero(genero, session) {
+    async findbyGenero(genero, session, page, limit) {
         if (!PessoasPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 find(
                     genero,
+                    page,
+                    limit,
                     PessoasRepository.findbyGenero
                 ),
 
@@ -98,6 +105,8 @@ class PessoasService {
                     "ID",
                     "GENERO",
                     genero,
+                    page,
+                    limit,
                     PessoasRepository.findByGeneroScope,
                 ),
 
@@ -108,6 +117,8 @@ class PessoasService {
                     "ID",
                     "GENERO",
                     genero,
+                    page,
+                    limit,
                     PessoasRepository.findByGeneroScope
                 ),
         });
@@ -117,17 +128,19 @@ class PessoasService {
      * Busca pessoas pela data de nascimento.
      */
 
-    async findbyData(data, session) {
+    async findbyData(data, session, page, limit) {
         if (!PessoasPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 find(
                     data,
+                    page,
+                    limit,
                     PessoasRepository.findbyData
                 ),
 
@@ -138,6 +151,8 @@ class PessoasService {
                     "DATA_NASCIMENTO",
                     "DATA_NASCIMENTO",
                     data,
+                    page,
+                    limit,
                     PessoasRepository.findByDataScope,
                 ),
 
@@ -148,6 +163,8 @@ class PessoasService {
                     "DATA_NASCIMENTO",
                     "DATA_NASCIMENTO",
                     data,
+                    page,
+                    limit,
                     PessoasRepository.findByDataScope
                 ),
         });
@@ -157,18 +174,47 @@ class PessoasService {
      * Busca pessoas dentro de um intervalo de datas de nascimento.
      */
 
-    async findByInicioFim(inicio, fim, user) {
-        if (!PessoasPolicy.canGet(user)) {
+    async findByInicioFim(inicio, fim, session, page, limit) {
+        if (!PessoasPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await findByInterval(
-            inicio,
-            fim,
-            PessoasRepository.findByInicioFim
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, page, limit, {
+            admin: () =>
+                findByInterval(
+                    inicio,
+                    fim,
+                    page,
+                    limit,
+                    PessoasRepository.findByInicioFim
+                ),
+
+            secretaria: (id) =>
+                findByIntervalScope(
+                    id,
+                    sessionField[0],
+                    "DATA_NASCIMENTO",
+                    inicio,
+                    fim,
+                    page,
+                    limit,
+                    PessoasRepository.findByInicioFimScope,
+                ),
+
+            associacao: (id) =>
+                findByIntervalScope(
+                    id,
+                    sessionField[1],
+                    "DATA_NASCIMENTO",
+                    inicio,
+                    fim,
+                    page,
+                    limit,
+                    PessoasRepository.findByInicioFimScope,
+                ),
+        });
     };
 
     /**
