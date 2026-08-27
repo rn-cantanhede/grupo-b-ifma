@@ -343,7 +343,7 @@ class MovimentacoesService {
     async createMovimentacao(movimentacao, user) {
         const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
 
-        if (!MovimentacoesPolicy.canPost(user, targetUser)) {
+        if (!MovimentacoesPolicy.canPost(user, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -406,10 +406,10 @@ class MovimentacoesService {
             login: user.login,
             nivel: user.nivel,
             secretaria: user.secretaria,
-            associacao: targetUser?.ID_ASSOCIACAO
+            associacao: targetUser.result.ID_ASSOCIACAO
         };
 
-        if (!MovimentacoesPolicy.canUpdate(Alluser, idMovimentacao)) {
+        if (!MovimentacoesPolicy.canUpdate(Alluser, idMovimentacao.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -458,10 +458,10 @@ class MovimentacoesService {
             login: user.login,
             nivel: user.nivel,
             secretaria: user.secretaria,
-            associacao: targetUser?.ID_ASSOCIACAO
+            associacao: targetUser.result.ID_ASSOCIACAO
         };
 
-        if (!MovimentacoesPolicy.canUpdate(Alluser, idMovimentacao)) {
+        if (!MovimentacoesPolicy.canUpdate(Alluser, idMovimentacao.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
