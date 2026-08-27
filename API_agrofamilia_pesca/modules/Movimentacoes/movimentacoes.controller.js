@@ -13,7 +13,11 @@ class MovimentacoesController {
 
     async AllMovimentacoes(req, res) {
         try {
-            const movimentacoes = await MovimentacoesService.findAllMovimentacoes(req.user);
+            const movimentacoes = await MovimentacoesService.findAllMovimentacoes(
+                req.user,
+                req.query.page,
+                req.query.limit
+            );
             
             req.log.info({
                 event: "MOVIMENTACAO_LIST",
@@ -44,7 +48,9 @@ class MovimentacoesController {
         try {
             const result = await MovimentacoesService.findById(
                 req.params.id,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -78,7 +84,9 @@ class MovimentacoesController {
         try {
             const result = await MovimentacoesService.findbyDap(
                 req.params.dap,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -112,7 +120,9 @@ class MovimentacoesController {
         try {
             const result = await MovimentacoesService.findbyProduto(
                 req.params.produto,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -146,7 +156,9 @@ class MovimentacoesController {
         try {
             const result = await MovimentacoesService.findbyData(
                 req.params.data,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -181,7 +193,9 @@ class MovimentacoesController {
             const result = await MovimentacoesService.findByInicioFim(
                 req.params.inicio,
                 req.params.fim,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
