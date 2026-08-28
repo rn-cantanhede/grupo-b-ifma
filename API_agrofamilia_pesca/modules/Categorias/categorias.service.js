@@ -60,7 +60,7 @@ class CategoriasService {
     async createCategoria(data, user) {
         const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
 
-        if (!CategoriasPolicy.canPost(user, targetUser)) {
+        if (!CategoriasPolicy.canPost(user, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -88,7 +88,7 @@ class CategoriasService {
     async updateCategoria(id, categoria, user) {
         const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
 
-        if (!CategoriasPolicy.canPost(user, targetUser)) {
+        if (!CategoriasPolicy.canPost(user, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -116,7 +116,7 @@ class CategoriasService {
     async deleteCategoria(id, user) {
         const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
 
-        if (!CategoriasPolicy.canPost(user, targetUser)) {
+        if (!CategoriasPolicy.canPost(user, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
