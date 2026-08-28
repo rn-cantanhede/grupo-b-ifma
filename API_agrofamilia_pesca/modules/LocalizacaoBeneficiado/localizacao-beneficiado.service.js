@@ -177,7 +177,7 @@ class LocalizacaoBeneficiadoService {
     async createlocalizacao(localizacao, user) {
         const targetUser = await LocalizacaoBeneficiadoRepository.findByIdSecretaria(user.secretaria);
 
-        if (!LocalizacaoPolicy.canPost(user, targetUser)) {
+        if (!LocalizacaoPolicy.canPost(user, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -227,20 +227,10 @@ class LocalizacaoBeneficiadoService {
             login: user.login,
             nivel: user.nivel,
             secretaria: user.secretaria,
-            associacao: targetUser?.ID_ASSOCIACAO
+            associacao: targetUser.result.ID_ASSOCIACAO
         };
 
-        console.log("--- TESTE DE BATIMENTO ESTÁTICO ---");
-        console.log("TIPO do Alluser.associacao:", typeof Alluser.associacao, "VALOR:", Alluser.associacao);
-        console.log("TIPO do idLocalizacao.ID_ASSOCIACAO:", typeof idLocalizacao.ID_ASSOCIACAO, "VALOR:", idLocalizacao.ID_ASSOCIACAO);
-        console.log("COMPARAÇÃO (==):", Alluser.associacao == idLocalizacao.ID_ASSOCIACAO);
-
-        if (!LocalizacaoPolicy.canUpdate(Alluser, idLocalizacao)) {
-            console.log("POLICY REJEITOU O ACESSO!");
-            throw new Erros("Acesso negado", 403);
-        }
-
-        if (!LocalizacaoPolicy.canUpdate(Alluser, idLocalizacao)) {
+        if (!LocalizacaoPolicy.canUpdate(Alluser, idLocalizacao.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -280,7 +270,7 @@ class LocalizacaoBeneficiadoService {
             login: user.login,
             nivel: user.nivel,
             secretaria: user.secretaria,
-            associacao: targetUser?.ID_ASSOCIACAO
+            associacao: targetUser.result.ID_ASSOCIACAO
         };
 
         if (!LocalizacaoPolicy.canDelete(Alluser, idLocalizacao)) {
