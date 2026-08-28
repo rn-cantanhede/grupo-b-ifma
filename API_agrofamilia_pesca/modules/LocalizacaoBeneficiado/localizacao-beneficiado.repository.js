@@ -17,32 +17,36 @@ class LocalizacaoBeneficiadoRepository {
      * Retorna todas as localizações beneficiadas.
      */
 
-    findAllLocalizacao() {
-        return findAll(table);
+    findAllLocalizacao(page, limit) {
+        return findAll(table, page, limit);
     };
 
     /**
      * Busca uma localização beneficiada pelo ID.
      */
     
-    findById(id) {
-        return findBy("ID", id, false, table);
+    findById(id, page, limit) {
+        return findBy("ID", id, false, table, page, limit);
     };
 
     /**
      * Busca uma localização beneficiada pelo ID.
      */
     
-    findByIdAssociacao(id) {
-        return findBy("ID_ASSOCIACAO", id, true, table);
+    findByIdAssociacao(id, page, limit) {
+        console.log({
+            page,
+            limit
+        })
+        return findBy("ID_ASSOCIACAO", id, true, table, page, limit);
     };
 
     /**
      * Busca uma localização beneficiada pelo ID da secretaria.
      */
 
-    findByIdSecretaria(id) {
-        return findBy("ID_SECRETARIA", id, false, table);
+    findByIdSecretaria(id, page, limit) {
+        return findBy("ID_SECRETARIA", id, false, table, page, limit);
     };
 
     /**
@@ -68,16 +72,16 @@ class LocalizacaoBeneficiadoRepository {
      * A busca é feita de forma parcial (LIKE).
      */
 
-    findByName(name) {
-        return findBy("NOME", name, true, table);
+    findByName(name, page, limit) {
+        return findBy("NOME", name, true, table, page, limit);
     };
 
     /**
      * Busca localizações beneficiadas pelo id da associação.
      */
 
-    findbyIdAssociacao(associacao) {
-        return findBy("ID_ASSOCIACAO", associacao, false, table);
+    findbyIdAssociacao(associacao, page, limit) {
+        return findBy("ID_ASSOCIACAO", associacao, false, table, page, limit);
     };
 
     /**
@@ -102,29 +106,29 @@ class LocalizacaoBeneficiadoRepository {
      /**
      * Consulta pelo ID limitando por escopo.
      */
-    findByIdScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
     };
 
     /**
      * Consulta pelo NOME limitando por escopo.
      */
-    findByNameScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
     };
 
     /**
      * Consulta pelo ID_ASSOCIACAO limitando por escopo.
      */
-    findByIdAssociacaoScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    findByIdAssociacaoScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
     };
 
     /**
      * Consulta pelo ID_ASSOCIACAO limitando por escopo.
      */
-    findByNameAssociacaoScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    findByNameAssociacaoScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
     };
 
     /**
