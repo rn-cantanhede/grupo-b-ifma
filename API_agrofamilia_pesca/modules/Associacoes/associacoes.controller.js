@@ -12,7 +12,11 @@ class AssociacoesController {
      */
     async AllAssociacoes(req, res) {
         try {
-            const associacoes = await AssociacoesService.findAllAssociacoes(req.user);
+            const associacoes = await AssociacoesService.findAllAssociacoes(
+                req.user,
+                req.query.page,
+                req.query.limit
+            );
 
             req.log.info({
                 event: "ASSOCIACAO_LIST",
@@ -42,7 +46,9 @@ class AssociacoesController {
         try {
             const result = await AssociacoesService.find(
                 req.params.value,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -75,7 +81,9 @@ class AssociacoesController {
         try {
             const result = await AssociacoesService.findByCategoria(
                 req.params.categoria,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -108,7 +116,9 @@ class AssociacoesController {
         try {
             const result = await AssociacoesService.findbySecretaria(
                 req.params.secretaria,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
