@@ -30,7 +30,7 @@ class baseScop {
         if (value == undefined) {
             return actions[level](page, limit);
         } else {
-            return actions[level](value);
+            return actions[level](value, page, limit);
         };
     };
 
