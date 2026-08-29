@@ -16,15 +16,15 @@ class Associacoes {
     /**
      * Retorna todas as associações cadastradas.
      */
-    findAllAssociacoes() {
-        return findAll(table);
+    findAllAssociacoes(page, limit) {
+        return findAll(table, page, limit);
     };
 
     /**
      * Busca uma associação pelo ID.
      */
-    findById(id) {
-        return findBy("ID", id, false, table);
+    findById(id, page, limit) {
+        return findBy("ID", id, false, table, page, limit);
     };
 
     /**
@@ -37,29 +37,29 @@ class Associacoes {
     /**
      * Busca associações pelo nome.
      */
-    findByName(name) {
-        return findBy("NOME", name, true, table);
+    findByName(name, page, limit) {
+        return findBy("NOME", name, true, table, page, limit);
     };
 
     /**
      * Busca associações pelo id da secretaria.
      */
-    findbyIdSecretaria(id) {
-        return findBy("ID_SECRETARIA", id, false, table);
+    findbyIdSecretaria(id, page, limit) {
+        return findBy("ID_SECRETARIA", id, true, table, page, limit);
     };
 
     /**
      * Busca associações pela categoria.
      */
-    findbyCategoria(categoria) {
-        return findBy("CATEGORIA", categoria, true, table);
+    findbyCategoria(categoria, page, limit) {
+        return findBy("CATEGORIA", categoria, true, table, page, limit);
     };
 
     /**
      * Busca associações vinculadas a uma secretaria.
      */
-    findbySecretaria(secretaria) {
-        return findBy("SECRETARIA", secretaria, true, table);
+    findbySecretaria(secretaria, page, limit) {
+        return findBy("SECRETARIA", secretaria, true, table, page, limit);
     };
 
     /**
@@ -79,22 +79,22 @@ class Associacoes {
      /**
      * Consulta pelo ID limitando por escopo.
      */
-    findByIdScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
     };
 
     /**
      * Consulta pelo NOME limitando por escopo.
      */
-    findByNameScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
     };
 
     /**
      * Consulta pela categoria limitando por escopo.
      */
-    findByCategoriaScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    findByCategoriaScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
     };
 
     /**
