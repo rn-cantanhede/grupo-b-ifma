@@ -217,10 +217,10 @@ class AssociacoesService {
             login: user.login,
             nivel: user.nivel,
             secretaria: user.secretaria,
-            associacao: targetUser?.ID_ASSOCIACAO
+            associacao: targetUser.result.ID_ASSOCIACAO
         };
 
-        if (!AssociacoesPolicy.canUpdate(Alluser, idAssociacao)) {
+        if (!AssociacoesPolicy.canUpdate(Alluser, idAssociacao.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -264,10 +264,10 @@ class AssociacoesService {
             login: user.login,
             nivel: user.nivel,
             secretaria: user.secretaria,
-            associacao: targetUser?.ID_ASSOCIACAO
+            associacao: targetUser.result.ID_ASSOCIACAO
         };
 
-        if (!AssociacoesPolicy.canUpdate(Alluser, idAssociacao)) {
+        if (!AssociacoesPolicy.canUpdate(Alluser, idAssociacao.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
