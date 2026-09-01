@@ -1,6 +1,6 @@
 // Importa as funções utilitárias responsáveis pelas operações básicas no banco de dados.
 // padronizando as operações de CRUD na aplicação.
-const { findAll, findBy, findByInterval, insertData, updateData, deleteData, findWithScope } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, findByInterval, insertData, updateData, deleteData, findWithScope, findByIntervalWithScope } = require("../../shared/Utils/dbUtils");
 const table = "view_pessoas";
 
 /**
@@ -175,6 +175,13 @@ class AssociadosRepository {
      */
     findByDataCafScope(sessionID, sessionField, fieldID, value, page, limit) {
         return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+    };
+
+    /**
+     * Consulta pelo intervalo das datas de movimentação na view_pessoas limitando por escopo.
+     */
+    findByInicioFimCafScope(sessionID, sessionField, field, inicio, fim, page, limit) {
+        return findByIntervalWithScope(sessionID, sessionField, field, inicio, fim, true, table, page, limit);
     };
 
     /**
