@@ -1,10 +1,9 @@
 const Erros = require("../../shared/errors/Errors");
-const BaseService = require("../../shared/base/BaseService");
 const AssociadosPolicy = require("./policies/associados.policy");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const AssociadosRepository = require("./associados.repository");
 const associadosRepository = require("./associados.repository");
-const { find, findByInterval, findByIdName, findByScope } = require("../../shared/Utils/findUtils");
+const { find, findByInterval, findByIdName, findByScope, findByIntervalScope } = require("../../shared/Utils/findUtils");
 const baseScope = require("../../shared/base/baseScope");
 
 /**
@@ -274,18 +273,47 @@ class AssociadosService {
      * Busca associados por intervalo de validade do CAF.
      */
 
-    async findByInicioFim(inicio, fim, user) {
-        if (!AssociadosPolicy.canGet(user)) {
+    async findByInicioFim(inicio, fim, session, page, limit) {
+        if (!AssociadosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await findByInterval(
-            inicio,
-            fim,
-            AssociadosRepository.findByInicioFimCaf
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: result });
+        return baseScope.getFind(session, page, limit, {
+            admin: () =>
+                findByInterval(
+                    inicio,
+                    fim,
+                    page,
+                    limit,
+                    AssociadosRepository.findByInicioFimCaf
+                ),
+
+            secretaria: (id) =>
+                findByIntervalScope(
+                    id,
+                    sessionField[0],
+                    "VALIDADE_CAF",
+                    inicio,
+                    fim,
+                    page,
+                    limit,
+                    AssociadosRepository.findByInicioFimCafScope,
+                ),
+
+            associacao: (id) =>
+                findByIntervalScope(
+                    id,
+                    sessionField[1],
+                    "VALIDADE_CAF",
+                    inicio,
+                    fim,
+                    page,
+                    limit,
+                    AssociadosRepository.findByInicioFimCafScope,
+                ),
+        });
     };
 
     /**
