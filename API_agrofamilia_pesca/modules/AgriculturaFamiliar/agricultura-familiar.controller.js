@@ -12,7 +12,11 @@ class AgriculturaFamiliarController {
      */
     async AllAgriculturaFamiliar(req, res) {
         try {
-            const result = await AgriculturaFamiliarService.findAllAgriculturaFamiliar(req.user);
+            const result = await AgriculturaFamiliarService.findAllAgriculturaFamiliar(
+                req.user,
+                req.query.page,
+                req.query.limit,
+            );
             
             req.log.info({
                 event: "AGRICULTURA_LIST",
@@ -42,7 +46,9 @@ class AgriculturaFamiliarController {
         try {
             const result = await AgriculturaFamiliarService.find(
                 req.params.value,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit,
             );
 
             req.log.info({
@@ -75,7 +81,9 @@ class AgriculturaFamiliarController {
         try {
             const result = await AgriculturaFamiliarService.findbyCaf(
                 req.params.caf,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit,
             );
 
             req.log.info({
@@ -108,7 +116,9 @@ class AgriculturaFamiliarController {
         try {
             const result = await AgriculturaFamiliarService.findbyDap(
                 req.params.dap,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit,
             );
 
             req.log.info({
@@ -141,7 +151,9 @@ class AgriculturaFamiliarController {
         try {
             const result = await AgriculturaFamiliarService.findbyPrograma(
                 req.params.programa,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit,
             );
 
             req.log.info({
