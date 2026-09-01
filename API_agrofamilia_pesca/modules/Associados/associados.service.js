@@ -21,12 +21,12 @@ class AssociadosService {
      * Retorna todos os associados cadastrados.
      */
 
-    async findAllAssociados(session) {
+    async findAllAssociados(session, page, limit) {
         if (!AssociadosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return baseScope.getAll(session, {
+        return baseScope.getAll(session, page, limit, {
             admin: AssociadosRepository.findAllAssociados,
             secretaria: AssociadosRepository.findByIdSecretaria,
             associacao: AssociadosRepository.findbyIdAssociacao,
@@ -38,17 +38,19 @@ class AssociadosService {
      * Busca associado por ID ou Nome, conforme o tipo de entrada.
      */
 
-    async find(value, session) {
+    async find(value, session, page, limit) {
         if (!AssociadosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 findByIdName(
                     value,
+                    page, 
+                    limit,
                     AssociadosRepository.findById,
                     AssociadosRepository.findByName
                 ),
@@ -60,6 +62,8 @@ class AssociadosService {
                     "ID",
                     "NOME",
                     value,
+                    page, 
+                    limit,
                     AssociadosRepository.findByIdScope,
                     AssociadosRepository.findByNameScope
                 ),
@@ -71,6 +75,8 @@ class AssociadosService {
                     "ID",
                     "NOME",
                     value,
+                    page, 
+                    limit,
                     AssociadosRepository.findByIdScope,
                     AssociadosRepository.findByNameScope
                 ),
@@ -81,17 +87,19 @@ class AssociadosService {
      * Busca associado pelo CAF.
      */
 
-    async findbyCaf(caf, session) {
+    async findbyCaf(caf, session, page, limit) {
         if (!AssociadosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 find(
                     caf,
+                    page,
+                    limit,
                     AssociadosRepository.findbyCaf
                 ),
 
@@ -102,6 +110,8 @@ class AssociadosService {
                     "CAF",
                     "CAF",
                     caf,
+                    page, 
+                    limit,
                     AssociadosRepository.findByCafScope
                 ),
 
@@ -112,6 +122,8 @@ class AssociadosService {
                     "CAF",
                     "CAF",
                     caf,
+                    page, 
+                    limit,
                     AssociadosRepository.findByCafScope
                 ),
         });
@@ -121,17 +133,19 @@ class AssociadosService {
      * Busca associado pelo DAP.
      */
 
-    async findbyDap(dap, session) {
+    async findbyDap(dap, session, page, limit) {
         if (!AssociadosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 find(
                     dap,
+                    page, 
+                    limit,
                     AssociadosRepository.findbyDap
                 ),
 
@@ -142,6 +156,8 @@ class AssociadosService {
                     "DAP",
                     "DAP",
                     dap,
+                    page, 
+                    limit,
                     AssociadosRepository.findByDapScope
                 ),
 
@@ -152,6 +168,8 @@ class AssociadosService {
                     "DAP",
                     "DAP",
                     dap,
+                    page, 
+                    limit,
                     AssociadosRepository.findByDapScope
                 ),
         });
@@ -161,17 +179,19 @@ class AssociadosService {
      * Lista associados filtrando pela associação.
      */
 
-    async findbyAssociacao(associacao, session) {
+    async findbyAssociacao(associacao, session, page, limit) {
         if (!AssociadosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 findByIdName(
                     associacao,
+                    page, 
+                    limit,
                     AssociadosRepository.findbyIdAssociacao,
                     AssociadosRepository.findbyAssociacao
                 ),
@@ -183,6 +203,8 @@ class AssociadosService {
                     "ID_ASSOCIACAO",
                     "ASSOCIACAO",
                     associacao,
+                    page, 
+                    limit,
                     AssociadosRepository.findByIdScope,
                     AssociadosRepository.findByNameScope
                 ),
@@ -194,6 +216,8 @@ class AssociadosService {
                     "ID_ASSOCIACAO",
                     "ASSOCIACAO",
                     associacao,
+                    page, 
+                    limit,
                     AssociadosRepository.findByIdScope,
                     AssociadosRepository.findByNameScope
                 ),
@@ -204,17 +228,19 @@ class AssociadosService {
      * Busca associados pela data exata de validade do CAF.
      */
 
-    async findbyData(data, session) {
+    async findbyData(data, session, page, limit) {
         if (!AssociadosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 find(
                     data,
+                    page, 
+                    limit,
                     AssociadosRepository.findbyDataCaf
                 ),
 
@@ -225,6 +251,8 @@ class AssociadosService {
                     "VALIDADE_CAF",
                     "VALIDADE_CAF",
                     data,
+                    page, 
+                    limit,
                     AssociadosRepository.findByDataCafScope,
                 ),
 
@@ -235,6 +263,8 @@ class AssociadosService {
                     "VALIDADE_CAF",
                     "VALIDADE_CAF",
                     data,
+                    page, 
+                    limit,
                     AssociadosRepository.findByDataCafScope
                 ),
         });
