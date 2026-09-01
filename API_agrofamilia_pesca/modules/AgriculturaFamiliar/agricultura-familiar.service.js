@@ -280,10 +280,10 @@ class AgriculturaFamiliarService {
             login: user.login,
             nivel: user.nivel,
             secretaria: user.secretaria,
-            associacao: targetUser?.ID_ASSOCIACAO
+            associacao: targetUser.result.ID_ASSOCIACAO
         };
 
-        if (!AgriculturaPolicy.canUpdate(Alluser, idAgri)) {
+        if (!AgriculturaPolicy.canUpdate(Alluser, idAgri.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -327,10 +327,10 @@ class AgriculturaFamiliarService {
             login: user.login,
             nivel: user.nivel,
             secretaria: user.secretaria,
-            associacao: targetUser?.ID_ASSOCIACAO
+            associacao: targetUser.result.ID_ASSOCIACAO
         };
 
-        if (!AgriculturaPolicy.canDelete(Alluser, idAgri)) {
+        if (!AgriculturaPolicy.canDelete(Alluser, idAgri.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
