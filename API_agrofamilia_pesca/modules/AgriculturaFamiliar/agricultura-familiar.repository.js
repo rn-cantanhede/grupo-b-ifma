@@ -15,36 +15,36 @@ class AgriculturaFamiliarRepository {
     /**
      * Busca todos os registros de agricultura familiar.
      */
-    findAllAgriculturaFamiliar() {
-        return findAll(table);
+    findAllAgriculturaFamiliar(page, limit) {
+        return findAll(table, page, limit);
     };
 
     /**
      * Busca um registro específico pelo ID.
      */
-    findById(id) {
-        return findBy("ID", id, false, table);
+    findById(id, page, limit) {
+        return findBy("ID", id, false, table, page, limit);
     };
 
     /**
      * Busca um registro específico pelo ID da pessoa.
      */
-    findByIdPessoa(id) {
-        return findBy("ID_PESSOA", id, false, table);
+    findByIdPessoa(id, page, limit) {
+        return findBy("ID_PESSOA", id, false, table, page, limit);
     };
 
     /**
      * Busca registros pelo ID da secretaria.
      */
-    findByIdSecretaria(id) {
-        return findBy("ID_SECRETARIA", id, true, table);
+    findByIdSecretaria(id, page, limit) {
+        return findBy("ID_SECRETARIA", id, true, table, page, limit);
     };
 
     /**
      * Busca registros pelo ID da associacao.
      */
-    findByIdAssociacao(id) {
-        return findBy("ID_ASSOCIACAO", id, true, table);
+    findByIdAssociacao(id, page, limit) {
+        return findBy("ID_ASSOCIACAO", id, true, table, page, limit);
     };
 
     /**
@@ -58,8 +58,8 @@ class AgriculturaFamiliarRepository {
     /**
      * Busca registros pelo nome.
      */
-    findByName(name) {
-        return findBy("NOME", name, true, table);
+    findByName(name, page, limit) {
+        return findBy("NOME", name, true, table, page, limit);
     };
 
     /**
@@ -67,8 +67,8 @@ class AgriculturaFamiliarRepository {
      *
      * Busca exata, pois CAF é um identificador único.
      */
-    findbyCaf(caf) {
-        return findBy("CAF", caf, false, table);
+    findbyCaf(caf, page, limit) {
+        return findBy("CAF", caf, false, table, page, limit);
     };
 
     /**
@@ -76,15 +76,15 @@ class AgriculturaFamiliarRepository {
      *
      * Busca exata, pois DAP é um identificador único.
      */
-    findbyDap(dap) {
-        return findBy("DAP", dap, false, table);
+    findbyDap(dap, page, limit) {
+        return findBy("DAP", dap, false, table, page, limit);
     };
 
     /**
      * Busca registros pelo nome do programa.
      */
-    findbyPrograma(programa) {
-        return findBy("PROGRAMA", programa, true, table);
+    findbyPrograma(programa, page, limit) {
+        return findBy("PROGRAMA", programa, true, table, page, limit);
     };
 
     /**
@@ -104,36 +104,36 @@ class AgriculturaFamiliarRepository {
      /**
      * Consulta pelo ID limitando por escopo.
      */
-    findByIdScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
     };
 
     /**
      * Consulta pelo NOME limitando por escopo.
      */
-    findByNameScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
     };
 
     /**
      * Consulta pelo caf limitando por escopo.
      */
-    findByCafScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    findByCafScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
     };
 
     /**
      * Consulta pelo dap limitando por escopo.
      */
-    findByDapScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    findByDapScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
     };
 
     /**
      * Consulta pelo programa limitando por escopo.
      */
-    findByProgramaScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    findByProgramaScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
     };
 
     /**
