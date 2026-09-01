@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const pagination = require("../../../middleware/pagination");
 const AssociadosController = require("../associados.controller");
 
 /**
@@ -9,25 +10,25 @@ const AssociadosController = require("../associados.controller");
  */
 
 // Retorna todos os associados cadastrados.
-router.get("/", AssociadosController.AllAssociados);
+router.get("/", pagination, AssociadosController.AllAssociados);
 
 // Busca um associado por um valor genérico.
-router.get("/:value", AssociadosController.findAssociado);
+router.get("/:value", pagination, AssociadosController.findAssociado);
 
 // Busca associados pelo número do CAF.
-router.get("/caf/:caf", AssociadosController.findCafAssociado);
+router.get("/caf/:caf", pagination, AssociadosController.findCafAssociado);
 
 // Busca associados pelo número do DAP.
-router.get("/dap/:dap", AssociadosController.findDapAssociado);
+router.get("/dap/:dap", pagination, AssociadosController.findDapAssociado);
 
 // Busca associados vinculados a uma associação específica.
-router.get("/associacao/:associacao", AssociadosController.findAssociacaoAssociado);
+router.get("/associacao/:associacao", pagination, AssociadosController.findAssociacaoAssociado);
 
 // Busca associados cadastrados em uma data específica.
-router.get("/data/:data", AssociadosController.findDataAssociado);
+router.get("/data/:data", pagination, AssociadosController.findDataAssociado);
 
 // Busca associados dentro de um intervalo de datas.
-router.get("/data/intervalo/:inicio/:fim", AssociadosController.findInicioFimAssociado);
+router.get("/data/intervalo/:inicio/:fim", pagination, AssociadosController.findInicioFimAssociado);
 
 /**
  *   
