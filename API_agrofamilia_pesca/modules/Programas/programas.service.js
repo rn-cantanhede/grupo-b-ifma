@@ -2,6 +2,7 @@ const Erros = require("../../shared/errors/Errors");
 const { findByIdName } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const ProgramasRepository = require("./programas.repository");
+const baseScope = require("../../shared/base/baseScope");
 const ProgramasPolicy = require("./policies/programas.policy");
 
 /**
@@ -23,10 +24,13 @@ class ProgramasService {
             throw new Erros("Acesso negado", 403);
         };
 
+        //provisorio
+        session.associacao = session.secretaria;
+
         return baseScope.getAll(session, page, limit, {
             admin: ProgramasRepository.findAllProgramas,
-            secretaria: ProgramasRepository.findID_SECRETARIA,
-            // associacao: ProgramasRepository.findByIdAssociacao,
+            secretaria: ProgramasRepository.findbyIdSecretaria,
+            associacao: ProgramasRepository.findbyIdSecretaria,
             usuario: ProgramasRepository.findById
         });
     };
