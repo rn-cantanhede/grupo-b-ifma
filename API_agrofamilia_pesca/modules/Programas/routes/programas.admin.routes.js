@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const pagination = require("../../../middleware/pagination");
 const ProgramasController = require("../programas.controller");
 
 /**
@@ -9,49 +10,49 @@ const ProgramasController = require("../programas.controller");
  */
 
 //Rota responsável por listar todos os programas cadastrados.
-router.get("/", ProgramasController.AllProgramas);
+router.get("/", pagination, ProgramasController.AllProgramas);
 
 /*
  * Rota responsável por buscar um programa específico
  * pelo ID ou pelo nome, conforme o valor informado.
  */
 
-router.get("/:value", ProgramasController.findProgramas);
+router.get("/:value", pagination, ProgramasController.findProgramas);
 
 /*
  * Rota responsável por buscar programas vinculados
  * a uma secretaria específica.
  */
 
-router.get("/secretaria/:secretaria", ProgramasController.findSecretariaPrograma);
+router.get("/secretaria/:secretaria", pagination, ProgramasController.findSecretariaPrograma);
 
 /*
  * Rota responsável por buscar programas filtrando
  * pelo estado.
  */
 
-router.get("/estado/:estado", ProgramasController.findEstadoPrograma);
+router.get("/estado/:estado", pagination, ProgramasController.findEstadoPrograma);
 
 /*
  * Rota responsável por buscar programas filtrando
  * pela origem do recurso financeiro.
  */
 
-router.get("/recurso/:recurso", ProgramasController.findOrigemRecursoPrograma);
+router.get("/recurso/:recurso", pagination, ProgramasController.findOrigemRecursoPrograma);
 
 /*
  * Rota responsável por buscar programas com base
  * na data de início.
  */
 
-router.get("/data-inicio/:data", ProgramasController.findDataInicioPrograma);
+router.get("/data-inicio/:data", pagination, ProgramasController.findDataInicioPrograma);
 
 /*
  * Rota responsável por buscar programas com base
  * na data de término.
  */
 
-router.get("/data-fim/:data", ProgramasController.findDataFimPrograma);
+router.get("/data-fim/:data", pagination, ProgramasController.findDataFimPrograma);
 
 /**
  *  
