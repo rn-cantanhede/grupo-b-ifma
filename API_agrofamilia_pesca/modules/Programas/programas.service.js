@@ -147,7 +147,7 @@ class ProgramasService {
             throw new Erros("ID invalido", 404);
         };
 
-        if (!ProgramasPolicy.canUpdate(user, registroExistente)) {
+        if (!ProgramasPolicy.canUpdate(user, registroExistente.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -165,7 +165,7 @@ class ProgramasService {
             throw new Erros("ID não existe", 404);
         };
 
-        if (!ProgramasPolicy.canDelete(user, registroExistente)) {
+        if (!ProgramasPolicy.canDelete(user, registroExistente.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
