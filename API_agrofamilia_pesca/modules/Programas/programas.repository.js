@@ -58,6 +58,24 @@ class ProgramasRepository {
     };
 
     /**
+     * Busca programas vinculados a um id de secretaria específica.
+     * A busca é parcial para permitir flexibilidade.
+     */
+
+    findbyIdSecretaria(secretaria, page, limit) {
+        return findBy("ID_SECRETARIA", secretaria, true, table, page, limit);
+    };
+
+    /**
+     * Busca programas vinculados a um id de associacao específica.
+     * A busca é parcial para permitir flexibilidade.
+     */
+
+    // findByIdAssociacao(secretaria, page, limit) {
+    //     return findBy("ID_SECRETARIA", secretaria, true, table, page, limit);
+    // };
+
+    /**
      * Busca programas por estado.
      */
 
