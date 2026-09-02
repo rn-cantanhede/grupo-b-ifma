@@ -17,8 +17,8 @@ class ProgramasRepository {
      * Retorna todos os registros de programas a partir da view.
      */
 
-    findAllProgramas() {
-        return findAll(table);
+    findAllProgramas(page, limit) {
+        return findAll(table, page, limit);
     };
 
     /**
@@ -26,8 +26,8 @@ class ProgramasRepository {
      * O parâmetro `false` indica busca exata (não usa LIKE).
      */
 
-    findById(id) {
-        return findBy("ID", id, false, table);
+    findById(id, page, limit) {
+        return findBy("ID", id, false, table, page, limit);
     };
 
     /**
@@ -35,8 +35,8 @@ class ProgramasRepository {
      * Usado geralmente antes de operações de exclusão.
      */
 
-    findByIdDelete(id) {
-        return findBy("ID", id, false, "programa");
+    findByIdDelete(id, page, limit) {
+        return findBy("ID", id, false, "programa", page, limit);
     };
 
     /**
@@ -44,8 +44,8 @@ class ProgramasRepository {
      * O parâmetro `true` indica busca parcial (LIKE).
      */
 
-    findByName(name) {
-        return findBy("NOME", name, true, table);
+    findByName(name, page, limit) {
+        return findBy("NOME", name, true, table, page, limit);
     };
 
     /**
@@ -53,40 +53,40 @@ class ProgramasRepository {
      * A busca é parcial para permitir flexibilidade.
      */
 
-    findbySecretaria(secretaria) {
-        return findBy("SECRETARIA", secretaria, true, table);
+    findbySecretaria(secretaria, page, limit) {
+        return findBy("SECRETARIA", secretaria, true, table, page, limit);
     };
 
     /**
      * Busca programas por estado.
      */
 
-    findbyEstado(estado) {
-        return findBy("ESTADO", estado, true, table);
+    findbyEstado(estado, page, limit) {
+        return findBy("ESTADO", estado, true, table, page, limit);
     };
 
     /**
      * Busca programas pela origem do recurso financeiro.
      */
 
-    findbyOrigemRecurso(recurso) {
-        return findBy("ORIGEM_RECURSO", recurso, true, table);
+    findbyOrigemRecurso(recurso, page, limit) {
+        return findBy("ORIGEM_RECURSO", recurso, true, table, page, limit);
     };
 
     /**
      * Busca programas com data de início correspondente.
      */
 
-    findbyDataInicio(data) {
-        return findBy("DATA_INICIO", data, true, table);
+    findbyDataInicio(data, page, limit) {
+        return findBy("DATA_INICIO", data, true, table, page, limit);
     };
 
     /**
      * Busca programas com data de fim correspondente.
      */
 
-    findbyDataFim(data) {
-        return findBy("DATA_FIM", data, true, table);
+    findbyDataFim(data, page, limit) {
+        return findBy("DATA_FIM", data, true, table, page, limit);
     };
 
     /**
@@ -94,9 +94,65 @@ class ProgramasRepository {
      * Normalmente usado para validações de integridade.
      */
 
-    findID_SECRETARIA(value) {
-        return findBy("ID", value, false, "secretaria");
+    findID_SECRETARIA(value, page, limit) {
+        return findBy("ID", value, false, "secretaria", page, limit);
     };
+
+    /**
+     * Consulta pelo ID na view_programas limitando por escopo.
+     */
+    findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    };
+
+    /**
+     * Consulta pelo NOME na view_programas limitando por escopo.
+     */
+    findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    };
+
+    /**
+     * Consulta pela secretaria na view_programas limitando por escopo.
+     */
+    findBySecretariaScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    };
+
+    /**
+     * Consulta pelo estado na view_programas limitando por escopo.
+     */
+    findByEstadoScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    };
+
+    /**
+     * Consulta pela origem de recusos na view_programas limitando por escopo.
+     */
+    findByOrigemRecursoScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    };
+
+    /**
+     * Consulta pela data de início na view_programas limitando por escopo.
+     */
+    findByDataInicioScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    };
+
+    /**
+     * Consulta pela data de termino na view_programas limitando por escopo.
+     */
+    findByDataFimScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    };
+
+    /**
+     * Consulta pelo intervalo de datas na view_programas limitando por escopo.
+     */
+    // findByInicioFimScope(sessionID, sessionField, field, inicio, fim, page, limit) {
+    //     return findByIntervalWithScope(sessionID, sessionField, field, inicio, fim, true, view, page, limit);
+    // };
 
     /**
      * Insere um novo programa na tabela `programa`.
