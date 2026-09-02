@@ -12,7 +12,11 @@ class PessoasController {
 
     async AllPessoas(req, res) {
         try {
-            const pessoas = await PessoasService.findAllPessoas(req.user);
+            const pessoas = await PessoasService.findAllPessoas(
+                req.user,
+                req.query.page,
+                req.query.limit
+            );
 
             req.log.info({
                 event: "PESSOA_LIST",
@@ -43,7 +47,9 @@ class PessoasController {
         try {
             const result = await PessoasService.find(
                 req.params.value,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -77,7 +83,9 @@ class PessoasController {
         try {
             const result = await PessoasService.findbyGenero(
                 req.params.genero,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -111,7 +119,9 @@ class PessoasController {
         try {
             const result = await PessoasService.findbyData(
                 req.params.data,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -146,7 +156,9 @@ class PessoasController {
             const result = await PessoasService.findByInicioFim(
                 req.params.inicio, 
                 req.params.fim,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({

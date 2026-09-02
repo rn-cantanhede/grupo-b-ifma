@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const pagination = require("../../../middleware/pagination");
 const UsuariosController = require("../usuarios.controller");
 
 /**
@@ -11,15 +12,15 @@ const UsuariosController = require("../usuarios.controller");
  */
 
 // Retorna todos os usuarios cadastrados.
-router.get("/", UsuariosController.findAllUsuarios);
+router.get("/", pagination, UsuariosController.findAllUsuarios);
 
 
 // Busca um usuario por um valor genérico.
-router.get("/:value", UsuariosController.findUsuarios);
+router.get("/:value", pagination, UsuariosController.findUsuarios);
 
-router.get("/nivel/:nivel", UsuariosController.findNivelUsuarios);
+router.get("/nivel/:nivel", pagination, UsuariosController.findNivelUsuarios);
 
-router.get("/login/:login", UsuariosController.findByLogin);
+router.get("/login/:login", pagination, UsuariosController.findByLogin);
 
 /**
  * ROTAS DE CRIAÇÃO (POST)

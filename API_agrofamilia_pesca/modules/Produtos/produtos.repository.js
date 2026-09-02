@@ -16,23 +16,23 @@ class ProdutoRepository {
      * Retorna todos os produtos disponíveis na view.
      */
 
-    findAllProdutos() {
-        return findAll(table);
+    findAllProdutos(page, limit) {
+        return findAll(table, page, limit);
     };
 
     /**
      * Busca um produto pelo ID.
      */
 
-    findById(id) {
-        return findBy("ID", id, false, table);
+    findById(id, page, limit) {
+        return findBy("ID", id, false, table, page, limit);
     };
 
     /**
      * Busca produtos pelo nome.
      */
-    findByName(name) {
-        return findBy("NOME", name, true, table);
+    findByName(name, page, limit) {
+        return findBy("NOME", name, true, table, page, limit);
     };
 
     /**

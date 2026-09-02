@@ -12,7 +12,12 @@ class UsuariosController {
      */
     async findAllUsuarios(req, res, next) {
         try {
-            const view = await UsuariosService.findAllUsuarios(req.user);
+            const view = await UsuariosService.findAllUsuarios(
+                req.user,
+                req.query.page || 1,
+                req.query.limit || 10
+            );
+
             req.log.info({
                 event: "USER_LIST",
                 resource: "usuario",
@@ -41,7 +46,9 @@ class UsuariosController {
         try {
             const result = await UsuariosService.find(
                 req.params.value,
-                req.user
+                req.user,
+                req.query.page || 1,
+                req.query.limit || 10
             );
 
             req.log.info({
@@ -74,7 +81,9 @@ class UsuariosController {
         try {
             const result = await UsuariosService.findByNivel(
                 req.params.nivel,
-                req.user
+                req.user,
+                req.query.page || 1,
+                req.query.limit || 10
             );
 
             req.log.info({
@@ -107,7 +116,9 @@ class UsuariosController {
         try {
             const result = await UsuariosService.findBySecretaria(
                 req.params.secretaria,
-                req.user
+                req.user,
+                req.query.page || 1,
+                req.query.limit || 10
             );
 
             req.log.info({
@@ -138,7 +149,12 @@ class UsuariosController {
      */
     async findByLogin(req, res, next) {
         try {
-            const result = await UsuariosService.findByLogin(req.params.login, req.user);
+            const result = await UsuariosService.findByLogin(
+                req.params.login, 
+                req.user,
+                req.query.page || 1,
+                req.query.limit || 10
+            );
 
             req.log.info({
                 event: "USER_FIND",

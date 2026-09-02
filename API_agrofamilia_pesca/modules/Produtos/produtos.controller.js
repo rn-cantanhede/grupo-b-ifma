@@ -12,7 +12,11 @@ class ProdutosController {
     
     async AllProdutos(req, res) {
         try {
-            const produtos = await ProdutosService.findAllProdutos(req.user);
+            const produtos = await ProdutosService.findAllProdutos(
+                req.user,
+                req.query.page,
+                req.query.limit
+            );
 
             req.log.info({
                 event: "PRODUTO_LIST",
@@ -43,7 +47,9 @@ class ProdutosController {
         try {
             const produtos = await ProdutosService.find(
                 req.params.value,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({

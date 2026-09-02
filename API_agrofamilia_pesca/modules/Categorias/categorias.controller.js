@@ -13,7 +13,11 @@ class CategoriasController {
 
     async AllCategorias(req, res) {
         try {
-            const categorias = await CategoriasService.findAllCategorias(req.user);
+            const categorias = await CategoriasService.findAllCategorias(
+                req.user,
+                req.query.page,
+                req.query.limit
+            );
 
             req.log.info({
                 event: "CATEGORIA_LIST",
@@ -44,7 +48,9 @@ class CategoriasController {
         try {
             const result = await CategoriasService.find(
                 req.params.value,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({

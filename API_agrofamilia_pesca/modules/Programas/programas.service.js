@@ -2,8 +2,8 @@ const Erros = require("../../shared/errors/Errors");
 const { findByIdName } = require("../../shared/Utils/findUtils");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const ProgramasRepository = require("./programas.repository");
+const baseScope = require("../../shared/base/baseScope");
 const ProgramasPolicy = require("./policies/programas.policy");
-const BaseService = require("../../shared/base/BaseService");
 
 /**
  * Camada de serviço responsável pela regra de negócio
@@ -19,19 +19,19 @@ class ProgramasService {
      * Retorna todos os programas.
      * O BaseService filtra o que o usuário não pode ver.
      */
-    async findAllProgramas(user) {
-        if (!ProgramasPolicy.canGet(user)) {
+    async findAllProgramas(session, page, limit) {
+        if (!ProgramasPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        const result = await ProgramasRepository.findAllProgramas();
+        //provisorio
+        session.associacao = session.secretaria;
 
-        return BaseService.applyScope({
-            user,
-            data: result,
-            mapping: {
-                secretaria: 'ID_SECRETARIA'
-            },
+        return baseScope.getAll(session, page, limit, {
+            admin: ProgramasRepository.findAllProgramas,
+            secretaria: ProgramasRepository.findbyIdSecretaria,
+            associacao: ProgramasRepository.findbyIdSecretaria,
+            usuario: ProgramasRepository.findById
         });
     };
 
@@ -39,18 +39,62 @@ class ProgramasService {
      * Busca um programa. O BaseService garante que se ele achar um 
      * ID que não pertence ao usuário, ele barra o acesso.
      */
-    async find(value, user) {
-        if (!ProgramasPolicy.canGet(user)) {
+    async find(value, session, page, limit) {
+        if (!ProgramasPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
-        }
+        };
 
-        const programa = await findByIdName(
-            value,
-            ProgramasRepository.findById,
-            ProgramasRepository.findByName
-        );
+        const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return BaseService.applyScope({ user, data: programa });
+        return baseScope.getFind(session, page, limit, {
+            admin: () =>
+                findByIdName(
+                    value,
+                    page,
+                    limit,
+                    ProgramasRepository.findById,
+                    ProgramasRepository.findByName
+                ),
+
+            secretaria: (id) =>
+                findByScope(
+                    id,
+                    sessionField[0],
+                    "ID",
+                    "NOME",
+                    value,
+                    page,
+                    limit,
+                    ProgramasRepository.findByIdScope,
+                    ProgramasRepository.findByNameScope
+                ),
+
+            associacao: (id) =>
+                findByScope(
+                    id,
+                    sessionField[1],
+                    "ID",
+                    "NOME",
+                    value,
+                    page,
+                    limit,
+                    ProgramasRepository.findByIdScope,
+                    ProgramasRepository.findByNameScope
+                ),
+
+            usuario: (id) =>
+                findByScope(
+                    id,
+                    sessionField[2],
+                    "ID",
+                    "NOME",
+                    value,
+                    page,
+                    limit,
+                    ProgramasRepository.findByIdScope,
+                    ProgramasRepository.findByNameScope
+                ),
+        });
     };
 
     /**
@@ -107,7 +151,7 @@ class ProgramasService {
             throw new Erros("ID invalido", 404);
         };
 
-        if (!ProgramasPolicy.canUpdate(user, registroExistente)) {
+        if (!ProgramasPolicy.canUpdate(user, registroExistente.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -125,7 +169,7 @@ class ProgramasService {
             throw new Erros("ID não existe", 404);
         };
 
-        if (!ProgramasPolicy.canDelete(user, registroExistente)) {
+        if (!ProgramasPolicy.canDelete(user, registroExistente.result)) {
             throw new Erros("Acesso negado", 403);
         };
 

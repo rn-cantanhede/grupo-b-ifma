@@ -16,7 +16,11 @@ class LocalizacaoBeneficiadoController {
 
     async AllLocalizacoes(req, res) {
         try {
-            const localizacoes = await LocalizacaoBeneficiadoService.findAllLocalizacao(req.user);
+            const localizacoes = await LocalizacaoBeneficiadoService.findAllLocalizacao(
+                req.user,
+                req.query.page,
+                req.query.limit
+            );
 
             req.log.info({
                 event: "LOCALIZACAO_LIST",
@@ -47,7 +51,9 @@ class LocalizacaoBeneficiadoController {
         try {
             const result = await LocalizacaoBeneficiadoService.find(
                 req.params.value,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -82,7 +88,9 @@ class LocalizacaoBeneficiadoController {
         try {
             const result = await LocalizacaoBeneficiadoService.findbyAssociacao(
                 req.params.associacao,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({

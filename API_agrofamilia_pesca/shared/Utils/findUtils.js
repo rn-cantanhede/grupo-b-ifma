@@ -28,8 +28,8 @@ function NumberOrString(value) {
  * Lança erro 404 quando o resultado não é encontrado.
  */
 
-async function find(value, method) {
-    const result = await method(value);
+async function find(value, page, limit, method) {
+    const result = await method(value, page, limit);
 
     if (!result) {
         throw new Erros("Não encontrado", 404);
@@ -44,13 +44,13 @@ async function find(value, method) {
  * Demais valores utilizam o método de busca por nome.
  */
 
-async function findByIdName(value, idMethod, nameMethod) {
+async function findByIdName(value, page, limit, idMethod, nameMethod) {
     if (NumberOrString(value)) {
         const stringConverted = convertString(value);
-        return find(stringConverted, nameMethod);
+        return find(stringConverted, page, limit, nameMethod);
     };
 
-    return find(value, idMethod);
+    return find(value, page, limit, idMethod);
 };
 
 /**
@@ -61,11 +61,11 @@ async function findByIdName(value, idMethod, nameMethod) {
  */
 
 async function findByScope(sessionID, sessionField, fieldID, fieldName,
-    value, method
+    value, page, limit, method
 ) {
     if (!NumberOrString(value)) {
         const stringConverted = convertString(value);
-        const result = await method(sessionID, sessionField, fieldID, value);
+        const result = await method(sessionID, sessionField, fieldID, value, page, limit);
 
         if (result == "" || result == undefined) {
             throw new Erros("Não encontrado", 404);
@@ -74,7 +74,7 @@ async function findByScope(sessionID, sessionField, fieldID, fieldName,
         return result;
     };
     
-    const result = await method(sessionID, sessionField, fieldName, value);
+    const result = await method(sessionID, sessionField, fieldName, value, page, limit);
     if (result == "" || result == undefined) {
         throw new Erros("Não encontrado", 404);
     };
@@ -86,8 +86,23 @@ async function findByScope(sessionID, sessionField, fieldID, fieldName,
  * Lança erro 404 caso nenhum registro seja retornado.
  */
 
-async function findByInterval(inicio, fim, method) {
-    const result = await method(inicio, fim);
+async function findByInterval(inicio, fim, page, limit, method) {
+    const result = await method(inicio, fim, page, limit);
+
+    if (!result) {
+        throw new Erros("Não encontrado", 404);
+    };
+
+    return result;
+};
+
+
+/**
+ * Executa busca por intervalo utilizando o método especificado aplicando escopo.
+ * Lança erro 404 caso nenhum registro seja retornado.
+ */
+async function findByIntervalScope(sessionID, sessionField, field, inicio, fim, page, limit, method) {
+    const result = await method(sessionID, sessionField, field, inicio, fim, page, limit);
 
     if (!result) {
         throw new Erros("Não encontrado", 404);
@@ -161,6 +176,7 @@ module.exports = {
     findByIdName,
     findByScope,
     findByInterval,
+    findByIntervalScope,
     VerifyNivel,
     listUsers,
     convertString

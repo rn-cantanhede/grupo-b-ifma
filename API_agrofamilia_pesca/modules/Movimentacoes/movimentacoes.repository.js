@@ -1,6 +1,6 @@
 // Importa as funções utilitárias responsáveis pelas operações básicas no banco de dados.
 // padronizando as operações de CRUD na aplicação.
-const { findAll, findBy, findByInterval, insertData, updateData, deleteData, findWithScope } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, findByInterval, insertData, updateData, deleteData, findWithScope, findByIntervalWithScope } = require("../../shared/Utils/dbUtils");
 const table = "view_produto_movimentacao";
 
 /**
@@ -17,16 +17,16 @@ class MovimentacoesRepository {
      * Retorna todas as movimentações de produtos a partir da view.
      */
     
-    findAllMovimentacoes() {
-        return findAll(table);
+    findAllMovimentacoes(page, limit) {
+        return findAll(table, page, limit);
     };
 
     /**
      * Busca uma movimentação específica pelo ID na view.
      */
 
-    findById(id) {
-        return findBy("ID", id, false, table);
+    findById(id, page, limit) {
+        return findBy("ID", id, false, table, page, limit);
     };
 
     /**
@@ -41,56 +41,56 @@ class MovimentacoesRepository {
      * Busca uma movimentação específica pelo ID_SECRETARIA na view.
      */
 
-    findByIdSecretaria(id) {
-        return findBy("ID_SECRETARIA", id, true, table);
+    findByIdSecretaria(id, page, limit) {
+        return findBy("ID_SECRETARIA", id, true, table, page, limit);
     };
 
     /**
      * Busca uma movimentação específica pelo ID_PESSO na view.
      */
 
-    findByIdPessoa(id) {
-        return findBy("ID_PESSOA", id, false, table);
+    findByIdPessoa(id, page, limit) {
+        return findBy("ID_PESSOA", id, false, table, page, limit);
     };
 
     /**
      * Busca uma movimentação específica pelo ID_PESSO na view.
      */
 
-    findByIdAssociado(id) {
-        return findBy("ID_ASSOCIADO", id, false, table);
+    findByIdAssociado(id, page, limit) {
+        return findBy("ID_ASSOCIADO", id, false, table, page, limit);
     };
 
     /**
      * Busca movimentações filtrando pelo DAP.
      */
 
-    findbyDap(dap) {
-        return findBy("DAP", dap, false, table);
+    findbyDap(dap, page, limit) {
+        return findBy("DAP", dap, true, table, page, limit);
     };
 
     /**
      * Busca movimentações filtrando pelo nome ou identificador do produto.
      */
 
-    findbyProduto(produto) {
-        return findBy("PRODUTO", produto, false, table);
+    findbyProduto(produto, page, limit) {
+        return findBy("PRODUTO", produto, true, table, page, limit);
     };
 
     /**
      * Busca movimentações pela data exata da movimentação.
      */
 
-    findbyData(data) {
-        return findBy("DATA_MOVIMENTACAO", data, true, table);
+    findbyData(data, page, limit) {
+        return findBy("DATA_MOVIMENTACAO", data, true, table, page, limit);
     };
 
     /**
      * Busca movimentações dentro de um intervalo de datas.
      */
 
-    findByInicioFim(inicio, fim) {
-        return findByInterval("DATA_MOVIMENTACAO", inicio, fim, table);
+    findByInicioFim(inicio, fim, page, limit) {
+        return findByInterval("DATA_MOVIMENTACAO", inicio, fim, table, page, limit);
     };
 
     /**
@@ -120,29 +120,36 @@ class MovimentacoesRepository {
     /**
      * onsulta pelo ID limitando por escopo.
      */
-    findByIdScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
     };
 
     /**
      * Consulta pelo DAP limitando por escopo.
      */
-    findByDapScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    findByDapScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
     };
 
     /**
      * onsulta pelo PRODUTO limitando por escopo.
      */
-    findByProdutoScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    findByProdutoScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
     };
 
     /**
      * onsulta pelo DATA_MOVIMENTACAO limitando por escopo.
      */
-    findByDataScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    findByDataScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+    };
+
+    /**
+     * Consulta pelo intervalo das datas de movimentação na view_produto_movimentacao limitando por escopo.
+     */
+    findByInicioFimScope(sessionID, sessionField, field, inicio, fim, page, limit) {
+        return findByIntervalWithScope(sessionID, sessionField, field, inicio, fim, true, table, page, limit);
     };
 
     /**

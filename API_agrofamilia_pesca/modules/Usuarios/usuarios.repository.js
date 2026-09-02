@@ -16,15 +16,15 @@ class UsuariosRepository {
     /**
      * Retorna todas os usuarios cadastradas.
      */
-    findAllUsuarios() {
-        return findAll(view);
+    findAllUsuarios(page, limit) {
+        return findAll(view, page, limit);
     };
 
     /**
      * Consulta usuario pelo ID.
      */
-    findById(id) {
-        return findBy("ID", id, true, view);
+    findById(id, page, limit) {
+        return findBy("ID", id, false, view, page, limit);
     };
 
     /**
@@ -38,43 +38,43 @@ class UsuariosRepository {
      * Consulta usuario pelo nome.
      * Retorna múltiplos resultados.
      */
-    findByName(name) {
-        return findBy("NOME", name, true, view);
+    findByName(name, page, limit) {
+        return findBy("NOME", name, true, view, page, limit);
     };
 
     /**
      * Lista usuarios filtrando pelo nivel.
      */
-    findByNivel(nivel) {
-        return findBy("NIVEL", nivel, true, view);
+    findByNivel(nivel,  page, limit) {
+        return findBy("NIVEL", nivel, false, view,  page, limit);
     };
 
     /**
      * Lista usuarios filtrando pela secretaria.
      */
-    findBySecretaria(secretaria) {
-        return findBy("SECRETARIA", secretaria, true, view);
+    findBySecretaria(secretaria, page, limit) {
+        return findBy("SECRETARIA", secretaria, true, view, page, limit);
     };
 
     /**
      * Consulta usuarios pelo ID da secretaria.
      */
     findByIdSecretaria(id) {
-        return findBy("ID_SECRETARIA", id, true, view);
+        return findBy("ID_SECRETARIA", id, false, view);
     };
 
     /**
      * Consulta usuarios pelo ID da pessoa.
      */
     findByIdPessoa(id) {
-        return findBy("ID_PESSOA", id, true, view);
+        return findBy("ID_PESSOA", id, false, view);
     };
 
     /**
      * Consulta usuarios pelo Id da associaçao.
      */
     findByIdAssociacao(id) {
-        return findBy("ID_ASSOCIACAO", id, true, view);
+        return findBy("ID_ASSOCIACAO", id, false, view);
     };
 
     /**
@@ -87,36 +87,36 @@ class UsuariosRepository {
     /**
      * Consulta usuarios pelo Login na view_usuarios.
      */
-    findByLogin(login) {
-        return findBy("LOGIN", login, true, view);
+    findByLogin(login, page, limit) {
+        return findBy("LOGIN", login, true, view, page, limit);
     };
 
     /**
      * Consulta pelo ID na view_usuarios limitando por escopo.
      */
-    findByIdScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, false, view, page, limit);
     };
 
     /**
      * Consulta pelo NOME na view_usuarios limitando por escopo.
      */
-    findByNameScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
     };
 
     /**
      * Consulta pelo nivel na view_usuarios limitando por escopo.
      */
-    findByNivelScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    findByNivelScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit,);
     };
 
     /**
      * Consulta pelo Login na view_usuarios limitando por escopo.
      */
-    findByLoginScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    findByLoginScope(sessionID, sessionField, fieldID, value, page, limit,) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
     };
 
 

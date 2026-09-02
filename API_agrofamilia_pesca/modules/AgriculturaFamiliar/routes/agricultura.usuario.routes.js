@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const pagination = require("../../../middleware/pagination");
 const AgriculturaFamiliarController = require("../agricultura-familiar.controller");
 
 /**
@@ -14,6 +15,6 @@ const AgriculturaFamiliarController = require("../agricultura-familiar.controlle
  */
 
 // Retorna todos os registros de agricultura familiar.
-router.get("/", AgriculturaFamiliarController.AllAgriculturaFamiliar);
+router.get("/", pagination, AgriculturaFamiliarController.AllAgriculturaFamiliar);
 
 module.exports = router;

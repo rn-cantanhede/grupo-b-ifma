@@ -1,10 +1,9 @@
 const Erros = require("../../shared/errors/Errors");
-const BaseService = require("../../shared/base/BaseService");
 const LocalizacaoPolicy = require("./policies/localizacao.policy");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const associadosRepository = require("../Associados/associados.repository");
 const LocalizacaoBeneficiadoRepository = require("./localizacao-beneficiado.repository");
-const { findByIdName, find, VerifyNivel, listUsers, findByScope } = require("../../shared/Utils/findUtils");
+const { findByIdName, findByScope } = require("../../shared/Utils/findUtils");
 const baseScope = require("../../shared/base/baseScope");
 
 /**
@@ -22,12 +21,12 @@ class LocalizacaoBeneficiadoService {
      * Retorna todas as localizações beneficiadas.
      */
 
-    async findAllLocalizacao(user) {
-        if (!LocalizacaoPolicy.canGet(user)) {
+    async findAllLocalizacao(session, page, limit) {
+        if (!LocalizacaoPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return baseScope.getAll(user, {
+        return baseScope.getAll(session, page, limit, {
             admin: LocalizacaoBeneficiadoRepository.findAllLocalizacao,
             secretaria: LocalizacaoBeneficiadoRepository.findByIdSecretaria,
             associacao: LocalizacaoBeneficiadoRepository.findByIdAssociacao,
@@ -39,17 +38,19 @@ class LocalizacaoBeneficiadoService {
      * Busca uma localização beneficiada por ID ou Nome.
      */
 
-    async find(value, session) {
+    async find(value, session, page, limit) {
         if (!LocalizacaoPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 findByIdName(
                     value,
+                    page, 
+                    limit,
                     LocalizacaoBeneficiadoRepository.findById,
                     LocalizacaoBeneficiadoRepository.findByName
                 ),
@@ -61,6 +62,8 @@ class LocalizacaoBeneficiadoService {
                     "ID",
                     "NOME",
                     value,
+                    page, 
+                    limit,
                     LocalizacaoBeneficiadoRepository.findByIdScope,
                     LocalizacaoBeneficiadoRepository.findByNameScope
                 ),
@@ -72,6 +75,8 @@ class LocalizacaoBeneficiadoService {
                     "ID",
                     "NOME",
                     value,
+                    page, 
+                    limit,
                     LocalizacaoBeneficiadoRepository.findByIdScope,
                     LocalizacaoBeneficiadoRepository.findByNameScope
                 ),
@@ -79,10 +84,12 @@ class LocalizacaoBeneficiadoService {
             usuario: (id) =>
                 findByScope(
                     id,
-                    sessionField[1],
+                    sessionField[2],
                     "ID",
                     "NOME",
                     value,
+                    page, 
+                    limit,
                     LocalizacaoBeneficiadoRepository.findByIdScope,
                     LocalizacaoBeneficiadoRepository.findByNameScope
                 ),
@@ -94,17 +101,19 @@ class LocalizacaoBeneficiadoService {
      * pelo nome da associação.
      */
 
-    async findbyAssociacao(associacao, session) {
+    async findbyAssociacao(associacao, session, page, limit) {
         if (!LocalizacaoPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 findByIdName(
                     associacao,
+                    page, 
+                    limit,
                     LocalizacaoBeneficiadoRepository.findByIdAssociacao,
                     LocalizacaoBeneficiadoRepository.findbyAssociacao
                 ),
@@ -116,6 +125,8 @@ class LocalizacaoBeneficiadoService {
                     "ID_ASSOCIACAO",
                     "ASSOCIACAO",
                     associacao,
+                    page, 
+                    limit,
                     LocalizacaoBeneficiadoRepository.findByIdAssociacaoScope,
                     LocalizacaoBeneficiadoRepository.findByNameAssociacaoScope
                 ),
@@ -127,6 +138,8 @@ class LocalizacaoBeneficiadoService {
                     "ID_ASSOCIACAO",
                     "ASSOCIACAO",
                     associacao,
+                    page, 
+                    limit,
                     LocalizacaoBeneficiadoRepository.findByIdScope,
                     LocalizacaoBeneficiadoRepository.findByNameScope
                 ),
@@ -138,6 +151,8 @@ class LocalizacaoBeneficiadoService {
                     "ID_ASSOCIACAO",
                     "ASSOCIACAO",
                     associacao,
+                    page, 
+                    limit,
                     LocalizacaoBeneficiadoRepository.findByIdScope,
                     LocalizacaoBeneficiadoRepository.findByNameScope
                 ),
@@ -162,7 +177,7 @@ class LocalizacaoBeneficiadoService {
     async createlocalizacao(localizacao, user) {
         const targetUser = await LocalizacaoBeneficiadoRepository.findByIdSecretaria(user.secretaria);
 
-        if (!LocalizacaoPolicy.canPost(user, targetUser)) {
+        if (!LocalizacaoPolicy.canPost(user, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -212,20 +227,10 @@ class LocalizacaoBeneficiadoService {
             login: user.login,
             nivel: user.nivel,
             secretaria: user.secretaria,
-            associacao: targetUser?.ID_ASSOCIACAO
+            associacao: targetUser.result.ID_ASSOCIACAO
         };
 
-        console.log("--- TESTE DE BATIMENTO ESTÁTICO ---");
-        console.log("TIPO do Alluser.associacao:", typeof Alluser.associacao, "VALOR:", Alluser.associacao);
-        console.log("TIPO do idLocalizacao.ID_ASSOCIACAO:", typeof idLocalizacao.ID_ASSOCIACAO, "VALOR:", idLocalizacao.ID_ASSOCIACAO);
-        console.log("COMPARAÇÃO (==):", Alluser.associacao == idLocalizacao.ID_ASSOCIACAO);
-
-        if (!LocalizacaoPolicy.canUpdate(Alluser, idLocalizacao)) {
-            console.log("POLICY REJEITOU O ACESSO!");
-            throw new Erros("Acesso negado", 403);
-        }
-
-        if (!LocalizacaoPolicy.canUpdate(Alluser, idLocalizacao)) {
+        if (!LocalizacaoPolicy.canUpdate(Alluser, idLocalizacao.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -265,7 +270,7 @@ class LocalizacaoBeneficiadoService {
             login: user.login,
             nivel: user.nivel,
             secretaria: user.secretaria,
-            associacao: targetUser?.ID_ASSOCIACAO
+            associacao: targetUser.result.ID_ASSOCIACAO
         };
 
         if (!LocalizacaoPolicy.canDelete(Alluser, idLocalizacao)) {

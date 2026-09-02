@@ -1,6 +1,6 @@
 // Importa as funções utilitárias responsáveis pelas operações básicas no banco de dados.
 // padronizando as operações de CRUD na aplicação.
-const { findAll, findBy, findByInterval, insertData, updateData, deleteData, findWithScope } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, findByInterval, insertData, updateData, deleteData, findWithScope, findByIntervalWithScope } = require("../../shared/Utils/dbUtils");
 const table = "pessoa";
 const view = "view_pessoas";
 
@@ -17,16 +17,16 @@ class PessoasRepository {
      * Retorna a lista completa de pessoas.
      */
 
-    findAllPessoas() {
-        return findAll(view);
+    findAllPessoas(page, limit) {
+        return findAll(view, page, limit);
     };
 
     /**
      * Busca uma pessoa pelo ID.
      */
 
-    findById(id) {
-        return findBy("ID", id, false, view);
+    findById(id, page, limit) {
+        return findBy("ID", id, false, view, page, limit);
     };
 
     findId(id) {
@@ -51,60 +51,67 @@ class PessoasRepository {
      * Busca pessoas pelo nome.
      */
 
-    findByName(name) {
-        return findBy("NOME", name, true, view);
+    findByName(name, page, limit) {
+        return findBy("NOME", name, true, view, page, limit);
     };
 
     /**
      * Busca pessoas filtrando pelo gênero.
      */
 
-    findbyGenero(genero) {
-        return findBy("GENERO", genero, true, view);
+    findbyGenero(genero, page, limit) {
+        return findBy("GENERO", genero, true, view, page, limit);
     };
 
     /**
      * Busca pessoas pela data de nascimento.
      */
 
-    findbyData(data) {
-        return findBy("DATA_NASCIMENTO", data, true, view);
+    findbyData(data, page, limit) {
+        return findBy("DATA_NASCIMENTO", data, true, view, page, limit);
     };
 
     /**
      * Busca pessoas dentro de um intervalo de datas de nascimento.
      */
 
-    findByInicioFim(inicio, fim) {
-        return findByInterval("DATA_NASCIMENTO", inicio, fim, view);
+    findByInicioFim(inicio, fim, page, limit) {
+        return findByInterval("DATA_NASCIMENTO", inicio, fim, view, page, limit);
     };
     
     /**
      * Consulta pelo ID na view_usuarios limitando por escopo.
      */
-    findByIdScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
     };
 
     /**
      * Consulta pelo NOME na view_usuarios limitando por escopo.
      */
-    findByNameScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
     };
 
     /**
      * Consulta pelo GENERO na view_usuarios limitando por escopo.
      */
-    findByGeneroScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    findByGeneroScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
     };
 
     /**
      * Consulta pelo DATA na view_usuarios limitando por escopo.
      */
-    findByDataScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    findByDataScope(sessionID, sessionField, fieldID, value, page, limit) {
+        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    };
+
+    /**
+     * Consulta pelo intervalo dos anos de ascimento na view_usuarios limitando por escopo.
+     */
+    findByInicioFimScope(sessionID, sessionField, field, inicio, fim, page, limit) {
+        return findByIntervalWithScope(sessionID, sessionField, field, inicio, fim, true, view, page, limit);
     };
 
     /**

@@ -13,7 +13,11 @@ class AssociadosController {
 
     async AllAssociados(req, res) {
         try {
-            const view = await AssociadosService.findAllAssociados(req.user);
+            const view = await AssociadosService.findAllAssociados(
+                req.user,
+                req.query.page,
+                req.query.limit
+            );
 
             req.log.info({
                 event: "ASSOCIADO_LIST",
@@ -44,7 +48,9 @@ class AssociadosController {
         try {
             const result = await AssociadosService.find(
                 req.params.value,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -78,7 +84,9 @@ class AssociadosController {
         try {
             const result = await AssociadosService.findbyCaf(
                 req.params.caf,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -112,7 +120,9 @@ class AssociadosController {
         try {
             const result = await AssociadosService.findbyDap(
                 req.params.dap,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -146,7 +156,9 @@ class AssociadosController {
         try {
             const result = await AssociadosService.findbyAssociacao(
                 req.params.associacao,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -180,7 +192,9 @@ class AssociadosController {
         try {
             const result = await AssociadosService.findbyData(
                 req.params.data,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -215,7 +229,9 @@ class AssociadosController {
             const result = await AssociadosService.findByInicioFim(
                 req.params.inicio,
                 req.params.fim,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
