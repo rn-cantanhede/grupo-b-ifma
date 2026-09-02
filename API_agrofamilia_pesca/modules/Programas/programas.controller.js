@@ -14,7 +14,11 @@ class ProgramasController {
 
     async AllProgramas(req, res) {
         try {
-            const programas = await ProgramasService.findAllProgramas(req.user);
+            const programas = await ProgramasService.findAllProgramas(
+                req.user,
+                req.query.page,
+                req.query.limit
+            );
 
             req.log.info({
                 event: "PROGRAMA_LIST",
@@ -46,7 +50,9 @@ class ProgramasController {
         try {
             const result = await ProgramasService.find(
                 req.params.value,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -80,7 +86,9 @@ class ProgramasController {
         try {
             const result = await ProgramasService.findbySecretaria(
                 req.params.secretaria,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -114,7 +122,9 @@ class ProgramasController {
         try {
             const result = await ProgramasService.findbyEstado(
                 req.params.estado,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -148,7 +158,9 @@ class ProgramasController {
         try {
             const result = await ProgramasService.findbyOrigemRecurso(
                 req.params.recurso,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -182,7 +194,9 @@ class ProgramasController {
         try {
             const result = await ProgramasService.findbyDataInicio(
                 req.params.data,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
@@ -216,7 +230,9 @@ class ProgramasController {
         try {
             const result = await ProgramasService.findbyDataFim(
                 req.params.data,
-                req.user
+                req.user,
+                req.query.page,
+                req.query.limit
             );
 
             req.log.info({
