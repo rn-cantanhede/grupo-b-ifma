@@ -12,7 +12,7 @@ const {
     updateData
 } = require("../../../../shared/Utils/dbUtils");
 
-describe("insertData", () => {
+describe("updateData", () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
