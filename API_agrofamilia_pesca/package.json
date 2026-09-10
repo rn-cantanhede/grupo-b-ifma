@@ -3,8 +3,8 @@
   "version": "V0.7.0-alpha",
   "main": "server.js",
   "scripts": {
-  "test": "jest"
-},
+    "test": "jest"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rn-cantanhede/grupo-b-sozinho.git"
@@ -30,6 +30,7 @@
     "pino-http": "^11.0.0"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "jest": "^30.4.2",
     "nodemon": "^3.1.14"
   }
