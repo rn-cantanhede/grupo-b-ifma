@@ -2,6 +2,12 @@ const express = require("express");
 const request = require("supertest");
 const loginLimiter = require("../../../middleware/loginLimiter");
 
+jest.mock("../../../config/logger", () => ({
+    warn: jest.fn(),
+    info: jest.fn(),
+    error: jest.fn(),
+}));
+
 describe("loginLimiter", () => {
     let app;
 
