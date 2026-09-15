@@ -4,7 +4,7 @@
  */
 exports.up = function (knex) {
     return knex.schema.createTable("SESSOES", (table) => {
-        table.increments("ID_SESSAO").primary();
+        table.increments("ID").primary();
         table.integer("ID_PESSOA").unsigned().notNullable();
         table.integer("ID_SECRETARIA").unsigned();
         table.integer("ID_ASSOCIACAO").unsigned();
