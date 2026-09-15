@@ -47,12 +47,20 @@ app.use(express.json());
  * Configura o gerenciamento de sessão da aplicação. 
  */
 app.use(session({
-    name: "__Host-auth",
+    name: process.env.NODE_ENV === "production"
+        ? "__Host-auth"
+        : "auth",
+
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+
     cookie: {
-        maxAge: 1000 * 60 * 60
+        maxAge: 1000 * 60 * 60,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/"
     }
 }));
 
