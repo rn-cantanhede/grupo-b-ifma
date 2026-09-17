@@ -317,7 +317,12 @@ class UsuariosController {
 
     async login(req, res, next) {
         try {
-            const user = await UsuariosService.login(req.body);
+            const user = await UsuariosService.login(
+                req.body,
+                req.session.refreshToken,
+                req.headers,
+                req.ip
+            );
 
             if (!user) {
                 req.log.warn({
@@ -330,7 +335,9 @@ class UsuariosController {
                 return res.status(401).json({ Error: "Login invalido" });
             };
 
-            req.session.user = user;
+            req.session.token = user.token;
+            req.session.refreshToken = user.refreshToken;
+            req.session.loggedAt = new Date();
 
             req.log.info({
                 event: "AUTH_LOGIN",
@@ -338,10 +345,7 @@ class UsuariosController {
                 action: "login",
             }, "Login realizado");
 
-            return res.status(200).json({
-                Message: "Login realizado",
-                APIkey: user,
-            });
+            return res.status(200).json({ Message: "Login realizado"  });
         } catch (error) {
             req.log.warn({
                 event: "AUTH_LOGIN_ERROR",
@@ -362,31 +366,30 @@ class UsuariosController {
 
     async logout(req, res, next) {
         try {
-            req.session.destroy(function (err) {
+            req.session.destroy((err) => {
                 if (err) {
                     return next(err);
                 };
 
-                res.clearCookie("__Host-auth");
+                const cookieName = process.env.NODE_ENV === "production"
+                    ? "__Host-auth"
+                    : "auth"
+                ;
+
+                res.clearCookie(cookieName);
 
                 req.log.info({
                     event: "AUTH_LOGOUT",
                     resource: "usuario",
                     action: "logout",
-                    usuarioId: req.user.id
+                    usuarioId: req.user?.id
                 }, "Logout realizado");
 
-                res.status(200).json({ Message: "Logout realizado" });
+                return res.status(200).json({
+                    Message: "Logout realizado"
+                });
             });
         } catch (error) {
-            req.log.info({
-                event: "AUTH_LOGOUT_FAILED",
-                resource: "usuario",
-                action: "logout",
-                usuarioId: req.user.id
-            }, "Falha no logout");
-
-            console.log(error);
             return next(error);
         };
     };
