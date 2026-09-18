@@ -13,7 +13,7 @@ class UsuariosController {
     async findAllUsuarios(req, res, next) {
         try {
             const view = await UsuariosService.findAllUsuarios(
-                req.user,
+                req.session.user,
                 req.query.page || 1,
                 req.query.limit || 10
             );
@@ -22,7 +22,7 @@ class UsuariosController {
                 event: "USER_LIST",
                 resource: "usuario",
                 action: "list",
-                usuarioID: req.user.id
+                usuarioID: req.session.userid
             }, "Listagem de usuários");
 
             return res.status(200).json(view);
@@ -31,7 +31,7 @@ class UsuariosController {
                 event: "USER_LIST_ERROR",
                 resource: "usuario",
                 action: "list",
-                usuarioID: req.user.id
+                usuarioID: req.session.userid
             }, "Erro ao listar usuários");
 
             console.log(error);
@@ -46,7 +46,7 @@ class UsuariosController {
         try {
             const result = await UsuariosService.find(
                 req.params.value,
-                req.user,
+                req.session.user,
                 req.query.page || 1,
                 req.query.limit || 10
             );
@@ -55,7 +55,7 @@ class UsuariosController {
                 event: "USER_FIND",
                 resource: "usuario",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.userid,
                 target: req.params.value
             }, "Usuário consultado por id ou nome");
 
@@ -65,7 +65,7 @@ class UsuariosController {
                 event: "USER_FIND_ERROR",
                 resource: "usuario",
                 action: "find",
-                usuarioID: req.user.id,
+                usuarioID: req.session.userid,
                 target: req.params.value
             }, "Erro ao buscar usuário");
 
@@ -81,7 +81,7 @@ class UsuariosController {
         try {
             const result = await UsuariosService.findByNivel(
                 req.params.nivel,
-                req.user,
+                req.session.user,
                 req.query.page || 1,
                 req.query.limit || 10
             );
@@ -90,7 +90,7 @@ class UsuariosController {
                 event: "USER_FIND",
                 resource: "usuario",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.userid,
                 target: req.params.nivel
             }, "Usuário consultado por nivel");
 
@@ -100,7 +100,7 @@ class UsuariosController {
                 event: "USER_FIND_ERROR",
                 resource: "usuario",
                 action: "find",
-                usuarioID: req.user.id,
+                usuarioID: req.session.userid,
                 target: req.params.nivel
             }, "Erro ao buscar usuário por nivel");
 
@@ -116,7 +116,7 @@ class UsuariosController {
         try {
             const result = await UsuariosService.findBySecretaria(
                 req.params.secretaria,
-                req.user,
+                req.session.user,
                 req.query.page || 1,
                 req.query.limit || 10
             );
@@ -125,7 +125,7 @@ class UsuariosController {
                 event: "USER_FIND",
                 resource: "usuario",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.userid,
                 target: req.params.secretaria
             }, "Consulta por usuarios de uma secretaria");
 
@@ -135,7 +135,7 @@ class UsuariosController {
                 event: "USER_FIND_ERROR",
                 resource: "usuario",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.userid,
                 target: req.params.secretaria
             }, "Erro ao consultar usuários por secretaria");
 
@@ -151,7 +151,7 @@ class UsuariosController {
         try {
             const result = await UsuariosService.findByLogin(
                 req.params.login, 
-                req.user,
+                req.session.user,
                 req.query.page || 1,
                 req.query.limit || 10
             );
@@ -160,7 +160,7 @@ class UsuariosController {
                 event: "USER_FIND",
                 resource: "usuario",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.userid,
                 target: req.params.login
             }, "Usuário consultado por login");
 
@@ -170,7 +170,7 @@ class UsuariosController {
                 event: "USER_FIND_ERROR",
                 resource: "usuario",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.userid,
                 target: req.params.login
             }, "Erro ao consultar usuário por login");
 
@@ -190,7 +190,7 @@ class UsuariosController {
                 event: "USER_CREATE",
                 resource: "usuario",
                 action: "create",
-                usuarioId: req.user.id,
+                usuarioId: req.session.userid,
             }, "Usuário criado");
 
             return res.status(200).json(result);
@@ -199,7 +199,7 @@ class UsuariosController {
                 event: "USER_CREATE_ERROR",
                 resource: "usuario",
                 action: "create",
-                usuarioId: req.user.id
+                usuarioId: req.session.userid
             }, "Erro ao criar usuario");
 
             console.log(error);
@@ -214,15 +214,15 @@ class UsuariosController {
         try {
             const result = await UsuariosService.updateUsuario(
                 req.params.id, req.body, {
-                nivel: req.user.nivel,
-                secretaria: req.user.secretaria
+                nivel: req.session.usernivel,
+                secretaria: req.session.usersecretaria
             });
 
             req.log.info({
                 event: "USER_UPDATE",
                 resource: "usuario",
                 action: "update",
-                usuarioId: req.user.id,
+                usuarioId: req.session.userid,
                 targetId: req.params.id
             }, "Usuário atualizado");
 
@@ -232,7 +232,7 @@ class UsuariosController {
                 event: "USER_UPDATE_ERROR",
                 resource: "usuario",
                 action: "update",
-                usuarioId: req.user.id,
+                usuarioId: req.session.userid,
                 targetId: req.params.id
             }, "Erro ao atualizar usuario");
 
@@ -248,15 +248,15 @@ class UsuariosController {
         try {
             const result = await UsuariosService.updateLogin(
                 req.params.id, req.body, {
-                nivel: req.user.nivel,
-                secretaria: req.user.secretaria
+                nivel: req.session.usernivel,
+                secretaria: req.session.usersecretaria
             });
 
             req.log.info({
                 event: "LOGIN_UPDATE",
                 resource: "usuario",
                 action: "update",
-                usuarioId: req.user.id,
+                usuarioId: req.session.userid,
                 targetId: req.params.id
             }, "Login atualizado");
 
@@ -266,7 +266,7 @@ class UsuariosController {
                 event: "LOGIN_UPDATE_ERROR",
                 resource: "usuario",
                 action: "update",
-                usuarioId: req.user.id,
+                usuarioId: req.session.userid,
                 targetId: req.params.id
             }, "Erro ao atualizar login");
 
@@ -282,8 +282,8 @@ class UsuariosController {
         try {
             const result = await UsuariosService.deleteUsuario(req.params.id,
                 {
-                    nivel: req.user.nivel,
-                    secretaria: req.user.secretaria
+                    nivel: req.session.usernivel,
+                    secretaria: req.session.usersecretaria
                 }
             );
 
@@ -291,7 +291,7 @@ class UsuariosController {
                 event: "USER_DELETE",
                 resource: "usuario",
                 action: "delete",
-                usuarioId: req.user.id,
+                usuarioId: req.session.userid,
                 targetId: req.params.id
             }, "Usuário excluído");
 
@@ -301,7 +301,7 @@ class UsuariosController {
                 event: "USER_DELETE_ERROR",
                 resource: "usuario",
                 action: "delete",
-                usuarioId: req.user.id,
+                usuarioId: req.session.userid,
                 targetId: req.params.id
             }, "Erro ao apagar usuario");
 
@@ -335,8 +335,9 @@ class UsuariosController {
                 return res.status(401).json({ Error: "Login invalido" });
             };
 
-            req.session.token = user.token;
-            req.session.refreshToken = user.refreshToken;
+            req.session.user = user.reqUser;
+            req.session.token = user.token.token;
+            req.session.refreshToken = user.token.refreshToken;
             req.session.loggedAt = new Date();
 
             req.log.info({
@@ -382,7 +383,7 @@ class UsuariosController {
                     event: "AUTH_LOGOUT",
                     resource: "usuario",
                     action: "logout",
-                    usuarioId: req.user?.id
+                    usuarioId: req.session.user.id
                 }, "Logout realizado");
 
                 return res.status(200).json({
