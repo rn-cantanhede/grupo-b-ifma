@@ -45,8 +45,8 @@ class UsuariosRepository {
     /**
      * Lista usuarios filtrando pelo nivel.
      */
-    findByNivel(nivel,  page, limit) {
-        return findBy("NIVEL", nivel, false, view,  page, limit);
+    findByNivel(nivel, page, limit) {
+        return findBy("NIVEL", nivel, false, view, page, limit);
     };
 
     /**
@@ -164,6 +164,48 @@ class UsuariosRepository {
      */
     login(login) {
         return loginDB(login);
+    };
+
+    /**
+     * Consulta sessão pelo ID na tabela sessoes.
+     */
+    findSession(sessionID) {
+        return findBy("ID", sessionID, false, "SESSOES", 1, 1);
+    };
+
+    /**
+     * Consulta sessão pelo REFRESH_TOKEN_HASH na tabela sessoes.
+     */
+    findSessionRefreshToken(refreshToken) {
+        return findBy("REFRESH_TOKEN_HASH", refreshToken, false, "SESSOES", 1, 1);
+    };
+
+    /**
+     * Consulta sessão pelo ID_PESSOA na tabela sessoes.
+     */
+    findSessionByIdPessoa(id) {
+        return findBy("ID_PESSOA", id, false, "SESSOES", 1, 1);
+    };
+
+    /**
+     * Insere uma nova sessão.
+     */
+    createSession(session) {
+        return insertData(session, "SESSOES");
+    };
+
+    /**
+     * Atualiza uma sessão existente.
+     */
+    updateSession(id, session) {
+        return updateData(id, session, "SESSOES");
+    };
+
+    /**
+     * Remove uma sessão existente.
+     */
+    deleteSession(id) {
+        return deleteData(id, "SESSOES");
     };
 };
 
