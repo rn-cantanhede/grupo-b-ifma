@@ -412,6 +412,18 @@ class UsuariosService {
             associacao: user.ID_ASSOCIACAO
         };
 
+        if (findSession.result.REVOGADO != null) {
+            await UsuariosRepository.deleteSession(findSession.result.ID);
+            const refresh = await authToken.createRefreshToken(session, ip);
+            await UsuariosRepository.createSession(refresh.sessao);
+            const token = await authToken.createToken(refresh.sessao, refresh.refreshToken);
+
+            return {
+                reqUser,
+                token
+            };
+        };
+
         // Se não existir sessão, cria-se uma nova
         if (!findSession) {
             const refresh = await authToken.createRefreshToken(session, ip);
