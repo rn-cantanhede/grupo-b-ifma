@@ -64,6 +64,10 @@ module.exports = async function auth(req, res, next) {
 
         const user = await findBy("ID_PESSOA", sessao.result.ID_PESSOA, false, "usuario", 1, 1);
 
+        if (!user) {
+            return next(new Erros("Usuário não encontrado", 404));
+        };
+
         req.session.user = {
             id: user.result.ID_PESSOA,
             nivel: user.result.NIVEL,
@@ -72,15 +76,11 @@ module.exports = async function auth(req, res, next) {
             associacao: user.result.ID_ASSOCIACAO
         };
 
-        if (!user) {
-            return next(new Erros("Usuário não encontrado", 404));
-        };
-
-        if (user.result.NIVEL != req.session.user.nivel ||
-            user.result.ID_PESSOA != req.session.user.id ||
-            user.result.LOGIN != req.session.user.login ||
-            user.result.ID_SECRETARIA != req.session.user.secretaria ||
-            user.result.ID_ASSOCIACAO != req.session.user.associacao
+        if (user.result.NIVEL != decoded.nivel ||
+            user.result.ID_PESSOA != decoded.id ||
+            user.result.LOGIN != decoded.login ||
+            user.result.ID_SECRETARIA != decoded.secretaria ||
+            user.result.ID_ASSOCIACAO != decoded.associacao
         ) {
             //Revoga sessão caso tenha inconsistencia
             await updateData(req.session.user.id, { REVOGADO: new Date() }, "sessoes");
@@ -110,8 +110,6 @@ module.exports = async function auth(req, res, next) {
         return next();
     } catch (error) {
         if (error.name === "TokenExpiredError") {
-            console.log("TOKEN EXPIROU!");
-
             req.log.info({
                 event: "AUTH_TOKEN",
                 resource: "authentication",
