@@ -7,10 +7,12 @@ describe("Authorize", () => {
 
     beforeEach(() => {
         req = {
-            user: {
-                id: 1,
-                login: "admin",
-                nivel: 1,
+            session: {
+                user: {
+                    id: 1,
+                    login: "admin",
+                    nivel: 1,
+                }
             },
 
             log: {
@@ -40,7 +42,7 @@ describe("Authorize", () => {
             {
                 event: "AUTHORIZATION",
                 resource: "authorization",
-                action: "login",
+                action: "authorize",
                 usuarioId: 1,
             },
             "Usuário autorizado"
@@ -54,7 +56,7 @@ describe("Authorize", () => {
      *
      */
     test("deve negar acesso quando o nível do usuário for insuficiente", () => {
-        req.user.nivel = 2;
+        req.session.user.nivel = 2;
 
         const middleware = Authorize(1);
 
@@ -74,8 +76,8 @@ describe("Authorize", () => {
      * ==========================================================
      *
      */
-    test("deve negar acesso quando o nível do usuário for insuficiente", () => {
-        req.user.nivel = undefined;
+    test("deve negar acesso quando o nível for undefined", () => {
+        req.session.user.nivel = undefined;
 
         const middleware = Authorize(1);
 

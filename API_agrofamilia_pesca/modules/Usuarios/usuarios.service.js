@@ -2,10 +2,12 @@ const Erros = require("../../shared/errors/Errors");
 const UsuarioPolicy = require("./policies/usuario.policy");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const crypto = require('crypto');
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const UsuariosRepository = require("./usuarios.repository");
 const { findByIdName, find, findByScope } = require("../../shared/Utils/findUtils");
 const baseScope = require("../../shared/base/baseScope");
+const authToken = require("../../shared/Utils/authToken");
 
 const secret = process.env.JWT_SECRET;
 
@@ -26,7 +28,7 @@ class UsuariosService {
         if (!UsuarioPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
-        
+
         return baseScope.getAll(session, page, limit, {
             admin: UsuariosRepository.findAllUsuarios,
             secretaria: UsuariosRepository.findByIdSecretaria,
@@ -60,7 +62,7 @@ class UsuariosService {
                     "ID",
                     "NOME",
                     value,
-                    page, 
+                    page,
                     limit,
                     UsuariosRepository.findByIdScope,
                     UsuariosRepository.findByNameScope
@@ -73,7 +75,7 @@ class UsuariosService {
                     "ID",
                     "NOME",
                     value,
-                    page, 
+                    page,
                     limit,
                     UsuariosRepository.findByIdScope,
                     UsuariosRepository.findByNameScope
@@ -105,7 +107,7 @@ class UsuariosService {
                     "ID",
                     "NIVEL",
                     nivel,
-                    page, 
+                    page,
                     limit,
                     UsuariosRepository.findByNivelScope
                 ),
@@ -117,7 +119,7 @@ class UsuariosService {
                     "ID",
                     "NIVEL",
                     nivel,
-                    page, 
+                    page,
                     limit,
                     UsuariosRepository.findByNivelScope
                 ),
@@ -165,7 +167,7 @@ class UsuariosService {
                     "ID",
                     "LOGIN",
                     login,
-                    page, 
+                    page,
                     limit,
                     UsuariosRepository.findByLoginScope
                 ),
@@ -177,7 +179,7 @@ class UsuariosService {
                     "ID",
                     "LOGIN",
                     login,
-                    page, 
+                    page,
                     limit,
                     UsuariosRepository.findByLoginScope
                 ),
@@ -370,8 +372,12 @@ class UsuariosService {
      * }
      * 
      */
-    async login(data) {
+    async login(data, refreshToken, headers, ip) {
         const user = await UsuariosRepository.login(data);
+        const {
+            LOGIN, SENHA, NIVEL,
+            ...session
+        } = user;
 
         //Verifica dados do login
         if (!user) {
@@ -396,15 +402,59 @@ class UsuariosService {
             await UsuariosRepository.updateUsuario(user.ID, ({ SENHA: hashedPassword }));
         };
 
-        const token = jwt.sign({
+        const findSession = await UsuariosRepository.findSessionByIdPessoa(user.ID_PESSOA);
+
+        const reqUser = {
             id: user.ID_PESSOA,
             login: user.LOGIN,
             nivel: user.NIVEL,
             secretaria: user.ID_SECRETARIA,
             associacao: user.ID_ASSOCIACAO
-        }, secret, { expiresIn: '7d' });
+        };
 
-        return token;
+        if (findSession.result.REVOGADO != null) {
+            await UsuariosRepository.deleteSession(findSession.result.ID);
+            const refresh = await authToken.createRefreshToken(session, ip);
+            await UsuariosRepository.createSession(refresh.sessao);
+            const token = await authToken.createToken(refresh.sessao, refresh.refreshToken);
+
+            return {
+                reqUser,
+                token
+            };
+        };
+
+        // Se não existir sessão, cria-se uma nova
+        if (!findSession) {
+            const refresh = await authToken.createRefreshToken(session, ip);
+            await UsuariosRepository.createSession(refresh.sessao);
+            const token = await authToken.createToken(refresh.sessao, refresh.refreshToken);
+
+            return {
+                reqUser,
+                token
+            };
+        };
+
+        // Se ocorrer perda do refreshToken no session, atualiza a sessão com um novo refreshToken
+        if (!refreshToken) {
+            const refresh = await authToken.createRefreshToken(session, ip);
+            await UsuariosRepository.updateSession(refresh.sessao.ID_PESSOA, refresh.sessao);
+            const token = await authToken.createToken(refresh.sessao, refresh.refreshToken);
+
+            return {
+                reqUser,
+                token
+            };
+        };
+
+        //gera o token se ouver o refreshToken
+        const token = await authToken.createToken(findSession.result, refreshToken);
+
+        return {
+            reqUser,
+            token
+        };
     };
 };
 
