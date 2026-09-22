@@ -2,10 +2,16 @@ const Erros = require("../errors/Errors");
 
 /**
  * Converte a string passada por url em um padrão acesivel 
- * para consulta no database.
+ * para consulta no database ou para o hateoas.
  */
 
 function convertString(value) {
+    if (value.includes(" ")) {
+        const string = value.split(" ");
+        const convertedString = string.join("-");
+        return convertedString;
+    };
+    
     const string = value.split("-");
     const convertedString = string.join(" ");
     return convertedString;
@@ -69,11 +75,11 @@ async function findByScope(sessionID, sessionField, fieldID, fieldName,
 
         if (result == "" || result == undefined) {
             throw new Erros("Não encontrado", 404);
-            
-        };        
+
+        };
         return result;
     };
-    
+
     const result = await method(sessionID, sessionField, fieldName, value, page, limit);
     if (result == "" || result == undefined) {
         throw new Erros("Não encontrado", 404);
@@ -113,29 +119,25 @@ async function findByIntervalScope(sessionID, sessionField, field, inicio, fim, 
 
 /**
  * Recebe um objeto do service e executa verificação de nivel.
- * Executa conforme o nivel.
- * 
- * PROVISORIO. Precisa sair do findUtils.
- * Tem potencial talvez para ser um middleware
- * 
+ * retorna em string o nivel para o heteoas. 
  */
-async function VerifyNivel({ user, admin, secretario, associacao, usuario }) {
+function VerifyNivel(user) {
     if (!user) {
         throw new Erros("Usuário não autenticado", 401);
     };
 
-    switch (user.nivel) {
+    switch (user) {
         case 1:
-            return admin();
+            return "admin";
 
         case 2:
-            return secretario();
+            return "secretaria";
 
         case 3:
-            return associacao();
+            return "associacao";
 
         case 4:
-            return usuario();
+            return "usuario";
 
         default:
             throw new Erros("Nível de usuário inválido", 403);
@@ -146,7 +148,7 @@ async function VerifyNivel({ user, admin, secretario, associacao, usuario }) {
  * Faz a verificação para listar usuarios onde o a secretaria
  * ou a associção seja igual a requirida.
  * 
- * PROVISORIO
+ * Abandonado
  * 
  */
 function listUsers(usuarioObj, field, value) {
