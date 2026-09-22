@@ -168,7 +168,7 @@ describe("Middleware auth", () => {
         updateData.mockResolvedValue({});
 
 
-        const req = {
+        let req = {
             session: {
                 token: "token-falso",
                 refreshToken: "refresh-token"
@@ -179,6 +179,14 @@ describe("Middleware auth", () => {
                 info: jest.fn(),
                 error: jest.fn()
             }
+        };
+
+        req.session.user = {
+            id: 10,
+            nivel: 4,
+            login: "usuario",
+            secretaria: 2,
+            associacao: 3
         };
 
         const res = {};
@@ -623,7 +631,7 @@ describe("Middleware auth", () => {
         updateData.mockResolvedValue({});
 
 
-        const req = {
+        let req = {
             session: {
                 token: "token-falso",
                 refreshToken: "refresh-token"
@@ -634,6 +642,14 @@ describe("Middleware auth", () => {
                 info: jest.fn(),
                 error: jest.fn()
             }
+        };
+
+        req.session.user = {
+            id: 10,
+            nivel: 4,
+            login: "usuario",
+            secretaria: 2,
+            associacao: 3
         };
 
         const res = {};
