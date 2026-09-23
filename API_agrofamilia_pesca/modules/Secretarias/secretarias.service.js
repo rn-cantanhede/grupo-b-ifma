@@ -2,7 +2,7 @@ const Erros = require("../../shared/errors/Errors");
 const SecretariasPolicy = require("./policies/secretarias.policy");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const SecretariasRepository = require("./secretarias.repository");
-const { findByIdName, find } = require("../../shared/Utils/findUtils");
+const { findByIdName, find, convertString } = require("../../shared/Utils/findUtils");
 const baseScope = require("../../shared/base/baseScope");
 
 /**
@@ -76,7 +76,7 @@ class SecretariasService {
         return baseScope.getFind(session, page, limit, {
             admin: () =>
                 find(
-                    cidade, page, limit,
+                    convertString(cidade), page, limit,
                     SecretariasRepository.findbyCidade
                 ),
         });
