@@ -1,3 +1,5 @@
+const { convertString } = require("../../shared/Utils/findUtils");
+const Hateoas = require("../../shared/Utils/hateoas");
 const SecretariasService = require("./secretarias.service");
 
 /**
@@ -14,25 +16,41 @@ class SecretariasController {
     async AllSecretarias(req, res) {
         try {
             const secretarias = await SecretariasService.findAllProgramas(
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit
+            );
+            const hateoas = Hateoas(
+                secretarias.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "secretarias",
+                ["",
+                    secretarias.result[0].ID,
+                    convertString(secretarias.result[0].NOME),
+                    `estado/${secretarias.result[0].ESTADO}`,
+                    `cidade/${convertString(secretarias.result[0].CIDADE)}`,
+                ]
             );
 
             req.log.info({
                 event: "SECRETARIA_LIST",
                 resource: "secretaria",
                 action: "list",
-                usuarioID: req.user.id
+                usuarioID: req.session.user.id
             }, "Listagem das secretarias");
 
-            return res.status(200).json(secretarias);
+            return res.status(200).json({
+                result: secretarias.result,
+                total: secretarias.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "SECRETARIA_LIST_ERROR",
                 resource: "secretaria",
                 action: "list",
-                usuarioID: req.user.id
+                usuarioID: req.session.user.id
             }, "Erro ao listar as secretarias");
 
             console.log(error);
@@ -48,26 +66,59 @@ class SecretariasController {
         try {
             const result = await SecretariasService.find(
                 req.params.value,
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit
             );
+            let hateoas;
+
+            if (!Array.isArray(result.result)) {
+                hateoas = Hateoas(
+                    result.result.ID,
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "secretarias",
+                    ["",
+                        result.result.ID,
+                        convertString(result.result.NOME),
+                        `estado/${result.result.ESTADO}`,
+                        `cidade/${convertString(result.result.CIDADE)}`,
+                    ]
+                );
+            } else {
+                hateoas = Hateoas(
+                    result.result[0].ID,
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "secretarias",
+                    ["",
+                        result.result[0].ID,
+                        convertString(result.result[0].NOME),
+                        `estado/${result.result[0].ESTADO}`,
+                        `cidade/${convertString(result.result[0].CIDADE)}`,
+                    ]
+                );
+            };
 
             req.log.info({
                 event: "SECRETARIA_FIND",
                 resource: "secretaria",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.value
             }, "Secretaria consultada por id ou nome");
 
-            return res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "SECRETARIA_FIND_ERROR",
                 resource: "secretaria",
                 action: "find",
-                usuarioID: req.user.id,
+                usuarioID: req.session.user.id,
                 target: req.params.value
             }, "Erro ao buscar secretaria");
 
@@ -84,26 +135,42 @@ class SecretariasController {
         try {
             const result = await SecretariasService.findbyEstado(
                 req.params.estado,
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit
+            );
+            const hateoas = Hateoas(
+                result.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "secretarias",
+                ["",
+                    result.result[0].ID,
+                    convertString(result.result[0].NOME),
+                    `estado/${result.result[0].ESTADO}`,
+                    `cidade/${convertString(result.result[0].CIDADE)}`,
+                ]
             );
 
             req.log.info({
                 event: "SECRETARIA_FIND",
                 resource: "secretaria",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.estado
             }, "Secretaria consultada por estado");
 
-            return res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "SECRETARIA_FIND_ERROR",
                 resource: "secretaria",
                 action: "find",
-                usuarioID: req.user.id,
+                usuarioID: req.session.user.id,
                 target: req.params.estado
             }, "Erro ao buscar secretaria por estado");
 
@@ -120,27 +187,43 @@ class SecretariasController {
         try {
             const result = await SecretariasService.findbyCidade(
                 req.params.cidade,
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit
+            );
+            const hateoas = Hateoas(
+                result.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "secretarias",
+                ["",
+                    result.result[0].ID,
+                    convertString(result.result[0].NOME),
+                    `estado/${result.result[0].ESTADO}`,
+                    `cidade/${convertString(result.result[0].CIDADE)}`,
+                ]
             );
 
             req.log.info({
                 event: "SECRETARIA_FIND",
                 resource: "secretaria",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.cidade
             }, "Secretaria consultada por cidade");
 
 
-            return res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "SECRETARIA_FIND_ERROR",
                 resource: "secretaria",
                 action: "find",
-                usuarioID: req.user.id,
+                usuarioID: req.session.user.id,
                 target: req.params.cidade
             }, "Erro ao buscar secretaria por cidade");
 
@@ -157,23 +240,44 @@ class SecretariasController {
         try {
             const result = await SecretariasService.createSecretaria(
                 req.body,
-                req.user
+                req.session.user
+            );
+            const find = await SecretariasService.find(
+                result.NOME,
+                req.session.user,
+                1,
+                1
+            );
+            const hateoas = Hateoas(
+                find.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "secretarias",
+                ["",
+                    find.result[0].ID,
+                    convertString(find.result[0].NOME),
+                    `estado/${find.result[0].ESTADO}`,
+                    `cidade/${convertString(find.result[0].CIDADE)}`,
+                ]
             );
 
             req.log.info({
                 event: "SECRETARIA_CREATE",
                 resource: "secretaria",
                 action: "create",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
             }, "Secretaria criada");
 
-            return res.status(201).json(result);
+            return res.status(201).json({
+                result: result,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "SECRETARIA_CREATE_ERROR",
                 resource: "secretaria",
                 action: "create",
-                usuarioId: req.user.id
+                usuarioId: req.session.user.id
             }, "Erro ao criar secretaria");
 
             console.log(error);
@@ -190,24 +294,45 @@ class SecretariasController {
             const result = await SecretariasService.updateSecretaria(
                 req.params.id,
                 req.body,
-                req.user
+                req.session.user
+            );
+            const find = await SecretariasService.find(
+                result.NOME,
+                req.session.user,
+                1,
+                1
+            );
+            const hateoas = Hateoas(
+                find.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "secretarias",
+                ["",
+                    find.result[0].ID,
+                    convertString(find.result[0].NOME),
+                    `estado/${find.result[0].ESTADO}`,
+                    `cidade/${convertString(find.result[0].CIDADE)}`,
+                ]
             );
 
             req.log.info({
                 event: "SECRETARIA_UPDATE",
                 resource: "secretaria",
                 action: "update",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 targetId: req.params.id
             }, "Secretaria atualizada");
 
-            return res.status(200).json(result);
+            return res.status(200).json({
+                result: result,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "SECRETARIA_UPDATE_ERROR",
                 resource: "secretaria",
                 action: "update",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 targetId: req.params.id
             }, "Erro ao atualizar secretaria");
 
@@ -222,9 +347,27 @@ class SecretariasController {
 
     async deleteSecretaria(req, res, next) {
         try {
+            const find = await SecretariasService.find(
+                req.params.id,
+                req.session.user,
+                1,
+                1
+            );
             const result = await SecretariasService.deleteSecretaria(
                 req.params.id,
                 req.user
+            );
+            const hateoas = Hateoas(
+                find.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "secretarias",
+                ["",
+                    find.result[0].ID,
+                    convertString(find.result[0].NOME),
+                    `estado/${find.result[0].ESTADO}`,
+                    `cidade/${convertString(find.result[0].CIDADE)}`,
+                ]
             );
 
             req.log.info({
@@ -235,7 +378,10 @@ class SecretariasController {
                 targetId: req.params.id
             }, "Secretaria excluída");
 
-            return res.status(200).json(result);
+            return res.status(200).json({
+                result: result,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "SECRETARIA_DELETE_ERROR",
