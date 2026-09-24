@@ -1,3 +1,5 @@
+const { convertString } = require("../../shared/Utils/findUtils");
+const Hateoas = require("../../shared/Utils/hateoas");
 const ProgramasService = require("./programas.service");
 
 /**
@@ -15,25 +17,44 @@ class ProgramasController {
     async AllProgramas(req, res) {
         try {
             const programas = await ProgramasService.findAllProgramas(
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit
+            );
+            const hateoas = Hateoas(
+                programas.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "programas",
+                ["",
+                    programas.result[0].ID,
+                    convertString(programas.result[0].NOME),
+                    `secretaria/${programas.result[0].SECRETARIA}`,
+                    `estado/${programas.result[0].ESTADO}`,
+                    `recurso/${convertString(programas.result[0].ORIGEM_RECURSO)}`,
+                    `data-inicio/${convertString(programas.result[0].DATA_INICIO)}`,
+                    `data-fim/${convertString(programas.result[0].DATA_FIM)}`,
+                ]
             );
 
             req.log.info({
                 event: "PROGRAMA_LIST",
                 resource: "programa",
                 action: "list",
-                usuarioID: req.user.id
+                usuarioID: req.session.user.id
             }, "Listagem dos programas");
 
-            return res.status(200).json(programas);
+            return res.status(200).json({
+                result: programas.result,
+                total: programas.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "PROGRAMA_LIST_ERROR",
                 resource: "programa",
                 action: "list",
-                usuarioID: req.user.id
+                usuarioID: req.session.user.id
             }, "Erro ao listar os programas");
 
             console.log(error);
@@ -50,26 +71,65 @@ class ProgramasController {
         try {
             const result = await ProgramasService.find(
                 req.params.value,
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit
             );
+            let hateoas;
+
+            if (!Array.isArray(result.result)) {
+                hateoas = Hateoas(
+                    programas.result.ID,
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "programas",
+                    ["",
+                        programas.result.ID,
+                        convertString(programas.result.NOME),
+                        `secretaria/${programas.result.SECRETARIA}`,
+                        `estado/${programas.result.ESTADO}`,
+                        `recurso/${convertString(programas.result.ORIGEM_RECURSO)}`,
+                        `data-inicio/${convertString(programas.result.DATA_INICIO)}`,
+                        `data-fim/${convertString(programas.result.DATA_FIM)}`,
+                    ]
+                );
+            } else {
+                hateoas = Hateoas(
+                    programas.result[0].ID,
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "programas",
+                    ["",
+                        programas.result[0].ID,
+                        convertString(programas.result[0].NOME),
+                        `secretaria/${programas.result[0].SECRETARIA}`,
+                        `estado/${programas.result[0].ESTADO}`,
+                        `recurso/${convertString(programas.result[0].ORIGEM_RECURSO)}`,
+                        `data-inicio/${convertString(programas.result[0].DATA_INICIO)}`,
+                        `data-fim/${convertString(programas.result[0].DATA_FIM)}`,
+                    ]
+                );
+            };
 
             req.log.info({
                 event: "PROGRAMA_FIND",
                 resource: "programa",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.value
             }, "Programa consultado por id ou nome");
 
-            return res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "PROGRAMA_FIND_ERROR",
                 resource: "programa",
                 action: "find",
-                usuarioID: req.user.id,
+                usuarioID: req.session.user.id,
                 target: req.params.value
             }, "Erro ao buscar programa");
 
@@ -86,26 +146,45 @@ class ProgramasController {
         try {
             const result = await ProgramasService.findbySecretaria(
                 req.params.secretaria,
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit
+            );
+            const hateoas = Hateoas(
+                programas.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "programas",
+                ["",
+                    programas.result[0].ID,
+                    convertString(programas.result[0].NOME),
+                    `secretaria/${programas.result[0].SECRETARIA}`,
+                    `estado/${programas.result[0].ESTADO}`,
+                    `recurso/${convertString(programas.result[0].ORIGEM_RECURSO)}`,
+                    `data-inicio/${convertString(programas.result[0].DATA_INICIO)}`,
+                    `data-fim/${convertString(programas.result[0].DATA_FIM)}`,
+                ]
             );
 
             req.log.info({
                 event: "PROGRAMA_FIND",
                 resource: "programa",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.secretaria
             }, "Programa consultado por secretaria");
 
-            return res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "PROGRAMA_FIND_ERROR",
                 resource: "programa",
                 action: "find",
-                usuarioID: req.user.id,
+                usuarioID: req.session.user.id,
                 target: req.params.secretaria
             }, "Erro ao buscar programa por secretaria");
 
@@ -122,26 +201,45 @@ class ProgramasController {
         try {
             const result = await ProgramasService.findbyEstado(
                 req.params.estado,
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit
+            );
+            const hateoas = Hateoas(
+                programas.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "programas",
+                ["",
+                    programas.result[0].ID,
+                    convertString(programas.result[0].NOME),
+                    `secretaria/${programas.result[0].SECRETARIA}`,
+                    `estado/${programas.result[0].ESTADO}`,
+                    `recurso/${convertString(programas.result[0].ORIGEM_RECURSO)}`,
+                    `data-inicio/${convertString(programas.result[0].DATA_INICIO)}`,
+                    `data-fim/${convertString(programas.result[0].DATA_FIM)}`,
+                ]
             );
 
             req.log.info({
                 event: "PROGRAMA_FIND",
                 resource: "programa",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.estado
             }, "Programa consultado por estado");
 
-            return res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "PROGRAMA_FIND_ERROR",
                 resource: "programa",
                 action: "find",
-                usuarioID: req.user.id,
+                usuarioID: req.session.user.id,
                 target: req.params.estado
             }, "Erro ao buscar programa por estado");
 
@@ -158,26 +256,45 @@ class ProgramasController {
         try {
             const result = await ProgramasService.findbyOrigemRecurso(
                 req.params.recurso,
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit
+            );
+            const hateoas = Hateoas(
+                programas.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "programas",
+                ["",
+                    programas.result[0].ID,
+                    convertString(programas.result[0].NOME),
+                    `secretaria/${programas.result[0].SECRETARIA}`,
+                    `estado/${programas.result[0].ESTADO}`,
+                    `recurso/${convertString(programas.result[0].ORIGEM_RECURSO)}`,
+                    `data-inicio/${convertString(programas.result[0].DATA_INICIO)}`,
+                    `data-fim/${convertString(programas.result[0].DATA_FIM)}`,
+                ]
             );
 
             req.log.info({
                 event: "PROGRAMA_FIND",
                 resource: "programa",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.recurso
             }, "Programa consultado por origem do recurso");
 
-            return res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "PROGRAMA_FIND_ERROR",
                 resource: "programa",
                 action: "find",
-                usuarioID: req.user.id,
+                usuarioID: req.session.user.id,
                 target: req.params.recurso
             }, "Erro ao buscar programa por origem do recurso");
 
@@ -194,26 +311,45 @@ class ProgramasController {
         try {
             const result = await ProgramasService.findbyDataInicio(
                 req.params.data,
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit
+            );
+            const hateoas = Hateoas(
+                programas.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "programas",
+                ["",
+                    programas.result[0].ID,
+                    convertString(programas.result[0].NOME),
+                    `secretaria/${programas.result[0].SECRETARIA}`,
+                    `estado/${programas.result[0].ESTADO}`,
+                    `recurso/${convertString(programas.result[0].ORIGEM_RECURSO)}`,
+                    `data-inicio/${convertString(programas.result[0].DATA_INICIO)}`,
+                    `data-fim/${convertString(programas.result[0].DATA_FIM)}`,
+                ]
             );
 
             req.log.info({
                 event: "PROGRAMA_FIND",
                 resource: "programa",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.data
             }, "Programa consultado por data de inicio");
 
-            return res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "PROGRAMA_FIND_ERROR",
                 resource: "programa",
                 action: "find",
-                usuarioID: req.user.id,
+                usuarioID: req.session.user.id,
                 target: req.params.data
             }, "Erro ao buscar programa por data de inicio");
 
@@ -230,26 +366,45 @@ class ProgramasController {
         try {
             const result = await ProgramasService.findbyDataFim(
                 req.params.data,
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit
+            );
+            const hateoas = Hateoas(
+                programas.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "programas",
+                ["",
+                    programas.result[0].ID,
+                    convertString(programas.result[0].NOME),
+                    `secretaria/${programas.result[0].SECRETARIA}`,
+                    `estado/${programas.result[0].ESTADO}`,
+                    `recurso/${convertString(programas.result[0].ORIGEM_RECURSO)}`,
+                    `data-inicio/${convertString(programas.result[0].DATA_INICIO)}`,
+                    `data-fim/${convertString(programas.result[0].DATA_FIM)}`,
+                ]
             );
 
             req.log.info({
                 event: "PROGRAMA_FIND",
                 resource: "programa",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.data
             }, "Programa consultado por data de termino");
 
-            return res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "PROGRAMA_FIND_ERROR",
                 resource: "programa",
                 action: "find",
-                usuarioID: req.user.id,
+                usuarioID: req.session.user.id,
                 target: req.params.data
             }, "Erro ao buscar programa por data de termino");
 
@@ -266,14 +421,14 @@ class ProgramasController {
         try {
             const result = await ProgramasService.createPrograma(
                 req.body,
-                req.user
+                req.session.user
             );
 
             req.log.info({
                 event: "PROGRAMA_CREATE",
                 resource: "programa",
                 action: "create",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
             }, "Programa criado");
 
             return res.status(201).json(result);
@@ -282,7 +437,7 @@ class ProgramasController {
                 event: "PROGRAMA_CREATE_ERROR",
                 resource: "programa",
                 action: "create",
-                usuarioId: req.user.id
+                usuarioId: req.session.user.id
             }, "Erro ao criar programa");
 
             console.log(error);
@@ -299,14 +454,14 @@ class ProgramasController {
             const result = await ProgramasService.updatePrograma(
                 req.params.id,
                 req.body,
-                req.user
+                req.session.user
             );
 
             req.log.info({
                 event: "PROGRAMA_UPDATE",
                 resource: "programa",
                 action: "update",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 targetId: req.params.id
             }, "Programa atualizada");
 
@@ -316,7 +471,7 @@ class ProgramasController {
                 event: "PROGRAMA_UPDATE_ERROR",
                 resource: "programa",
                 action: "update",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 targetId: req.params.id
             }, "Erro ao atualizar programa");
 
@@ -333,14 +488,14 @@ class ProgramasController {
         try {
             const result = await ProgramasService.deletePrograma(
                 req.params.id,
-                req.user
+                req.session.user
             );
 
             req.log.info({
                 event: "PROGRAMA_DELETE",
                 resource: "programa",
                 action: "delete",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 targetId: req.params.id
             }, "Programa excluída");
 
@@ -350,7 +505,7 @@ class ProgramasController {
                 event: "PROGRAMA_DELETE_ERROR",
                 resource: "programa",
                 action: "delete",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 targetId: req.params.id
             }, "Erro ao apagar programa");
 
