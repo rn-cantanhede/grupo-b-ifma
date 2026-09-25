@@ -1,3 +1,5 @@
+const { convertString } = require("../../shared/Utils/findUtils");
+const Hateoas = require("../../shared/Utils/hateoas");
 const AgriculturaFamiliarService = require("./agricultura-familiar.service");
 
 /**
@@ -13,25 +15,42 @@ class AgriculturaFamiliarController {
     async AllAgriculturaFamiliar(req, res) {
         try {
             const result = await AgriculturaFamiliarService.findAllAgriculturaFamiliar(
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit,
             );
-            
+            const hateoas = Hateoas(
+                result.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "agricultura-familiar",
+                ["",
+                    result.result[0].ID,
+                    convertString(result.result[0].NOME),
+                    `caf/${result.result[0].CAF}`,
+                    `dap/${result.result[0].DAP}`,
+                    `programa/${convertString(result.result[0].PROGRAMA)}`,
+                ]
+            );
+
             req.log.info({
                 event: "AGRICULTURA_LIST",
                 resource: "agricultura_familiar",
                 action: "list",
-                usuarioId: req.user.id
+                usuarioId: req.session.user.id
             }, "Listagem dos membros da agricultura familiar");
 
-            res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.Error({
                 event: "AGRICULTURA_LIST_ERROR",
                 resource: "agricultura_familiar",
                 action: "list",
-                usuarioId: req.user.id
+                usuarioId: req.session.user.id
             }, "Erro ao listar os membros da agricultura familiar");
 
             console.log(error);
@@ -46,26 +65,62 @@ class AgriculturaFamiliarController {
         try {
             const result = await AgriculturaFamiliarService.find(
                 req.params.value,
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit,
             );
+            let hateoas;
+
+            if (!Array.isArray(result.result)) {
+                hateoas = Hateoas(
+                    result.result.ID,
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "agricultura-familiar",
+                    ["",
+                        result.result.ID,
+                        convertString(result.result.NOME),
+                        `caf/${result.result.CAF}`,
+                        `dap/${result.result.DAP}`,
+                        `programa/${convertString(result.result.PROGRAMA)}`,
+                    ]
+                );
+            } else {
+                hateoas = Hateoas(
+                    result.result[0].ID,
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "agricultura-familiar",
+                    ["",
+                        result.result[0].ID,
+                        convertString(result.result[0].NOME),
+                        `caf/${result.result[0].CAF}`,
+                        `dap/${result.result[0].DAP}`,
+                        `programa/${convertString(result.result[0].PROGRAMA)}`,
+                    ]
+                );
+            };
 
             req.log.info({
                 event: "AGRICULTURA_FIND",
                 resource: "agricultura_familiar",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.value
             }, "Membro da agricultura familiar consultado por id ou nome");
 
-            res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
+
         } catch (error) {
             req.log.error({
                 event: "AGRICULTURA_FIND_ERROR",
                 resource: "agricultura_familiar",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.value
             }, "Erro ao buscar membro da agricultura familiar consultado por id ou nome");
 
@@ -81,26 +136,43 @@ class AgriculturaFamiliarController {
         try {
             const result = await AgriculturaFamiliarService.findbyCaf(
                 req.params.caf,
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit,
+            );
+            const hateoas = Hateoas(
+                result.result.ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "agricultura-familiar",
+                ["",
+                    result.result.ID,
+                    convertString(result.result.NOME),
+                    `caf/${result.result.CAF}`,
+                    `dap/${result.result.DAP}`,
+                    `programa/${convertString(result.result.PROGRAMA)}`,
+                ]
             );
 
             req.log.info({
                 event: "AGRICULTURA_FIND",
                 resource: "agricultura_familiar",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.caf
             }, "Membro da agricultura familiar consultado por CAF");
 
-            res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "AGRICULTURA_FIND_ERROR",
                 resource: "agricultura_familiar",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.caf
             }, "Erro ao buscar membro da agricultura familiar consultado por CAF");
 
@@ -116,26 +188,43 @@ class AgriculturaFamiliarController {
         try {
             const result = await AgriculturaFamiliarService.findbyDap(
                 req.params.dap,
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit,
+            );
+            const hateoas = Hateoas(
+                result.result.ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "agricultura-familiar",
+                ["",
+                    result.result.ID,
+                    convertString(result.result.NOME),
+                    `caf/${result.result.CAF}`,
+                    `dap/${result.result.DAP}`,
+                    `programa/${convertString(result.result.PROGRAMA)}`,
+                ]
             );
 
             req.log.info({
                 event: "AGRICULTURA_FIND",
                 resource: "agricultura_familiar",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.dap
             }, "Membro da agricultura familiar consultado por DAP");
 
-            res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "AGRICULTURA_FIND_ERROR",
                 resource: "agricultura_familiar",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.dap
             }, "Erro ao buscar membro da agricultura familiar consultado por DAP");
 
@@ -150,27 +239,44 @@ class AgriculturaFamiliarController {
     async findProgramaAgriculturaFamiliar(req, res, next) {
         try {
             const result = await AgriculturaFamiliarService.findbyPrograma(
-                req.params.programa,
-                req.user,
+                convertString(req.params.programa),
+                req.session.user,
                 req.query.page,
                 req.query.limit,
+            );
+            const hateoas = Hateoas(
+                result.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "agricultura-familiar",
+                ["",
+                    result.result[0].ID,
+                    convertString(result.result[0].NOME),
+                    `caf/${result.result[0].CAF}`,
+                    `dap/${result.result[0].DAP}`,
+                    `programa/${convertString(result.result[0].PROGRAMA)}`,
+                ]
             );
 
             req.log.info({
                 event: "AGRICULTURA_FIND",
                 resource: "agricultura_familiar",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.programa
             }, "Membro da agricultura familiar consultado por programa");
 
-            res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "AGRICULTURA_FIND_ERROR",
                 resource: "agricultura_familiar",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.programa
             }, "Erro ao buscar membro da agricultura familiar consultado por programa");
 
@@ -186,14 +292,14 @@ class AgriculturaFamiliarController {
         try {
             const result = await AgriculturaFamiliarService.createAgriculturaFamiliar(
                 req.body,
-                req.user
+                req.session.user
             );
 
             req.log.info({
                 event: "AGRICULTURA_CREATE",
                 resource: "agricultura_familiar",
                 action: "create",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
             }, "Membro da agricultura familiar criado");
 
             res.status(201).json(result);
@@ -202,7 +308,7 @@ class AgriculturaFamiliarController {
                 event: "AGRICULTURA_CREATE_ERROR",
                 resource: "agricultura_familiar",
                 action: "create",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
             }, "Erro ao criar membro da agricultura familiar");
 
             console.log(error);
@@ -218,14 +324,14 @@ class AgriculturaFamiliarController {
             const result = await AgriculturaFamiliarService.updateAgriculturaFamiliar(
                 req.params.id,
                 req.body,
-                req.user
+                req.session.user
             );
 
             req.log.info({
                 event: "AGRICULTURA_UPDATE",
                 resource: "agricultura_familiar",
                 action: "update",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 targetId: req.params.id
             }, "Membro da agricultura familiar atualizado");
 
@@ -235,7 +341,7 @@ class AgriculturaFamiliarController {
                 event: "AGRICULTURA_UPDATE_ERROR",
                 resource: "agricultura_familiar",
                 action: "update",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 targetId: req.params.id
             }, "Erro ao atualizar membro da agricultura familiar");
 
@@ -251,14 +357,14 @@ class AgriculturaFamiliarController {
         try {
             const result = await AgriculturaFamiliarService.deleteAgriculturaFamiliar(
                 req.params.id,
-                req.user
+                req.session.user
             );
 
             req.log.info({
                 event: "AGRICULTURA_DELETE",
                 resource: "agricultura_familiar",
                 action: "delete",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 targetId: req.params.id
             }, "Membro da agricultura familiar excluído");
 
@@ -268,7 +374,7 @@ class AgriculturaFamiliarController {
                 event: "AGRICULTURA_DELETE_ERROR",
                 resource: "agricultura_familiar",
                 action: "delete",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 targetId: req.params.id
             }, "Erro ao apagar membro da agricultura familiar");
 
