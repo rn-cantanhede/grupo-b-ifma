@@ -481,20 +481,20 @@ class UsuariosController {
                 req.headers,
                 req.ip
             );
-            const find = await UsuariosService.findByLogin(
-                req.body.LOGIN,
-                req.session.user,
+            const find = await UsuariosService.find(
+                user.reqUser.id,
+                user.reqUser,
                 1,
                 10
             );
 
             let hateoas = Hateoas(
-                find.result[0].ID, process.env.URL, find.result[0].NIVEL, "usuarios",
+                find.result.ID, process.env.URL, find.result.NIVEL, "usuarios",
                 [
-                    "", find.result[0].ID,
-                    `nivel/${find.result[0].NIVEL}`,
-                    `secretaria/${convertString(find.result[0].SECRETARIA)}`,
-                    `login/${find.result[0].LOGIN}`,
+                    "", find.result.ID,
+                    `nivel/${find.result.NIVEL}`,
+                    `secretaria/${convertString(find.result.SECRETARIA)}`,
+                    `login/${find.result.LOGIN}`,
                 ]
             );
 
