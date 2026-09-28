@@ -280,13 +280,19 @@ class UsuariosController {
     async createUsuario(req, res, next) {
         try {
             const result = await UsuariosService.createUsuario(req.body);
+            const find = await UsuariosService.find(
+                req.body.ID_PESSOA,
+                req.session.user,
+                1,
+                1
+            );
             const hateoas = Hateoas(
-                "", process.env.URL, req.session.user.nivel, "usuarios",
+                find.result.ID, process.env.URL, req.session.user.nivel, "usuarios",
                 [
-                    "",
-                    `nivel/${result.NIVEL}`,
-                    `secretaria/${result.ID_SECRETARIA}`,
-                    `login/${result.LOGIN}`
+                    "", find.result.ID,
+                    `nivel/${find.result.NIVEL}`,
+                    `secretaria/${find.result.ID_SECRETARIA}`,
+                    `login/${find.result.LOGIN}`
                 ]
             );
 
@@ -299,9 +305,7 @@ class UsuariosController {
 
             return res.status(200).json({
                 result: result,
-                hateoas: {
-                    GET: hateoas.GET
-                }
+                hateoas: hateoas
             });
         } catch (error) {
             req.log.error({
@@ -326,12 +330,19 @@ class UsuariosController {
                 nivel: req.session.user.nivel,
                 secretaria: req.session.user.secretaria
             });
+            const find = await UsuariosService.find(
+                req.params.id,
+                req.session.user,
+                1,
+                1
+            );
             const hateoas = Hateoas(
-                "", process.env.URL, req.session.user.nivel, "usuarios",
+                find.result.ID, process.env.URL, req.session.user.nivel, "usuarios",
                 [
-                    "",
-                    `nivel/${result.NIVEL}`,
-                    `secretaria/${result.ID_SECRETARIA}`,
+                    "", find.result.ID,
+                    `nivel/${find.result.NIVEL}`,
+                    `secretaria/${find.result.ID_SECRETARIA}`,
+                    `login/${find.result.LOGIN}`
                 ]
             );
 
@@ -345,9 +356,7 @@ class UsuariosController {
 
             return res.status(200).json({
                 result: result,
-                hateoas: {
-                    GET: hateoas.GET
-                }
+                hateoas: hateoas
             });
         } catch (error) {
             req.log.error({
@@ -373,11 +382,19 @@ class UsuariosController {
                 nivel: req.session.user.nivel,
                 secretaria: req.session.user.secretaria
             });
+            const find = await UsuariosService.find(
+                req.params.id,
+                req.session.user,
+                1,
+                1
+            );
             const hateoas = Hateoas(
-                "", process.env.URL, req.session.user.nivel, "usuarios",
+                find.result.ID, process.env.URL, req.session.user.nivel, "usuarios",
                 [
-                    "",
-                    `login/${result.LOGIN}`
+                    "", find.result.ID,
+                    `nivel/${find.result.NIVEL}`,
+                    `secretaria/${find.result.ID_SECRETARIA}`,
+                    `login/${find.result.LOGIN}`
                 ]
             );
 
@@ -391,9 +408,7 @@ class UsuariosController {
 
             return res.status(200).json({
                 result: result,
-                hateoas: {
-                    GET: hateoas.GET
-                }
+                hateoas: hateoas
             });
         } catch (error) {
             req.log.error({
@@ -434,7 +449,10 @@ class UsuariosController {
 
             return res.status(200).json({
                 result: result,
-                hateoas: hateoas
+                hateoas: {
+                    GET: hateoas.GET[0],
+                    POST: hateoas.POST
+                }
             });
         } catch (error) {
             req.log.error({
@@ -463,14 +481,20 @@ class UsuariosController {
                 req.headers,
                 req.ip
             );
+            const find = await UsuariosService.findByLogin(
+                req.body.LOGIN,
+                req.session.user,
+                1,
+                10
+            );
 
             let hateoas = Hateoas(
-                "", process.env.URL, user.reqUser.nivel, "usuarios",
+                find.result[0].ID, process.env.URL, find.result[0].NIVEL, "usuarios",
                 [
-                    "",
-                    `nivel/${user.reqUser.nivel}`,
-                    `secretaria/${user.reqUser.secretaria}`,
-                    `login/${user.reqUser.login}`,
+                    "", find.result[0].ID,
+                    `nivel/${find.result[0].NIVEL}`,
+                    `secretaria/${convertString(find.result[0].SECRETARIA)}`,
+                    `login/${find.result[0].LOGIN}`,
                 ]
             );
 
