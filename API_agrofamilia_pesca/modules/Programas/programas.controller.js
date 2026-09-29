@@ -29,11 +29,11 @@ class ProgramasController {
                 ["",
                     programas.result[0].ID,
                     convertString(programas.result[0].NOME),
-                    `secretaria/${programas.result[0].SECRETARIA}`,
+                    `secretaria/${convertString(programas.result[0].SECRETARIA)}`,
                     `estado/${programas.result[0].ESTADO}`,
                     `recurso/${convertString(programas.result[0].ORIGEM_RECURSO)}`,
-                    `data-inicio/${convertString(programas.result[0].DATA_INICIO)}`,
-                    `data-fim/${convertString(programas.result[0].DATA_FIM)}`,
+                    `data-inicio/${programas.result[0].DATA_INICIO.toISOString().split('T')[0]}`,
+                    `data-fim/${programas.result[0].DATA_FIM.toISOString().split('T')[0]}`,
                 ]
             );
 
@@ -79,34 +79,34 @@ class ProgramasController {
 
             if (!Array.isArray(result.result)) {
                 hateoas = Hateoas(
-                    programas.result.ID,
+                    result.result.ID,
                     process.env.URL,
                     req.session.user.nivel,
                     "programas",
                     ["",
-                        programas.result.ID,
-                        convertString(programas.result.NOME),
-                        `secretaria/${programas.result.SECRETARIA}`,
-                        `estado/${programas.result.ESTADO}`,
-                        `recurso/${convertString(programas.result.ORIGEM_RECURSO)}`,
-                        `data-inicio/${convertString(programas.result.DATA_INICIO)}`,
-                        `data-fim/${convertString(programas.result.DATA_FIM)}`,
+                        result.result.ID,
+                        convertString(result.result.NOME),
+                        `secretaria/${convertString(result.result.SECRETARIA)}`,
+                        `estado/${result.result.ESTADO}`,
+                        `recurso/${convertString(result.result.ORIGEM_RECURSO)}`,
+                        `data-inicio/${result.result.DATA_INICIO.toISOString().split('T')[0]}`,
+                        `data-fim/${result.result.DATA_FIM.toISOString().split('T')[0]}`,
                     ]
                 );
             } else {
                 hateoas = Hateoas(
-                    programas.result[0].ID,
+                    result.result[0].ID,
                     process.env.URL,
                     req.session.user.nivel,
                     "programas",
                     ["",
-                        programas.result[0].ID,
-                        convertString(programas.result[0].NOME),
-                        `secretaria/${programas.result[0].SECRETARIA}`,
-                        `estado/${programas.result[0].ESTADO}`,
-                        `recurso/${convertString(programas.result[0].ORIGEM_RECURSO)}`,
-                        `data-inicio/${convertString(programas.result[0].DATA_INICIO)}`,
-                        `data-fim/${convertString(programas.result[0].DATA_FIM)}`,
+                        result.result[0].ID,
+                        convertString(result.result[0].NOME),
+                        `secretaria/${convertString(result.result[0].SECRETARIA)}`,
+                        `estado/${result.result[0].ESTADO}`,
+                        `recurso/${convertString(result.result[0].ORIGEM_RECURSO)}`,
+                        `data-inicio/${result.result[0].DATA_INICIO.toISOString().split('T')[0]}`,
+                        `data-fim/${result.result[0].DATA_FIM.toISOString().split('T')[0]}`,
                     ]
                 );
             };
@@ -151,18 +151,18 @@ class ProgramasController {
                 req.query.limit
             );
             const hateoas = Hateoas(
-                programas.result[0].ID,
+                result.result[0].ID,
                 process.env.URL,
                 req.session.user.nivel,
                 "programas",
                 ["",
-                    programas.result[0].ID,
-                    convertString(programas.result[0].NOME),
-                    `secretaria/${programas.result[0].SECRETARIA}`,
-                    `estado/${programas.result[0].ESTADO}`,
-                    `recurso/${convertString(programas.result[0].ORIGEM_RECURSO)}`,
-                    `data-inicio/${convertString(programas.result[0].DATA_INICIO)}`,
-                    `data-fim/${convertString(programas.result[0].DATA_FIM)}`,
+                    result.result[0].ID,
+                    convertString(result.result[0].NOME),
+                    `secretaria/${convertString(result.result[0].SECRETARIA)}`,
+                    `estado/${result.result[0].ESTADO}`,
+                    `recurso/${convertString(result.result[0].ORIGEM_RECURSO)}`,
+                    `data-inicio/${result.result[0].DATA_INICIO.toISOString().split('T')[0]}`,
+                    `data-fim/${result.result[0].DATA_FIM.toISOString().split('T')[0]}`,
                 ]
             );
 
@@ -206,18 +206,18 @@ class ProgramasController {
                 req.query.limit
             );
             const hateoas = Hateoas(
-                programas.result[0].ID,
+                result.result[0].ID,
                 process.env.URL,
                 req.session.user.nivel,
                 "programas",
                 ["",
-                    programas.result[0].ID,
-                    convertString(programas.result[0].NOME),
-                    `secretaria/${programas.result[0].SECRETARIA}`,
-                    `estado/${programas.result[0].ESTADO}`,
-                    `recurso/${convertString(programas.result[0].ORIGEM_RECURSO)}`,
-                    `data-inicio/${convertString(programas.result[0].DATA_INICIO)}`,
-                    `data-fim/${convertString(programas.result[0].DATA_FIM)}`,
+                    result.result[0].ID,
+                    convertString(result.result[0].NOME),
+                    `secretaria/${convertString(result.result[0].SECRETARIA)}`,
+                    `estado/${result.result[0].ESTADO}`,
+                    `recurso/${convertString(result.result[0].ORIGEM_RECURSO)}`,
+                    `data-inicio/${result.result[0].DATA_INICIO.toISOString().split('T')[0]}`,
+                    `data-fim/${result.result[0].DATA_FIM.toISOString().split('T')[0]}`,
                 ]
             );
 
@@ -261,18 +261,18 @@ class ProgramasController {
                 req.query.limit
             );
             const hateoas = Hateoas(
-                programas.result[0].ID,
+                result.result[0].ID,
                 process.env.URL,
                 req.session.user.nivel,
                 "programas",
                 ["",
-                    programas.result[0].ID,
-                    convertString(programas.result[0].NOME),
-                    `secretaria/${programas.result[0].SECRETARIA}`,
-                    `estado/${programas.result[0].ESTADO}`,
-                    `recurso/${convertString(programas.result[0].ORIGEM_RECURSO)}`,
-                    `data-inicio/${convertString(programas.result[0].DATA_INICIO)}`,
-                    `data-fim/${convertString(programas.result[0].DATA_FIM)}`,
+                    result.result[0].ID,
+                    convertString(result.result[0].NOME),
+                    `secretaria/${convertString(result.result[0].SECRETARIA)}`,
+                    `estado/${result.result[0].ESTADO}`,
+                    `recurso/${convertString(result.result[0].ORIGEM_RECURSO)}`,
+                    `data-inicio/${result.result[0].DATA_INICIO.toISOString().split('T')[0]}`,
+                    `data-fim/${result.result[0].DATA_FIM.toISOString().split('T')[0]}`,
                 ]
             );
 
@@ -316,18 +316,18 @@ class ProgramasController {
                 req.query.limit
             );
             const hateoas = Hateoas(
-                programas.result[0].ID,
+                result.result[0].ID,
                 process.env.URL,
                 req.session.user.nivel,
                 "programas",
                 ["",
-                    programas.result[0].ID,
-                    convertString(programas.result[0].NOME),
-                    `secretaria/${programas.result[0].SECRETARIA}`,
-                    `estado/${programas.result[0].ESTADO}`,
-                    `recurso/${convertString(programas.result[0].ORIGEM_RECURSO)}`,
-                    `data-inicio/${convertString(programas.result[0].DATA_INICIO)}`,
-                    `data-fim/${convertString(programas.result[0].DATA_FIM)}`,
+                    result.result[0].ID,
+                    convertString(result.result[0].NOME),
+                    `secretaria/${convertString(result.result[0].SECRETARIA)}`,
+                    `estado/${result.result[0].ESTADO}`,
+                    `recurso/${convertString(result.result[0].ORIGEM_RECURSO)}`,
+                    `data-inicio/${result.result[0].DATA_INICIO.toISOString().split('T')[0]}`,
+                    `data-fim/${result.result[0].DATA_FIM.toISOString().split('T')[0]}`,
                 ]
             );
 
@@ -371,18 +371,18 @@ class ProgramasController {
                 req.query.limit
             );
             const hateoas = Hateoas(
-                programas.result[0].ID,
+                result.result[0].ID,
                 process.env.URL,
                 req.session.user.nivel,
                 "programas",
                 ["",
-                    programas.result[0].ID,
-                    convertString(programas.result[0].NOME),
-                    `secretaria/${programas.result[0].SECRETARIA}`,
-                    `estado/${programas.result[0].ESTADO}`,
-                    `recurso/${convertString(programas.result[0].ORIGEM_RECURSO)}`,
-                    `data-inicio/${convertString(programas.result[0].DATA_INICIO)}`,
-                    `data-fim/${convertString(programas.result[0].DATA_FIM)}`,
+                    result.result[0].ID,
+                    convertString(result.result[0].NOME),
+                    `secretaria/${convertString(result.result[0].SECRETARIA)}`,
+                    `estado/${result.result[0].ESTADO}`,
+                    `recurso/${convertString(result.result[0].ORIGEM_RECURSO)}`,
+                    `data-inicio/${result.result[0].DATA_INICIO.toISOString().split('T')[0]}`,
+                    `data-fim/${result.result[0].DATA_FIM.toISOString().split('T')[0]}`,
                 ]
             );
 
@@ -419,9 +419,31 @@ class ProgramasController {
 
     async createPrograma(req, res, next) {
         try {
-            const result = await ProgramasService.createPrograma(
+            await ProgramasService.createPrograma(
                 req.body,
                 req.session.user
+            );
+            const find = await ProgramasService.find(
+                req.body.NOME,
+                req.session.user,
+                1,
+                1
+            );
+
+            const hateoas = Hateoas(
+                find.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "programas",
+                ["",
+                    find.result[0].ID,
+                    convertString(find.result[0].NOME),
+                    `secretaria/${convertString(find.result[0].SECRETARIA)}`,
+                    `estado/${find.result[0].ESTADO}`,
+                    `recurso/${convertString(find.result[0].ORIGEM_RECURSO)}`,
+                    `data-inicio/${find.result[0].DATA_INICIO.toISOString().split('T')[0]}`,
+                    `data-fim/${find.result[0].DATA_FIM.toISOString().split('T')[0]}`,
+                ]
             );
 
             req.log.info({
@@ -431,7 +453,10 @@ class ProgramasController {
                 usuarioId: req.session.user.id,
             }, "Programa criado");
 
-            return res.status(201).json(result);
+            return res.status(201).json({
+                result: find.result,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "PROGRAMA_CREATE_ERROR",
@@ -451,10 +476,32 @@ class ProgramasController {
 
     async updatePrograma(req, res, next) {
         try {
-            const result = await ProgramasService.updatePrograma(
+            await ProgramasService.updatePrograma(
                 req.params.id,
                 req.body,
                 req.session.user
+            );
+            const find = await ProgramasService.find(
+                req.params.id,
+                req.session.user,
+                "1",
+                "1"
+            );
+
+            const hateoas = Hateoas(
+                find.result.ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "programas",
+                ["",
+                    find.result.ID,
+                    convertString(find.result.NOME),
+                    `secretaria/${convertString(find.result.SECRETARIA)}`,
+                    `estado/${find.result.ESTADO}`,
+                    `recurso/${convertString(find.result.ORIGEM_RECURSO)}`,
+                    `data-inicio/${find.result.DATA_INICIO.toISOString().split('T')[0]}`,
+                    `data-fim/${find.result.DATA_FIM.toISOString().split('T')[0]}`,
+                ]
             );
 
             req.log.info({
@@ -465,7 +512,10 @@ class ProgramasController {
                 targetId: req.params.id
             }, "Programa atualizada");
 
-            return res.status(200).json(result);
+            return res.status(200).json({
+                result: find.result,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "PROGRAMA_UPDATE_ERROR",
@@ -490,6 +540,9 @@ class ProgramasController {
                 req.params.id,
                 req.session.user
             );
+            const hateoas = Hateoas("", process.env.URL, req.session.user.nivel, "usuarios",
+                ""
+            );
 
             req.log.info({
                 event: "PROGRAMA_DELETE",
@@ -499,7 +552,13 @@ class ProgramasController {
                 targetId: req.params.id
             }, "Programa excluída");
 
-            return res.status(200).json(result);
+            return res.status(200).json({
+                result: result,
+                hateoas: {
+                    GET: hateoas.GET,
+                    POST: hateoas.POST
+                }
+            });
         } catch (error) {
             req.log.error({
                 event: "PROGRAMA_DELETE_ERROR",
