@@ -287,20 +287,20 @@ class UsuariosController {
      */
     async createUsuario(req, res, next) {
         try {
-            const result = await UsuariosService.createUsuario(req.body);
-            const find = await UsuariosService.find(
-                req.body.ID_PESSOA,
+            await UsuariosService.createUsuario(req.body);
+            const find = await UsuariosService.findByLogin(
+                req.body.LOGIN,
                 req.session.user,
                 1,
                 1
             );
             const hateoas = Hateoas(
-                find.result.ID, process.env.URL, req.session.user.nivel, "usuarios",
+                find.result[0].ID, process.env.URL, req.session.user.nivel, "usuarios",
                 [
-                    "", find.result.ID,
-                    `nivel/${find.result.NIVEL}`,
-                    `secretaria/${find.result.ID_SECRETARIA}`,
-                    `login/${find.result.LOGIN}`
+                    "", find.result[0].ID,
+                    `nivel/${find.result[0].NIVEL}`,
+                    `secretaria/${find.result[0].ID_SECRETARIA}`,
+                    `login/${find.result[0].LOGIN}`
                 ]
             );
 
@@ -312,7 +312,7 @@ class UsuariosController {
             }, "Usuário criado");
 
             return res.status(200).json({
-                result: result,
+                result: find.result,
                 hateoas: hateoas
             });
         } catch (error) {
@@ -333,7 +333,7 @@ class UsuariosController {
      */
     async updateUsuario(req, res, next) {
         try {
-            const result = await UsuariosService.updateUsuario(
+            await UsuariosService.updateUsuario(
                 req.params.id, req.body, {
                 nivel: req.session.user.nivel,
                 secretaria: req.session.user.secretaria
@@ -363,7 +363,7 @@ class UsuariosController {
             }, "Usuário atualizado");
 
             return res.status(200).json({
-                result: result,
+                result: find.result,
                 hateoas: hateoas
             });
         } catch (error) {
@@ -385,7 +385,7 @@ class UsuariosController {
      */
     async updateLogin(req, res, next) {
         try {
-            const result = await UsuariosService.updateLogin(
+            await UsuariosService.updateLogin(
                 req.params.id, req.body, {
                 nivel: req.session.user.nivel,
                 secretaria: req.session.user.secretaria
@@ -415,7 +415,7 @@ class UsuariosController {
             }, "Login atualizado");
 
             return res.status(200).json({
-                result: result,
+                messege: "Login atualizado",
                 hateoas: hateoas
             });
         } catch (error) {
