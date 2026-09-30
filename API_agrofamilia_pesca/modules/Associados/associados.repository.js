@@ -1,7 +1,8 @@
 // Importa as funções utilitárias responsáveis pelas operações básicas no banco de dados.
 // padronizando as operações de CRUD na aplicação.
 const { findAll, findBy, findByInterval, insertData, updateData, deleteData, findWithScope, findByIntervalWithScope } = require("../../shared/Utils/dbUtils");
-const table = "view_pessoas";
+const table = "associado";
+const view = "view_pessoas";
 
 /**
  * Repositório responsável pelas operações de acesso a dados
@@ -18,7 +19,13 @@ class AssociadosRepository {
      */
 
     findAllAssociados(page, limit) {
-        return findAll(table, page, limit);
+        const find = findAll(view, page, limit);
+
+        if (!find) {
+            return findAll(table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -26,18 +33,30 @@ class AssociadosRepository {
      */
 
     findById(id, page, limit) {
-        return findBy("ID", id, false, table, page, limit);
+        const find = findBy("ID", id, false, view, page, limit);
+
+        if (!find) {
+            return findBy("ID", id, false, table, page, limit);
+        };
+
+        return find;
     };
 
     findId(id, page, limit) {
         return findBy("ID", id, false, "view_associados", page, limit);
     };
-    
+
     /**
      * Busca pessoas pelo id da secretaria.
      */
     findByIdSecretaria(id, page, limit) {
-        return findBy("ID_SECRETARIA", id, true, table, page, limit);
+        const find = findBy("ID_SECRETARIA", id, true, view, page, limit);
+
+        if (!find) {
+            return findBy("ID_SECRETARIA", id, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -45,7 +64,13 @@ class AssociadosRepository {
      */
 
     findByIdPessoa(id, page, limit) {
-        return findBy("ID_PESSOA", id, false, table, page, limit);
+        const find = findBy("ID_PESSOA", id, false, view, page, limit);
+
+        if (!find) {
+            return findBy("ID_PESSOA", id, false, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -53,7 +78,7 @@ class AssociadosRepository {
      */
 
     findByIdDelete(id, page, limit) {
-        return findBy("ID", id, false, "associado", page, limit);
+        return findBy("ID", id, false, table, page, limit);
     };
 
     /**
@@ -61,7 +86,13 @@ class AssociadosRepository {
      */
 
     findByName(name, page, limit) {
-        return findBy("NOME", name, true, table, page, limit);
+        const find = findBy("NOME", name, true, view, page, limit);
+
+        if (!find) {
+            return findBy("NOME", name, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -69,7 +100,13 @@ class AssociadosRepository {
      */
 
     findbyCaf(caf, page, limit) {
-        return findBy("CAF", caf, false, table, page, limit);
+        const find = findBy("CAF", caf, false, view, page, limit);
+
+        if (!find) {
+            return findBy("CAF", caf, false, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -77,7 +114,13 @@ class AssociadosRepository {
      */
 
     findbyDap(dap, page, limit) {
-        return findBy("DAP", dap, false, table, page, limit);
+        const find = findBy("DAP", dap, false, view, page, limit);
+
+        if (!find) {
+            return findBy("DAP", dap, false, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -85,7 +128,13 @@ class AssociadosRepository {
      */
 
     findbyAssociacao(associacao, page, limit) {
-        return findBy("ASSOCIACAO", associacao, true, table, page, limit);
+        const find = findBy("ASSOCIACAO", associacao, true, view, page, limit);
+
+        if (!find) {
+            return findBy("ASSOCIACAO", associacao, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -93,21 +142,39 @@ class AssociadosRepository {
      */
 
     findbyIdAssociacao(id, page, limit) {
-        return findBy("ID_ASSOCIACAO", id, true, table, page, limit);
+        const find = findBy("ID_ASSOCIACAO", id, true, view, page, limit);
+
+        if (!find) {
+            return findBy("ID_ASSOCIACAO", id, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Lista associados filtrando por secretaria.
      */
     findbySecretaria(secretaria, page, limit) {
-        return findBy("SECRETARIA", secretaria, true, table, page, limit);
+        const find = findBy("SECRETARIA", secretaria, true, view, page, limit);
+
+        if (!find) {
+            return findBy("SECRETARIA", secretaria, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Lista associados filtrando pelo ID da secretaria.
      */
     findbyIdSecretaria(id, page, limit) {
-        return findBy("ID_SECRETARIA", id, true, table, page, limit);
+        const find = findBy("ID_SECRETARIA", id, true, view, page, limit);
+
+        if (!find) {
+            return findBy("ID_SECRETARIA", id, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -115,7 +182,13 @@ class AssociadosRepository {
      */
 
     findbyDataCaf(data, page, limit) {
-        return findBy("VALIDADE_CAF", data, true, table, page, limit);
+        const find = findBy("VALIDADE_CAF", data, true, view, page, limit);
+
+        if (!find) {
+            return findBy("VALIDADE_CAF", data, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -123,7 +196,13 @@ class AssociadosRepository {
      */
 
     findByInicioFimCaf(inicio, fim, page, limit) {
-        return findByInterval("VALIDADE_CAF", inicio, fim, table, page, limit);
+        const find = findByInterval("VALIDADE_CAF", inicio, fim, view, page, limit);
+
+        if (!find) {
+            return findByInterval("VALIDADE_CAF", inicio, fim, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -142,46 +221,82 @@ class AssociadosRepository {
         return findBy("ID", id, false, "associacao", page, limit);
     };
 
-     /**
-     * Consulta pelo ID limitando por escopo.
-     */
+    /**
+    * Consulta pelo ID limitando por escopo.
+    */
     findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo NOME limitando por escopo.
      */
     findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo caf limitando por escopo.
      */
     findByCafScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo caf limitando por escopo.
      */
     findByDapScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pela validade do caf limitando por escopo.
      */
     findByDataCafScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo intervalo das datas de movimentação na view_pessoas limitando por escopo.
      */
     findByInicioFimCafScope(sessionID, sessionField, field, inicio, fim, page, limit) {
-        return findByIntervalWithScope(sessionID, sessionField, field, inicio, fim, true, table, page, limit);
+        const find = findByIntervalWithScope(sessionID, sessionField, field, inicio, fim, true, view, page, limit);
+
+        if (!find) {
+            return findByIntervalWithScope(sessionID, sessionField, field, inicio, fim, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -189,7 +304,7 @@ class AssociadosRepository {
      */
 
     createAssociado(associado) {
-        return insertData(associado, "associado");
+        return insertData(associado, table);
     };
 
     /**
@@ -197,7 +312,7 @@ class AssociadosRepository {
      */
 
     updateAssociado(id, associado) {
-        return updateData(id, associado, "associado");
+        return updateData(id, associado, table);
     };
 
     /**
@@ -205,7 +320,7 @@ class AssociadosRepository {
      */
 
     deleteAssociado(id) {
-        return deleteData(id, "associado");
+        return deleteData(id, table);
     };
 };
 
