@@ -1,7 +1,8 @@
 // Importa as funções utilitárias responsáveis pelas operações básicas no banco de dados.
 // padronizando as operações de CRUD na aplicação.
 const { findAll, findBy, insertData, updateData, deleteData } = require("../../shared/Utils/dbUtils");
-const table = "view_produtos";
+const table = "produto";
+const view = "view_produtos";
 
 /**
  * Repositório responsável pelas operações de acesso a dados
@@ -17,7 +18,13 @@ class ProdutoRepository {
      */
 
     findAllProdutos(page, limit) {
-        return findAll(table, page, limit);
+        const find = findAll(view, page, limit);
+
+        if (!find) {
+            return findAll(table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -25,14 +32,26 @@ class ProdutoRepository {
      */
 
     findById(id, page, limit) {
-        return findBy("ID", id, false, table, page, limit);
+        const find = findBy("ID", id, false, view, page, limit);
+
+        if (!find) {
+            return findBy("ID", id, false, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Busca produtos pelo nome.
      */
     findByName(name, page, limit) {
-        return findBy("NOME", name, true, table, page, limit);
+        const find = findBy("NOME", name, true, view, page, limit);
+
+        if (!find) {
+            return findBy("NOME", name, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -48,7 +67,7 @@ class ProdutoRepository {
      */
 
     createProduto(produto) {
-        return insertData(produto, "produto");
+        return insertData(produto, table);
     };
 
     /**
@@ -56,7 +75,7 @@ class ProdutoRepository {
      */
 
     updateProduto(id, produto) {
-        return updateData(id, produto, "produto");
+        return updateData(id, produto, table);
     };
 
     /**
@@ -64,7 +83,7 @@ class ProdutoRepository {
      */
 
     deleteProduto(id) {
-        return deleteData(id, "produto");
+        return deleteData(id, table);
     };
 };
 
