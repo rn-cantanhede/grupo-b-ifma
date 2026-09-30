@@ -1,7 +1,8 @@
 // Importa as funções utilitárias responsáveis pelas operações básicas no banco de dados.
 // padronizando as operações de CRUD na aplicação.
 const { findAll, findBy, insertData, updateData, deleteData } = require("../../shared/Utils/dbUtils");
-const table = "view_programas";
+const table = "programa";
+const view = "view_programas";
 
 /**
  * Repositório responsável pelas operações de acesso a dados
@@ -18,7 +19,13 @@ class ProgramasRepository {
      */
 
     findAllProgramas(page, limit) {
-        return findAll(table, page, limit);
+        const find = findAll(view, page, limit);
+
+        if (!find) {
+            return findAll(table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -27,7 +34,13 @@ class ProgramasRepository {
      */
 
     findById(id, page, limit) {
-        return findBy("ID", id, false, table, page, limit);
+        const find = findBy("ID", id, false, view, page, limit);
+
+        if (!find) {
+            return findBy("ID", id, false, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -36,7 +49,13 @@ class ProgramasRepository {
      */
 
     findByIdDelete(id, page, limit) {
-        return findBy("ID", id, false, "programa", page, limit);
+        const find = findBy("ID", id, false, "programa", page, limit);
+
+        if (!find) {
+            return findBy("ID", id, table, "programa", page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -45,7 +64,13 @@ class ProgramasRepository {
      */
 
     findByName(name, page, limit) {
-        return findBy("NOME", name, true, table, page, limit);
+        const find = findBy("NOME", name, true, view, page, limit);
+
+        if (!find) {
+            return findBy("NOME", name, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -54,7 +79,13 @@ class ProgramasRepository {
      */
 
     findbySecretaria(secretaria, page, limit) {
-        return findBy("SECRETARIA", secretaria, true, table, page, limit);
+        const find = findBy("SECRETARIA", secretaria, true, view, page, limit);
+
+        if (!find) {
+            return findBy("SECRETARIA", secretaria, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -63,7 +94,13 @@ class ProgramasRepository {
      */
 
     findbyIdSecretaria(secretaria, page, limit) {
-        return findBy("ID_SECRETARIA", secretaria, true, table, page, limit);
+        const find = findBy("ID_SECRETARIA", secretaria, true, view, page, limit);
+
+        if (!find) {
+            return findBy("ID_SECRETARIA", secretaria, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -71,7 +108,13 @@ class ProgramasRepository {
      */
 
     findbyEstado(estado, page, limit) {
-        return findBy("ESTADO", estado, true, table, page, limit);
+        const find = findBy("ESTADO", estado, true, view, page, limit);
+
+        if (!find) {
+            return findBy("ESTADO", estado, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -79,7 +122,13 @@ class ProgramasRepository {
      */
 
     findbyOrigemRecurso(recurso, page, limit) {
-        return findBy("ORIGEM_RECURSO", recurso, true, table, page, limit);
+        const find = findBy("ORIGEM_RECURSO", recurso, true, view, page, limit);
+
+        if (!find) {
+            return findBy("ORIGEM_RECURSO", recurso, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -87,7 +136,13 @@ class ProgramasRepository {
      */
 
     findbyDataInicio(data, page, limit) {
-        return findBy("DATA_INICIO", data, true, table, page, limit);
+        const find = findBy("DATA_INICIO", data, true, view, page, limit);
+
+        if (!find) {
+            return findBy("DATA_INICIO", data, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -95,7 +150,13 @@ class ProgramasRepository {
      */
 
     findbyDataFim(data, page, limit) {
-        return findBy("DATA_FIM", data, true, table, page, limit);
+        const find = findBy("DATA_FIM", data, true, view, page, limit);
+
+        if (!find) {
+            return findBy("DATA_FIM", data, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -111,49 +172,91 @@ class ProgramasRepository {
      * Consulta pelo ID na view_programas limitando por escopo.
      */
     findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo NOME na view_programas limitando por escopo.
      */
     findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pela secretaria na view_programas limitando por escopo.
      */
     findBySecretariaScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo estado na view_programas limitando por escopo.
      */
     findByEstadoScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pela origem de recusos na view_programas limitando por escopo.
      */
     findByOrigemRecursoScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pela data de início na view_programas limitando por escopo.
      */
     findByDataInicioScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pela data de termino na view_programas limitando por escopo.
      */
     findByDataFimScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -168,7 +271,7 @@ class ProgramasRepository {
      */
 
     createPrograma(programa) {
-        return insertData(programa, "programa");
+        return insertData(programa, table);
     };
 
     /**
@@ -176,15 +279,15 @@ class ProgramasRepository {
      */
 
     updatePrograma(id, programa) {
-        return updateData(id, programa, "programa");
+        return updateData(id, programa, table);
     };
 
     /**
      * Remove um programa da tabela `programa` pelo ID.
      */
-    
+
     deletePrograma(id) {
-        return deleteData(id, "programa");
+        return deleteData(id, table);
     };
 };
 
