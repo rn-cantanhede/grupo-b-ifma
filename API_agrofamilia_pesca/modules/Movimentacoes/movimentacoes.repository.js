@@ -1,7 +1,8 @@
 // Importa as funções utilitárias responsáveis pelas operações básicas no banco de dados.
 // padronizando as operações de CRUD na aplicação.
 const { findAll, findBy, findByInterval, insertData, updateData, deleteData, findWithScope, findByIntervalWithScope } = require("../../shared/Utils/dbUtils");
-const table = "view_produto_movimentacao";
+const table = "produto_movimentacao";
+const view = "view_produto_movimentacao";
 
 /**
  * Repositório responsável pelas operações de acesso a dados
@@ -16,9 +17,15 @@ class MovimentacoesRepository {
     /**
      * Retorna todas as movimentações de produtos a partir da view.
      */
-    
+
     findAllMovimentacoes(page, limit) {
-        return findAll(table, page, limit);
+        const find = findAll(view, page, limit);
+
+        if (!find) {
+            return findAll(table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -26,7 +33,13 @@ class MovimentacoesRepository {
      */
 
     findById(id, page, limit) {
-        return findBy("ID", id, false, table, page, limit);
+        const find = findBy("ID", id, false, view, page, limit);
+
+        if (!find) {
+            return findBy("ID", id, false, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -34,7 +47,7 @@ class MovimentacoesRepository {
      */
 
     findByIdDelete(id) {
-        return findBy("ID", id, false, "produto_movimentacao");
+        return findBy("ID", id, false, table, 1, 1);
     };
 
     /**
@@ -42,7 +55,13 @@ class MovimentacoesRepository {
      */
 
     findByIdSecretaria(id, page, limit) {
-        return findBy("ID_SECRETARIA", id, true, table, page, limit);
+        const find = findBy("ID_SECRETARIA", id, true, view, page, limit);
+
+        if (!find) {
+            return findBy("ID_SECRETARIA", id, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -50,7 +69,13 @@ class MovimentacoesRepository {
      */
 
     findByIdPessoa(id, page, limit) {
-        return findBy("ID_PESSOA", id, false, table, page, limit);
+        const find = findBy("ID_PESSOA", id, false, view, page, limit);
+
+        if (!find) {
+            return findBy("ID_PESSOA", id, false, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -58,7 +83,13 @@ class MovimentacoesRepository {
      */
 
     findByIdAssociado(id, page, limit) {
-        return findBy("ID_ASSOCIADO", id, false, table, page, limit);
+        const find = findBy("ID_ASSOCIADO", id, false, view, page, limit);
+
+        if (!find) {
+            return findBy("ID_ASSOCIADO", id, false, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -66,7 +97,13 @@ class MovimentacoesRepository {
      */
 
     findbyDap(dap, page, limit) {
-        return findBy("DAP", dap, true, table, page, limit);
+        const find = findBy("DAP", dap, true, view, page, limit);
+
+        if (!find) {
+            return findBy("DAP", dap, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -74,7 +111,13 @@ class MovimentacoesRepository {
      */
 
     findbyProduto(produto, page, limit) {
-        return findBy("PRODUTO", produto, true, table, page, limit);
+        const find = findBy("PRODUTO", produto, true, view, page, limit);
+
+        if (!find) {
+            return findBy("PRODUTO", produto, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -82,7 +125,13 @@ class MovimentacoesRepository {
      */
 
     findbyData(data, page, limit) {
-        return findBy("DATA_MOVIMENTACAO", data, true, table, page, limit);
+        const find = findBy("DATA_MOVIMENTACAO", data, true, view, page, limit);
+
+        if (!find) {
+            return findBy("DATA_MOVIMENTACAO", data, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -90,7 +139,13 @@ class MovimentacoesRepository {
      */
 
     findByInicioFim(inicio, fim, page, limit) {
-        return findByInterval("DATA_MOVIMENTACAO", inicio, fim, table, page, limit);
+        const find = findByInterval("DATA_MOVIMENTACAO", inicio, fim, view, page, limit);
+
+        if (!find) {
+            return findByInterval("DATA_MOVIMENTACAO", inicio, fim, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -121,35 +176,65 @@ class MovimentacoesRepository {
      * onsulta pelo ID limitando por escopo.
      */
     findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo DAP limitando por escopo.
      */
     findByDapScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * onsulta pelo PRODUTO limitando por escopo.
      */
     findByProdutoScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * onsulta pelo DATA_MOVIMENTACAO limitando por escopo.
      */
     findByDataScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo intervalo das datas de movimentação na view_produto_movimentacao limitando por escopo.
      */
     findByInicioFimScope(sessionID, sessionField, field, inicio, fim, page, limit) {
-        return findByIntervalWithScope(sessionID, sessionField, field, inicio, fim, true, table, page, limit);
+        const find = findByIntervalWithScope(sessionID, sessionField, field, inicio, fim, true, view, page, limit);
+
+        if (!find) {
+            return findByIntervalWithScope(sessionID, sessionField, field, inicio, fim, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -157,7 +242,7 @@ class MovimentacoesRepository {
      */
 
     createMovimentacao(movimentacao) {
-        return insertData(movimentacao, "produto_movimentacao");
+        return insertData(movimentacao, table);
     };
 
     /**
@@ -165,7 +250,7 @@ class MovimentacoesRepository {
      */
 
     updateMovimentacao(id, movimentacao) {
-        return updateData(id, movimentacao, "produto_movimentacao");
+        return updateData(id, movimentacao, table);
     };
 
     /**
@@ -173,7 +258,7 @@ class MovimentacoesRepository {
      */
 
     deleteMovimentacao(id) {
-        return deleteData(id, "produto_movimentacao");
+        return deleteData(id, table);
     };
 };
 
