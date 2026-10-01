@@ -18,8 +18,8 @@ class ProgramasRepository {
      * Retorna todos os registros de programas a partir da view.
      */
 
-    findAllProgramas(page, limit) {
-        const find = findAll(view, page, limit);
+    async findAllProgramas(page, limit) {
+        const find = await findAll(view, page, limit);
 
         if (!find) {
             return findAll(table, page, limit);
@@ -33,8 +33,8 @@ class ProgramasRepository {
      * O parâmetro `false` indica busca exata (não usa LIKE).
      */
 
-    findById(id, page, limit) {
-        const find = findBy("ID", id, false, view, page, limit);
+    async findById(id, page, limit) {
+        const find = await findBy("ID", id, false, view, page, limit);
 
         if (!find) {
             return findBy("ID", id, false, table, page, limit);
@@ -48,8 +48,8 @@ class ProgramasRepository {
      * Usado geralmente antes de operações de exclusão.
      */
 
-    findByIdDelete(id, page, limit) {
-        const find = findBy("ID", id, false, "programa", page, limit);
+    async findByIdDelete(id, page, limit) {
+        const find = await findBy("ID", id, false, "programa", page, limit);
 
         if (!find) {
             return findBy("ID", id, table, "programa", page, limit);
@@ -63,8 +63,8 @@ class ProgramasRepository {
      * O parâmetro `true` indica busca parcial (LIKE).
      */
 
-    findByName(name, page, limit) {
-        const find = findBy("NOME", name, true, view, page, limit);
+    async findByName(name, page, limit) {
+        const find = await findBy("NOME", name, true, view, page, limit);
 
         if (!find) {
             return findBy("NOME", name, true, table, page, limit);
@@ -78,8 +78,8 @@ class ProgramasRepository {
      * A busca é parcial para permitir flexibilidade.
      */
 
-    findbySecretaria(secretaria, page, limit) {
-        const find = findBy("SECRETARIA", secretaria, true, view, page, limit);
+    async findbySecretaria(secretaria, page, limit) {
+        const find = await findBy("SECRETARIA", secretaria, true, view, page, limit);
 
         if (!find) {
             return findBy("SECRETARIA", secretaria, true, table, page, limit);
@@ -93,8 +93,8 @@ class ProgramasRepository {
      * A busca é parcial para permitir flexibilidade.
      */
 
-    findbyIdSecretaria(secretaria, page, limit) {
-        const find = findBy("ID_SECRETARIA", secretaria, true, view, page, limit);
+    async findbyIdSecretaria(secretaria, page, limit) {
+        const find = await findBy("ID_SECRETARIA", secretaria, true, view, page, limit);
 
         if (!find) {
             return findBy("ID_SECRETARIA", secretaria, true, table, page, limit);
@@ -107,8 +107,8 @@ class ProgramasRepository {
      * Busca programas por estado.
      */
 
-    findbyEstado(estado, page, limit) {
-        const find = findBy("ESTADO", estado, true, view, page, limit);
+    async findbyEstado(estado, page, limit) {
+        const find = await findBy("ESTADO", estado, true, view, page, limit);
 
         if (!find) {
             return findBy("ESTADO", estado, true, table, page, limit);
@@ -121,8 +121,8 @@ class ProgramasRepository {
      * Busca programas pela origem do recurso financeiro.
      */
 
-    findbyOrigemRecurso(recurso, page, limit) {
-        const find = findBy("ORIGEM_RECURSO", recurso, true, view, page, limit);
+    async findbyOrigemRecurso(recurso, page, limit) {
+        const find = await findBy("ORIGEM_RECURSO", recurso, true, view, page, limit);
 
         if (!find) {
             return findBy("ORIGEM_RECURSO", recurso, true, table, page, limit);
@@ -135,8 +135,8 @@ class ProgramasRepository {
      * Busca programas com data de início correspondente.
      */
 
-    findbyDataInicio(data, page, limit) {
-        const find = findBy("DATA_INICIO", data, true, view, page, limit);
+    async findbyDataInicio(data, page, limit) {
+        const find = await findBy("DATA_INICIO", data, true, view, page, limit);
 
         if (!find) {
             return findBy("DATA_INICIO", data, true, table, page, limit);
@@ -149,8 +149,8 @@ class ProgramasRepository {
      * Busca programas com data de fim correspondente.
      */
 
-    findbyDataFim(data, page, limit) {
-        const find = findBy("DATA_FIM", data, true, view, page, limit);
+    async findbyDataFim(data, page, limit) {
+        const find = await findBy("DATA_FIM", data, true, view, page, limit);
 
         if (!find) {
             return findBy("DATA_FIM", data, true, table, page, limit);
@@ -171,8 +171,8 @@ class ProgramasRepository {
     /**
      * Consulta pelo ID na view_programas limitando por escopo.
      */
-    findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
-        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
 
         if (!find) {
             return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
@@ -184,8 +184,8 @@ class ProgramasRepository {
     /**
      * Consulta pelo NOME na view_programas limitando por escopo.
      */
-    findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
-        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
 
         if (!find) {
             return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
@@ -197,8 +197,8 @@ class ProgramasRepository {
     /**
      * Consulta pela secretaria na view_programas limitando por escopo.
      */
-    findBySecretariaScope(sessionID, sessionField, fieldID, value, page, limit) {
-        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findBySecretariaScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
 
         if (!find) {
             return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
@@ -210,8 +210,8 @@ class ProgramasRepository {
     /**
      * Consulta pelo estado na view_programas limitando por escopo.
      */
-    findByEstadoScope(sessionID, sessionField, fieldID, value, page, limit) {
-        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findByEstadoScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
 
         if (!find) {
             return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
@@ -223,8 +223,8 @@ class ProgramasRepository {
     /**
      * Consulta pela origem de recusos na view_programas limitando por escopo.
      */
-    findByOrigemRecursoScope(sessionID, sessionField, fieldID, value, page, limit) {
-        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findByOrigemRecursoScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
 
         if (!find) {
             return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
@@ -236,8 +236,8 @@ class ProgramasRepository {
     /**
      * Consulta pela data de início na view_programas limitando por escopo.
      */
-    findByDataInicioScope(sessionID, sessionField, fieldID, value, page, limit) {
-        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findByDataInicioScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
 
         if (!find) {
             return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
@@ -249,8 +249,8 @@ class ProgramasRepository {
     /**
      * Consulta pela data de termino na view_programas limitando por escopo.
      */
-    findByDataFimScope(sessionID, sessionField, fieldID, value, page, limit) {
-        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findByDataFimScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
 
         if (!find) {
             return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);

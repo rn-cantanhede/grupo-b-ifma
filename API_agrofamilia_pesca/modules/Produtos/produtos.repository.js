@@ -17,8 +17,8 @@ class ProdutoRepository {
      * Retorna todos os produtos disponíveis na view.
      */
 
-    findAllProdutos(page, limit) {
-        const find = findAll(view, page, limit);
+    async findAllProdutos(page, limit) {
+        const find = await findAll(view, page, limit);
 
         if (!find) {
             return findAll(table, page, limit);
@@ -31,8 +31,8 @@ class ProdutoRepository {
      * Busca um produto pelo ID.
      */
 
-    findById(id, page, limit) {
-        const find = findBy("ID", id, false, view, page, limit);
+    async findById(id, page, limit) {
+        const find = await findBy("ID", id, false, view, page, limit);
 
         if (!find) {
             return findBy("ID", id, false, table, page, limit);
@@ -44,8 +44,8 @@ class ProdutoRepository {
     /**
      * Busca produtos pelo nome.
      */
-    findByName(name, page, limit) {
-        const find = findBy("NOME", name, true, view, page, limit);
+    async findByName(name, page, limit) {
+        const find = await findBy("NOME", name, true, view, page, limit);
 
         if (!find) {
             return findBy("NOME", name, true, table, page, limit);

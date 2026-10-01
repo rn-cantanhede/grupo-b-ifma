@@ -18,8 +18,8 @@ class MovimentacoesRepository {
      * Retorna todas as movimentações de produtos a partir da view.
      */
 
-    findAllMovimentacoes(page, limit) {
-        const find = findAll(view, page, limit);
+    async findAllMovimentacoes(page, limit) {
+        const find = await findAll(view, page, limit);
 
         if (!find) {
             return findAll(table, page, limit);
@@ -32,8 +32,8 @@ class MovimentacoesRepository {
      * Busca uma movimentação específica pelo ID na view.
      */
 
-    findById(id, page, limit) {
-        const find = findBy("ID", id, false, view, page, limit);
+    async findById(id, page, limit) {
+        const find = await findBy("ID", id, false, view, page, limit);
 
         if (!find) {
             return findBy("ID", id, false, table, page, limit);
@@ -54,8 +54,8 @@ class MovimentacoesRepository {
      * Busca uma movimentação específica pelo ID_SECRETARIA na view.
      */
 
-    findByIdSecretaria(id, page, limit) {
-        const find = findBy("ID_SECRETARIA", id, true, view, page, limit);
+    async findByIdSecretaria(id, page, limit) {
+        const find = await findBy("ID_SECRETARIA", id, true, view, page, limit);
 
         if (!find) {
             return findBy("ID_SECRETARIA", id, true, table, page, limit);
@@ -68,8 +68,8 @@ class MovimentacoesRepository {
      * Busca uma movimentação específica pelo ID_PESSO na view.
      */
 
-    findByIdPessoa(id, page, limit) {
-        const find = findBy("ID_PESSOA", id, false, view, page, limit);
+    async findByIdPessoa(id, page, limit) {
+        const find = await findBy("ID_PESSOA", id, false, view, page, limit);
 
         if (!find) {
             return findBy("ID_PESSOA", id, false, table, page, limit);
@@ -82,8 +82,8 @@ class MovimentacoesRepository {
      * Busca uma movimentação específica pelo ID_PESSO na view.
      */
 
-    findByIdAssociado(id, page, limit) {
-        const find = findBy("ID_ASSOCIADO", id, false, view, page, limit);
+    async findByIdAssociado(id, page, limit) {
+        const find = await findBy("ID_ASSOCIADO", id, false, view, page, limit);
 
         if (!find) {
             return findBy("ID_ASSOCIADO", id, false, table, page, limit);
@@ -96,8 +96,8 @@ class MovimentacoesRepository {
      * Busca movimentações filtrando pelo DAP.
      */
 
-    findbyDap(dap, page, limit) {
-        const find = findBy("DAP", dap, true, view, page, limit);
+    async findbyDap(dap, page, limit) {
+        const find = await findBy("DAP", dap, true, view, page, limit);
 
         if (!find) {
             return findBy("DAP", dap, true, table, page, limit);
@@ -110,8 +110,8 @@ class MovimentacoesRepository {
      * Busca movimentações filtrando pelo nome ou identificador do produto.
      */
 
-    findbyProduto(produto, page, limit) {
-        const find = findBy("PRODUTO", produto, true, view, page, limit);
+    async findbyProduto(produto, page, limit) {
+        const find = await findBy("PRODUTO", produto, true, view, page, limit);
 
         if (!find) {
             return findBy("PRODUTO", produto, true, table, page, limit);
@@ -124,8 +124,8 @@ class MovimentacoesRepository {
      * Busca movimentações pela data exata da movimentação.
      */
 
-    findbyData(data, page, limit) {
-        const find = findBy("DATA_MOVIMENTACAO", data, true, view, page, limit);
+    async findbyData(data, page, limit) {
+        const find = await findBy("DATA_MOVIMENTACAO", data, true, view, page, limit);
 
         if (!find) {
             return findBy("DATA_MOVIMENTACAO", data, true, table, page, limit);
@@ -138,8 +138,8 @@ class MovimentacoesRepository {
      * Busca movimentações dentro de um intervalo de datas.
      */
 
-    findByInicioFim(inicio, fim, page, limit) {
-        const find = findByInterval("DATA_MOVIMENTACAO", inicio, fim, view, page, limit);
+    async findByInicioFim(inicio, fim, page, limit) {
+        const find = await findByInterval("DATA_MOVIMENTACAO", inicio, fim, view, page, limit);
 
         if (!find) {
             return findByInterval("DATA_MOVIMENTACAO", inicio, fim, table, page, limit);
@@ -175,8 +175,8 @@ class MovimentacoesRepository {
     /**
      * onsulta pelo ID limitando por escopo.
      */
-    findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
-        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
 
         if (!find) {
             return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
@@ -188,8 +188,8 @@ class MovimentacoesRepository {
     /**
      * Consulta pelo DAP limitando por escopo.
      */
-    findByDapScope(sessionID, sessionField, fieldID, value, page, limit) {
-        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findByDapScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
 
         if (!find) {
             return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
@@ -201,8 +201,8 @@ class MovimentacoesRepository {
     /**
      * onsulta pelo PRODUTO limitando por escopo.
      */
-    findByProdutoScope(sessionID, sessionField, fieldID, value, page, limit) {
-        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findByProdutoScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
 
         if (!find) {
             return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
@@ -214,8 +214,8 @@ class MovimentacoesRepository {
     /**
      * onsulta pelo DATA_MOVIMENTACAO limitando por escopo.
      */
-    findByDataScope(sessionID, sessionField, fieldID, value, page, limit) {
-        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findByDataScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
 
         if (!find) {
             return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
@@ -227,8 +227,8 @@ class MovimentacoesRepository {
     /**
      * Consulta pelo intervalo das datas de movimentação na view_produto_movimentacao limitando por escopo.
      */
-    findByInicioFimScope(sessionID, sessionField, field, inicio, fim, page, limit) {
-        const find = findByIntervalWithScope(sessionID, sessionField, field, inicio, fim, true, view, page, limit);
+    async findByInicioFimScope(sessionID, sessionField, field, inicio, fim, page, limit) {
+        const find = await findByIntervalWithScope(sessionID, sessionField, field, inicio, fim, true, view, page, limit);
 
         if (!find) {
             return findByIntervalWithScope(sessionID, sessionField, field, inicio, fim, true, table, page, limit);

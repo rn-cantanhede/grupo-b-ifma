@@ -18,8 +18,8 @@ class LocalizacaoBeneficiadoRepository {
      * Retorna todas as localizações beneficiadas.
      */
 
-    findAllLocalizacao(page, limit) {
-        const find = findAll(view, page, limit);
+    async findAllLocalizacao(page, limit) {
+        const find = await findAll(view, page, limit);
 
         if (!find) {
             return findAll(table, page, limit);
@@ -32,8 +32,8 @@ class LocalizacaoBeneficiadoRepository {
      * Busca uma localização beneficiada pelo ID.
      */
 
-    findById(id, page, limit) {
-        const find = findBy("ID", id, false, view, page, limit);
+    async findById(id, page, limit) {
+        const find = await findBy("ID", id, false, view, page, limit);
 
         if (!find) {
             return findBy("ID", id, false, table, page, limit);
@@ -46,8 +46,8 @@ class LocalizacaoBeneficiadoRepository {
      * Busca uma localização beneficiada pelo ID.
      */
 
-    findByIdAssociacao(id, page, limit) {
-        const find = findBy("ID_ASSOCIACAO", id, true, view, page, limit);
+    async findByIdAssociacao(id, page, limit) {
+        const find = await findBy("ID_ASSOCIACAO", id, true, view, page, limit);
 
         if (!find) {
             return findBy("ID_ASSOCIACAO", id, true, table, page, limit);
@@ -60,8 +60,8 @@ class LocalizacaoBeneficiadoRepository {
      * Busca uma localização beneficiada pelo ID da secretaria.
      */
 
-    findByIdSecretaria(id, page, limit) {
-        const find = findBy("ID_SECRETARIA", id, false, view, page, limit);
+    async findByIdSecretaria(id, page, limit) {
+        const find = await findBy("ID_SECRETARIA", id, false, view, page, limit);
 
         if (!find) {
             return findBy("ID_SECRETARIA", id, false, table, page, limit);
@@ -74,8 +74,8 @@ class LocalizacaoBeneficiadoRepository {
      * Busca uma localização beneficiada pelo ID da pessoa.
      */
 
-    findByIdPessoa(id) {
-        const find = findBy("ID_PESSOA", id, false, view, 1, 1);
+   async findByIdPessoa(id) {
+        const find = await findBy("ID_PESSOA", id, false, view, 1, 1);
 
         if (!find) {
             return findBy("ID_PESSOA", id, false, table, 1, 1);
@@ -89,8 +89,8 @@ class LocalizacaoBeneficiadoRepository {
      * para validação antes da exclusão.
      */
 
-    findByIdDelete(id) {
-        const find = findBy("ID", id, false, view, 1, 1);
+    async findByIdDelete(id) {
+        const find = await findBy("ID", id, false, view, 1, 1);
 
         if (!find) {
             return findBy("ID", id, false, table, 1, 1);
@@ -105,8 +105,8 @@ class LocalizacaoBeneficiadoRepository {
      * A busca é feita de forma parcial (LIKE).
      */
 
-    findByName(name, page, limit) {
-        const find = findBy("NOME", name, true, view, page, limit);
+    async findByName(name, page, limit) {
+        const find = await findBy("NOME", name, true, view, page, limit);
 
         if (!find) {
             return findBy("NOME", name, true, table, page, limit);
@@ -119,8 +119,8 @@ class LocalizacaoBeneficiadoRepository {
      * Busca localizações beneficiadas pelo id da associação.
      */
 
-    findbyIdAssociacao(associacao, page, limit) {
-        const find = findBy("ID_ASSOCIACAO", associacao, false, view, page, limit);
+    async findbyIdAssociacao(associacao, page, limit) {
+        const find = await findBy("ID_ASSOCIACAO", associacao, false, view, page, limit);
 
         if (!find) {
             return findBy("ID_ASSOCIACAO", associacao, false, table, page, limit);
@@ -133,8 +133,8 @@ class LocalizacaoBeneficiadoRepository {
      * Busca localizações beneficiadas pela associação.
      */
 
-    findbyAssociacao(associacao) {
-        const find = findBy("ASSOCIACAO", associacao, true, view, 1, 1);
+    async findbyAssociacao(associacao) {
+        const find = await findBy("ASSOCIACAO", associacao, true, view, 1, 1);
 
         if (!find) {
             return findBy("ASSOCIACAO", associacao, true, table, 1, 1);
@@ -157,8 +157,8 @@ class LocalizacaoBeneficiadoRepository {
     /**
     * Consulta pelo ID limitando por escopo.
     */
-    findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
-        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
 
         if (!find) {
             return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
@@ -170,8 +170,8 @@ class LocalizacaoBeneficiadoRepository {
     /**
      * Consulta pelo NOME limitando por escopo.
      */
-    findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
-        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
 
         if (!find) {
             return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
@@ -183,8 +183,8 @@ class LocalizacaoBeneficiadoRepository {
     /**
      * Consulta pelo ID_ASSOCIACAO limitando por escopo.
      */
-    findByIdAssociacaoScope(sessionID, sessionField, fieldID, value, page, limit) {
-        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findByIdAssociacaoScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
 
         if (!find) {
             return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
@@ -196,8 +196,8 @@ class LocalizacaoBeneficiadoRepository {
     /**
      * Consulta pelo ID_ASSOCIACAO limitando por escopo.
      */
-    findByNameAssociacaoScope(sessionID, sessionField, fieldID, value, page, limit) {
-        const find = findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findByNameAssociacaoScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
 
         if (!find) {
             return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
