@@ -185,9 +185,26 @@ class LocalizacaoBeneficiadoController {
 
     async createlocalizacao(req, res, next) {
         try {
-            const result = await LocalizacaoBeneficiadoService.createlocalizacao(
+            await LocalizacaoBeneficiadoService.createlocalizacao(
                 req.body,
                 req.session.user
+            );
+            const find = await LocalizacaoBeneficiadoService.find(
+                req.body.ID_ASSOCIADO,
+                req.session.user,
+                1,
+                1
+            );
+            const hateoas = Hateoas(
+                find.result.ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "localizacao-beneficiado",
+                ["",
+                    find.result.ID,
+                    convertString(find.result.NOME),
+                    `associacao/${convertString(find.result.ASSOCIACAO)}`,
+                ]
             );
 
             req.log.info({
@@ -197,7 +214,14 @@ class LocalizacaoBeneficiadoController {
                 usuarioId: req.session.user.id,
             }, "Localização criada");
 
-            res.status(201).json(result);
+            res.status(201).json({
+                result: find.result,
+                hateoas: {
+                    GET: hateoas.GET,
+                    PUT: hateoas.PUT,
+                    DELETE: hateoas.DELETE,
+                }
+            });
         } catch (error) {
             req.log.error({
                 event: "LOCALIZACAO_CREATE_ERROR",
@@ -217,10 +241,27 @@ class LocalizacaoBeneficiadoController {
 
     async updateLocalizacao(req, res, next) {
         try {
-            const result = await LocalizacaoBeneficiadoService.updateLocalizacao(
+            await LocalizacaoBeneficiadoService.updateLocalizacao(
                 req.params.id,
                 req.body,
                 req.session.user
+            );
+            const find = await LocalizacaoBeneficiadoService.find(
+                req.params.id,
+                req.session.user,
+                1,
+                1
+            );
+            const hateoas = Hateoas(
+                find.result.ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "localizacao-beneficiado",
+                ["",
+                    find.result.ID,
+                    convertString(find.result.NOME),
+                    `associacao/${convertString(find.result.ASSOCIACAO)}`,
+                ]
             );
 
             req.log.info({
@@ -231,7 +272,14 @@ class LocalizacaoBeneficiadoController {
                 targetId: req.params.id
             }, "Localização atualizada");
 
-            res.status(200).json(result);
+            res.status(200).json({
+                result: find.result,
+                hateoas: {
+                    GET: hateoas.GET,
+                    POST: hateoas.POST,
+                    DELETE: hateoas.DELETE,
+                }
+            });
         } catch (error) {
             req.log.error({
                 event: "LOCALIZACAO_UPDATE_ERROR",
@@ -256,6 +304,13 @@ class LocalizacaoBeneficiadoController {
                 req.params.id,
                 req.session.user
             );
+            const hateoas = Hateoas(
+                "",
+                process.env.URL,
+                req.session.user.nivel,
+                "localizacao-beneficiado",
+                ""
+            );
 
             req.log.info({
                 event: "LOCALIZACAO_DELETE",
@@ -265,7 +320,13 @@ class LocalizacaoBeneficiadoController {
                 targetId: req.params.id
             }, "Localização excluída");
 
-            res.status(200).json(result);
+            res.status(200).json({
+                // result: result,
+                hateoas: {
+                    GET: hateoas.GET,
+                    POST: hateoas.POST,
+                }
+            });
         } catch (error) {
             req.log.error({
                 event: "LOCALIZACAO_DELETE_ERROR",
