@@ -1,7 +1,8 @@
 // Importa as funções utilitárias responsáveis pelas operações básicas no banco de dados.
 // padronizando as operações de CRUD na aplicação.
 const { findAll, findBy, insertData, updateData, deleteData, findWithScope } = require("../../shared/Utils/dbUtils");
-const table = "view_localizacao_beneficiado";
+const table = "localizacao_beneficiada";
+const view = "view_localizacao_beneficiado";
 
 /**
  * Repositório responsável pelas operações de acesso a dados
@@ -17,44 +18,70 @@ class LocalizacaoBeneficiadoRepository {
      * Retorna todas as localizações beneficiadas.
      */
 
-    findAllLocalizacao(page, limit) {
-        return findAll(table, page, limit);
+    async findAllLocalizacao(page, limit) {
+        const find = await findAll(view, page, limit);
+
+        if (!find) {
+            return findAll(table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Busca uma localização beneficiada pelo ID.
      */
-    
-    findById(id, page, limit) {
-        return findBy("ID", id, false, table, page, limit);
+
+    async findById(id, page, limit) {
+        const find = await findBy("ID", id, false, view, page, limit);
+
+        if (!find) {
+            return findBy("ID", id, false, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Busca uma localização beneficiada pelo ID.
      */
-    
-    findByIdAssociacao(id, page, limit) {
-        console.log({
-            page,
-            limit
-        })
-        return findBy("ID_ASSOCIACAO", id, true, table, page, limit);
+
+    async findByIdAssociacao(id, page, limit) {
+        const find = await findBy("ID_ASSOCIACAO", id, true, view, page, limit);
+
+        if (!find) {
+            return findBy("ID_ASSOCIACAO", id, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Busca uma localização beneficiada pelo ID da secretaria.
      */
 
-    findByIdSecretaria(id, page, limit) {
-        return findBy("ID_SECRETARIA", id, false, table, page, limit);
+    async findByIdSecretaria(id, page, limit) {
+        const find = await findBy("ID_SECRETARIA", id, false, view, page, limit);
+
+        if (!find) {
+            return findBy("ID_SECRETARIA", id, false, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Busca uma localização beneficiada pelo ID da pessoa.
      */
 
-    findByIdPessoa(id) {
-        return findBy("ID_PESSOA", id, false, table);
+   async findByIdPessoa(id) {
+        const find = await findBy("ID_PESSOA", id, false, view, 1, 1);
+
+        if (!find) {
+            return findBy("ID_PESSOA", id, false, table, 1, 1);
+        };
+
+        return find;
     };
 
     /**
@@ -62,8 +89,14 @@ class LocalizacaoBeneficiadoRepository {
      * para validação antes da exclusão.
      */
 
-    findByIdDelete(id) {
-        return findBy("ID", id, false, table);
+    async findByIdDelete(id) {
+        const find = await findBy("ID", id, false, view, 1, 1);
+
+        if (!find) {
+            return findBy("ID", id, false, table, 1, 1);
+        };
+
+        return find;
     };
 
     /**
@@ -72,24 +105,42 @@ class LocalizacaoBeneficiadoRepository {
      * A busca é feita de forma parcial (LIKE).
      */
 
-    findByName(name, page, limit) {
-        return findBy("NOME", name, true, table, page, limit);
+    async findByName(name, page, limit) {
+        const find = await findBy("NOME", name, true, view, page, limit);
+
+        if (!find) {
+            return findBy("NOME", name, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Busca localizações beneficiadas pelo id da associação.
      */
 
-    findbyIdAssociacao(associacao, page, limit) {
-        return findBy("ID_ASSOCIACAO", associacao, false, table, page, limit);
+    async findbyIdAssociacao(associacao, page, limit) {
+        const find = await findBy("ID_ASSOCIACAO", associacao, false, view, page, limit);
+
+        if (!find) {
+            return findBy("ID_ASSOCIACAO", associacao, false, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Busca localizações beneficiadas pela associação.
      */
 
-    findbyAssociacao(associacao) {
-        return findBy("ASSOCIACAO", associacao, true, table);
+    async findbyAssociacao(associacao) {
+        const find = await findBy("ASSOCIACAO", associacao, true, view, 1, 1);
+
+        if (!find) {
+            return findBy("ASSOCIACAO", associacao, true, table, 1, 1);
+        };
+
+        return find;
     };
 
     /**
@@ -98,37 +149,61 @@ class LocalizacaoBeneficiadoRepository {
      * Utilizado principalmente para validações
      * antes de criar ou atualizar registros.
      */
-    
+
     findID_ASSOCIADO(id) {
         return findBy("ID", id, false, "associado");
     };
 
-     /**
-     * Consulta pelo ID limitando por escopo.
-     */
-    findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+    /**
+    * Consulta pelo ID limitando por escopo.
+    */
+    async findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo NOME limitando por escopo.
      */
-    findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+    async findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo ID_ASSOCIACAO limitando por escopo.
      */
-    findByIdAssociacaoScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+    async findByIdAssociacaoScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo ID_ASSOCIACAO limitando por escopo.
      */
-    findByNameAssociacaoScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+    async findByNameAssociacaoScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -139,7 +214,7 @@ class LocalizacaoBeneficiadoRepository {
      */
 
     createLocalizacao(localizacao) {
-        return insertData(localizacao, "localizacao_beneficiada");
+        return insertData(localizacao, table);
     };
 
     /**
@@ -147,7 +222,7 @@ class LocalizacaoBeneficiadoRepository {
      */
 
     updateLocalizacao(id, localizacao) {
-        return updateData(id, localizacao, "localizacao_beneficiada");
+        return updateData(id, localizacao, table);
     };
 
     /**
@@ -155,7 +230,7 @@ class LocalizacaoBeneficiadoRepository {
      */
 
     deleteLocalizacao(id) {
-        return deleteData(id, "localizacao_beneficiada");
+        return deleteData(id, table);
     };
 };
 

@@ -1,7 +1,8 @@
 // Importa as funções utilitárias responsáveis pelas operações básicas no banco de dados.
 // padronizando as operações de CRUD na aplicação.
 const { findAll, findBy, insertData, updateData, deleteData } = require("../../shared/Utils/dbUtils");
-const table = "view_programas";
+const table = "programa";
+const view = "view_programas";
 
 /**
  * Repositório responsável pelas operações de acesso a dados
@@ -17,8 +18,14 @@ class ProgramasRepository {
      * Retorna todos os registros de programas a partir da view.
      */
 
-    findAllProgramas(page, limit) {
-        return findAll(table, page, limit);
+    async findAllProgramas(page, limit) {
+        const find = await findAll(view, page, limit);
+
+        if (!find) {
+            return findAll(table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -26,8 +33,14 @@ class ProgramasRepository {
      * O parâmetro `false` indica busca exata (não usa LIKE).
      */
 
-    findById(id, page, limit) {
-        return findBy("ID", id, false, table, page, limit);
+    async findById(id, page, limit) {
+        const find = await findBy("ID", id, false, view, page, limit);
+
+        if (!find) {
+            return findBy("ID", id, false, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -35,8 +48,14 @@ class ProgramasRepository {
      * Usado geralmente antes de operações de exclusão.
      */
 
-    findByIdDelete(id, page, limit) {
-        return findBy("ID", id, false, "programa", page, limit);
+    async findByIdDelete(id, page, limit) {
+        const find = await findBy("ID", id, false, "programa", page, limit);
+
+        if (!find) {
+            return findBy("ID", id, table, "programa", page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -44,8 +63,14 @@ class ProgramasRepository {
      * O parâmetro `true` indica busca parcial (LIKE).
      */
 
-    findByName(name, page, limit) {
-        return findBy("NOME", name, true, table, page, limit);
+    async findByName(name, page, limit) {
+        const find = await findBy("NOME", name, true, view, page, limit);
+
+        if (!find) {
+            return findBy("NOME", name, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -53,8 +78,14 @@ class ProgramasRepository {
      * A busca é parcial para permitir flexibilidade.
      */
 
-    findbySecretaria(secretaria, page, limit) {
-        return findBy("SECRETARIA", secretaria, true, table, page, limit);
+    async findbySecretaria(secretaria, page, limit) {
+        const find = await findBy("SECRETARIA", secretaria, true, view, page, limit);
+
+        if (!find) {
+            return findBy("SECRETARIA", secretaria, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -62,40 +93,70 @@ class ProgramasRepository {
      * A busca é parcial para permitir flexibilidade.
      */
 
-    findbyIdSecretaria(secretaria, page, limit) {
-        return findBy("ID_SECRETARIA", secretaria, true, table, page, limit);
+    async findbyIdSecretaria(secretaria, page, limit) {
+        const find = await findBy("ID_SECRETARIA", secretaria, true, view, page, limit);
+
+        if (!find) {
+            return findBy("ID_SECRETARIA", secretaria, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Busca programas por estado.
      */
 
-    findbyEstado(estado, page, limit) {
-        return findBy("ESTADO", estado, true, table, page, limit);
+    async findbyEstado(estado, page, limit) {
+        const find = await findBy("ESTADO", estado, true, view, page, limit);
+
+        if (!find) {
+            return findBy("ESTADO", estado, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Busca programas pela origem do recurso financeiro.
      */
 
-    findbyOrigemRecurso(recurso, page, limit) {
-        return findBy("ORIGEM_RECURSO", recurso, true, table, page, limit);
+    async findbyOrigemRecurso(recurso, page, limit) {
+        const find = await findBy("ORIGEM_RECURSO", recurso, true, view, page, limit);
+
+        if (!find) {
+            return findBy("ORIGEM_RECURSO", recurso, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Busca programas com data de início correspondente.
      */
 
-    findbyDataInicio(data, page, limit) {
-        return findBy("DATA_INICIO", data, true, table, page, limit);
+    async findbyDataInicio(data, page, limit) {
+        const find = await findBy("DATA_INICIO", data, true, view, page, limit);
+
+        if (!find) {
+            return findBy("DATA_INICIO", data, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Busca programas com data de fim correspondente.
      */
 
-    findbyDataFim(data, page, limit) {
-        return findBy("DATA_FIM", data, true, table, page, limit);
+    async findbyDataFim(data, page, limit) {
+        const find = await findBy("DATA_FIM", data, true, view, page, limit);
+
+        if (!find) {
+            return findBy("DATA_FIM", data, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -110,50 +171,92 @@ class ProgramasRepository {
     /**
      * Consulta pelo ID na view_programas limitando por escopo.
      */
-    findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo NOME na view_programas limitando por escopo.
      */
-    findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pela secretaria na view_programas limitando por escopo.
      */
-    findBySecretariaScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findBySecretariaScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo estado na view_programas limitando por escopo.
      */
-    findByEstadoScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findByEstadoScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pela origem de recusos na view_programas limitando por escopo.
      */
-    findByOrigemRecursoScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findByOrigemRecursoScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pela data de início na view_programas limitando por escopo.
      */
-    findByDataInicioScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findByDataInicioScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pela data de termino na view_programas limitando por escopo.
      */
-    findByDataFimScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+    async findByDataFimScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -168,7 +271,7 @@ class ProgramasRepository {
      */
 
     createPrograma(programa) {
-        return insertData(programa, "programa");
+        return insertData(programa, table);
     };
 
     /**
@@ -176,15 +279,15 @@ class ProgramasRepository {
      */
 
     updatePrograma(id, programa) {
-        return updateData(id, programa, "programa");
+        return updateData(id, programa, table);
     };
 
     /**
      * Remove um programa da tabela `programa` pelo ID.
      */
-    
+
     deletePrograma(id) {
-        return deleteData(id, "programa");
+        return deleteData(id, table);
     };
 };
 
