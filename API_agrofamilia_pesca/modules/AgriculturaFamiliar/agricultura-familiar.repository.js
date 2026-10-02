@@ -1,7 +1,8 @@
 // Importa as funções utilitárias responsáveis pelas operações básicas no banco de dados.
 // padronizando as operações de CRUD na aplicação.
 const { findAll, findBy, insertData, updateData, deleteData, findWithScope } = require("../../shared/Utils/dbUtils");
-const table = "view_agricultura_familiar";
+const table = "agricultura_familiar";
+const view = "view_agricultura_familiar";
 
 /**
  * Repositório responsável pelas operações de acesso a dados
@@ -15,36 +16,66 @@ class AgriculturaFamiliarRepository {
     /**
      * Busca todos os registros de agricultura familiar.
      */
-    findAllAgriculturaFamiliar(page, limit) {
-        return findAll(table, page, limit);
+    async findAllAgriculturaFamiliar(page, limit) {
+        const find = await findAll(view, page, limit);
+
+        if (!find) {
+            return findAll(table, page, limit);
+        };
+        
+        return find;
     };
 
     /**
      * Busca um registro específico pelo ID.
      */
-    findById(id, page, limit) {
-        return findBy("ID", id, false, table, page, limit);
+    async findById(id, page, limit) {
+        const find = await findBy("ID", id, false, view, page, limit);
+
+        if (!find) {
+            return findBy("ID", id, false, table, page, limit);
+        };
+        
+        return find;
     };
 
     /**
      * Busca um registro específico pelo ID da pessoa.
      */
-    findByIdPessoa(id, page, limit) {
-        return findBy("ID_PESSOA", id, false, table, page, limit);
+    async findByIdPessoa(id, page, limit) {
+        const find = await findBy("ID_PESSOA", id, false, view, page, limit);
+
+        if (!find) {
+            return findBy("ID_PESSOA", id, false, table, page, limit);
+        };
+        
+        return find;
     };
 
     /**
      * Busca registros pelo ID da secretaria.
      */
-    findByIdSecretaria(id, page, limit) {
-        return findBy("ID_SECRETARIA", id, true, table, page, limit);
+    async findByIdSecretaria(id, page, limit) {
+        const find = await findBy("ID_SECRETARIA", id, true, view, page, limit);
+
+        if (!find) {
+            return findBy("ID_SECRETARIA", id, true, table, page, limit);
+        };
+        
+        return find;
     };
 
     /**
      * Busca registros pelo ID da associacao.
      */
-    findByIdAssociacao(id, page, limit) {
-        return findBy("ID_ASSOCIACAO", id, true, table, page, limit);
+    async findByIdAssociacao(id, page, limit) {
+        const find = await findBy("ID_ASSOCIACAO", id, true, view, page, limit);
+
+        if (!find) {
+            return findBy("ID_ASSOCIACAO", id, true, table, page, limit);
+        };
+        
+        return find;
     };
 
     /**
@@ -52,14 +83,20 @@ class AgriculturaFamiliarRepository {
      * geralmente utilizada antes de operações de exclusão.
      */
     findByIdDelete(id) {
-        return findBy("ID", id, false, "agricultura_familiar");
+        return findBy("ID", id, false, table);
     };
 
     /**
      * Busca registros pelo nome.
      */
-    findByName(name, page, limit) {
-        return findBy("NOME", name, true, table, page, limit);
+    async findByName(name, page, limit) {
+        const find = await findBy("NOME", name, true, view, page, limit);
+
+        if (!find) {
+            return findBy("NOME", name, true, table, page, limit);
+        };
+        
+        return find;
     };
 
     /**
@@ -67,8 +104,14 @@ class AgriculturaFamiliarRepository {
      *
      * Busca exata, pois CAF é um identificador único.
      */
-    findbyCaf(caf, page, limit) {
-        return findBy("CAF", caf, false, table, page, limit);
+    async findbyCaf(caf, page, limit) {
+        const find = await findBy("CAF", caf, false, view, page, limit);
+
+        if (!find) {
+            return findBy("CAF", caf, false, table, page, limit);
+        };
+        
+        return find;
     };
 
     /**
@@ -76,15 +119,27 @@ class AgriculturaFamiliarRepository {
      *
      * Busca exata, pois DAP é um identificador único.
      */
-    findbyDap(dap, page, limit) {
-        return findBy("DAP", dap, false, table, page, limit);
+    async findbyDap(dap, page, limit) {
+        const find = await findBy("DAP", dap, false, view, page, limit);
+
+        if (!find) {
+            return findBy("DAP", dap, false, table, page, limit);
+        };
+        
+        return find;
     };
 
     /**
      * Busca registros pelo nome do programa.
      */
-    findbyPrograma(programa, page, limit) {
-        return findBy("PROGRAMA", programa, true, table, page, limit);
+    async findbyPrograma(programa, page, limit) {
+        const find = await findBy("PROGRAMA", programa, true, view, page, limit);
+
+        if (!find) {
+            return findBy("PROGRAMA", programa, true, table, page, limit);
+        };
+        
+        return find;
     };
 
     /**
@@ -104,57 +159,87 @@ class AgriculturaFamiliarRepository {
      /**
      * Consulta pelo ID limitando por escopo.
      */
-    findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+    async findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+        
+        return find;
     };
 
     /**
      * Consulta pelo NOME limitando por escopo.
      */
-    findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+    async findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+        
+        return find;
     };
 
     /**
      * Consulta pelo caf limitando por escopo.
      */
-    findByCafScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+    async findByCafScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+        
+        return find;
     };
 
     /**
      * Consulta pelo dap limitando por escopo.
      */
-    findByDapScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+    async findByDapScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+        
+        return find;
     };
 
     /**
      * Consulta pelo programa limitando por escopo.
      */
-    findByProgramaScope(sessionID, sessionField, fieldID, value, page, limit) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+    async findByProgramaScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+        
+        return find;
     };
 
     /**
      * Cria um novo registro de agricultura familiar.
      */
     createAgriculturaFamiliar(data) {
-        return insertData(data, "agricultura_familiar");
+        return insertData(data, table);
     };
 
     /**
      * Atualiza um registro existente de agricultura familiar.
      */
     updateAgriculturaFamiliar(id, data) {
-        return updateData(id, data, "agricultura_familiar");
+        return updateData(id, data, table);
     };
 
     /**
      * Remove um registro de agricultura familiar.
      */
     deleteAgriculturaFamiliar(id) {
-        return deleteData(id, "agricultura_familiar");
+        return deleteData(id, table);
     };
 };
 
