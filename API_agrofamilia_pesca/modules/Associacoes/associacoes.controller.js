@@ -232,9 +232,27 @@ class AssociacoesController {
      */
     async createAssociacao(req, res, next) {
         try {
-            const result = await AssociacoesService.createAssociacao(
+            await AssociacoesService.createAssociacao(
                 req.body,
                 req.session.user
+            );
+            const find = await AssociacoesService.find(
+                req.body.NOME,
+                req.session.user,
+                1,
+                1
+            );
+            const hateoas = Hateoas(
+                find.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "associacoes",
+                ["",
+                    find.result[0].ID,
+                    convertString(find.result[0].NOME),
+                    `categoria/${convertString(find.result[0].CATEGORIA)}`,
+                    `secretaria/${convertString(find.result[0].SECRETARIA)}`,
+                ]
             );
 
             req.log.info({
@@ -244,7 +262,10 @@ class AssociacoesController {
                 usuarioId: req.session.user.id,
             }, "Associação criada");
 
-            res.status(201).json(result);
+            res.status(201).json({
+                result: find.result,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "ASSOCIACAO_CREATE_ERROR",
@@ -268,6 +289,24 @@ class AssociacoesController {
                 req.body,
                 req.session.user
             );
+            const find = await AssociacoesService.find(
+                req.params.id,
+                req.session.user,
+                1,
+                1
+            );
+            const hateoas = Hateoas(
+                find.result.ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "associacoes",
+                ["",
+                    find.result.ID,
+                    convertString(find.result.NOME),
+                    `categoria/${convertString(find.result.CATEGORIA)}`,
+                    `secretaria/${convertString(find.result.SECRETARIA)}`,
+                ]
+            );
 
             req.log.info({
                 event: "ASSOCIACAO_UPDATE",
@@ -277,7 +316,10 @@ class AssociacoesController {
                 targetId: req.params.id
             }, "Associação atualizada");
 
-            res.status(200).json(result);
+            res.status(200).json({
+                result: find.result,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "ASSOCIACAO_UPDATE_ERROR",
@@ -301,6 +343,13 @@ class AssociacoesController {
                 req.params.id,
                 req.session.user
             );
+            const hateoas = Hateoas(
+                "",
+                process.env.URL,
+                req.session.user.nivel,
+                "categorias",
+                [""]
+            );
 
             req.log.info({
                 event: "ASSOCIACAO_DELETE",
@@ -310,7 +359,13 @@ class AssociacoesController {
                 targetId: req.params.id
             }, "Associação excluída");
 
-            res.status(200).json(result);
+            res.status(200).json({
+                result: result,
+                hateoas: {
+                    GET: hateoas.GET,
+                    POST: hateoas.POST
+                }
+            });
         } catch (error) {
             req.log.error({
                 event: "ASSOCIACAO_DELETE_ERROR",
