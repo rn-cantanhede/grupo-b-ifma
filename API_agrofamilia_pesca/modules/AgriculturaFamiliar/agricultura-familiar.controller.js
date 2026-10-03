@@ -290,9 +290,28 @@ class AgriculturaFamiliarController {
      */
     async createAgriculturaFamiliar(req, res, next) {
         try {
-            const result = await AgriculturaFamiliarService.createAgriculturaFamiliar(
+            await AgriculturaFamiliarService.createAgriculturaFamiliar(
                 req.body,
                 req.session.user
+            );
+            const find = await AgriculturaFamiliarService.findbyDap(
+                req.body.DAP,
+                req.session.user,
+                1,
+                1,
+            );
+            const hateoas = Hateoas(
+                find.result.ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "agricultura-familiar",
+                ["",
+                    find.result.ID,
+                    convertString(find.result.NOME),
+                    `caf/${find.result.CAF}`,
+                    `dap/${find.result.DAP}`,
+                    `programa/${convertString(find.result.PROGRAMA)}`,
+                ]
             );
 
             req.log.info({
@@ -302,7 +321,10 @@ class AgriculturaFamiliarController {
                 usuarioId: req.session.user.id,
             }, "Membro da agricultura familiar criado");
 
-            res.status(201).json(result);
+            res.status(201).json({
+                result: find.result,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "AGRICULTURA_CREATE_ERROR",
@@ -321,10 +343,29 @@ class AgriculturaFamiliarController {
      */
     async updateAgriculturaFamiliar(req, res, next) {
         try {
-            const result = await AgriculturaFamiliarService.updateAgriculturaFamiliar(
+            await AgriculturaFamiliarService.updateAgriculturaFamiliar(
                 req.params.id,
                 req.body,
                 req.session.user
+            );
+            const find = await AgriculturaFamiliarService.find(
+                req.params.id,
+                req.session.user,
+                1,
+                1,
+            );
+            const hateoas = Hateoas(
+                find.result.ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "agricultura-familiar",
+                ["",
+                    find.result.ID,
+                    convertString(find.result.NOME),
+                    `caf/${find.result.CAF}`,
+                    `dap/${find.result.DAP}`,
+                    `programa/${convertString(find.result.PROGRAMA)}`,
+                ]
             );
 
             req.log.info({
@@ -335,7 +376,10 @@ class AgriculturaFamiliarController {
                 targetId: req.params.id
             }, "Membro da agricultura familiar atualizado");
 
-            res.status(200).json(result);
+            res.status(200).json({
+                result: find.result,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "AGRICULTURA_UPDATE_ERROR",
@@ -359,6 +403,13 @@ class AgriculturaFamiliarController {
                 req.params.id,
                 req.session.user
             );
+            const hateoas = Hateoas(
+                "",
+                process.env.URL,
+                req.session.user.nivel,
+                "categorias",
+                [""]
+            );
 
             req.log.info({
                 event: "AGRICULTURA_DELETE",
@@ -368,7 +419,13 @@ class AgriculturaFamiliarController {
                 targetId: req.params.id
             }, "Membro da agricultura familiar excluído");
 
-            res.status(200).json(result);
+            res.status(200).json({
+                result: result,
+                hateoas: {
+                    GET: hateoas.GET,
+                    POST: hateoas.POST
+                }
+            });
         } catch (error) {
             req.log.error({
                 event: "AGRICULTURA_DELETE_ERROR",
