@@ -425,9 +425,30 @@ class AssociadosController {
 
     async createAssociado(req, res, next) {
         try {
-            const result = await AssociadosService.createAssociado(
+            await AssociadosService.createAssociado(
                 req.body,
                 req.session.user
+            );
+            const find = await AssociadosService.find(
+                req.body.ID_PESSOA,
+                req.session.user,
+                1,
+                1
+            );
+            const hateoas = Hateoas(
+                find.result.ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "associados",
+                ["",
+                    find.result.ID,
+                    convertString(find.result.NOME),
+                    `caf/${find.result.CAF}`,
+                    `dap/${find.result.DAP}`,
+                    `associacao/${convertString(find.result.ASSOCIACAO)}`,
+                    `data/${find.result.VALIDADE_CAF.toISOString().split('T')[0]}`,
+                    `data/intervalo/2025-10-10/2026-05-20`,
+                ]
             );
 
             req.log.info({
@@ -437,7 +458,10 @@ class AssociadosController {
                 usuarioId: req.session.user.id,
             }, "Associado criado");
 
-            res.status(201).json(result);
+            res.status(201).json({
+                result: find.result,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "ASSOCIADO_CREATE_ERROR",
@@ -457,10 +481,31 @@ class AssociadosController {
 
     async updateAssociado(req, res, next) {
         try {
-            const result = await AssociadosService.updateAssociado(
+            await AssociadosService.updateAssociado(
                 req.params.id,
                 req.body,
                 req.session.user
+            );
+            const find = await AssociadosService.find(
+                req.params.id,
+                req.session.user,
+                1,
+                1
+            );
+            const hateoas = Hateoas(
+                find.result.ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "associados",
+                ["",
+                    find.result.ID,
+                    convertString(find.result.NOME),
+                    `caf/${find.result.CAF}`,
+                    `dap/${find.result.DAP}`,
+                    `associacao/${convertString(find.result.ASSOCIACAO)}`,
+                    `data/${find.result.VALIDADE_CAF.toISOString().split('T')[0]}`,
+                    `data/intervalo/2025-10-10/2026-05-20`,
+                ]
             );
 
             req.log.info({
@@ -471,7 +516,10 @@ class AssociadosController {
                 targetId: req.params.id
             }, "Associado atualizado");
 
-            res.status(200).json(result);
+            res.status(200).json({
+                result: find.result,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "ASSOCIADO_UPDATE_ERROR",
@@ -496,6 +544,13 @@ class AssociadosController {
                 req.params.id,
                 req.session.user
             );
+            const hateoas = Hateoas(
+                "",
+                process.env.URL,
+                req.session.user.nivel,
+                "categorias",
+                [""]
+            );
 
             req.log.info({
                 event: "ASSOCIADO_DELETE",
@@ -505,7 +560,13 @@ class AssociadosController {
                 targetId: req.params.id
             }, "Associado excluído");
 
-            res.status(200).json(result);
+            res.status(200).json({
+                result: result,
+                hateoas: {
+                    GET: hateoas.GET,
+                    POST: hateoas.POST
+                }
+            });
         } catch (error) {
             req.log.error({
                 event: "ASSOCIADO_DELETE_ERROR",
