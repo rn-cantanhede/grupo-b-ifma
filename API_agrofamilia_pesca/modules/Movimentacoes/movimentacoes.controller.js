@@ -1,3 +1,5 @@
+const { convertString } = require("../../shared/Utils/findUtils");
+const Hateoas = require("../../shared/Utils/hateoas");
 const MovimentacoesService = require("./movimentacoes.service");
 
 /**
@@ -14,25 +16,43 @@ class MovimentacoesController {
     async AllMovimentacoes(req, res) {
         try {
             const movimentacoes = await MovimentacoesService.findAllMovimentacoes(
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit
             );
-            
+            const hateoas = Hateoas(
+                movimentacoes.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "movimentacoes",
+                ["",
+                    movimentacoes.result[0].ID,
+                    convertString(movimentacoes.result[0].NOME),
+                    `dap/${movimentacoes.result[0].DAP}`,
+                    `produto/${convertString(movimentacoes.result[0].PRODUTO)}`,
+                    `data/${movimentacoes.result[0].DATA_MOVIMENTACAO.toISOString().split('T')[0]}`,
+                    `data/intervalo/2025-01-10/2025-05-05`,
+                ]
+            );
+
             req.log.info({
                 event: "MOVIMENTACAO_LIST",
                 resource: "produto_movimentacao",
                 action: "list",
-                usuarioID: req.user.id
+                usuarioID: req.session.user.id
             }, "Listagem das movimentações");
 
-            return res.status(200).json(movimentacoes);
+            return res.status(200).json({
+                result: movimentacoes.result,
+                total: movimentacoes.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "MOVIMENTACAO_LIST_ERROR",
                 resource: "produto_movimentacao",
                 action: "list",
-                usuarioID: req.user.id
+                usuarioID: req.session.user.id
             }, "Erro ao listar as movimentações");
 
             console.log(error);
@@ -48,26 +68,44 @@ class MovimentacoesController {
         try {
             const result = await MovimentacoesService.findById(
                 req.params.id,
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit
+            );
+            const hateoas = Hateoas(
+                result.result.ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "movimentacoes",
+                ["",
+                    result.result.ID,
+                    convertString(result.result.NOME),
+                    `dap/${result.result.DAP}`,
+                    `produto/${convertString(result.result.PRODUTO)}`,
+                    `data/${result.result.DATA_MOVIMENTACAO.toISOString().split('T')[0]}`,
+                    `data/intervalo/2025-01-10/2025-05-05`,
+                ]
             );
 
             req.log.info({
                 event: "MOVIMENTACAO_FIND",
                 resource: "produto_movimentacao",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.id
             }, "Movimentação consultada por ID");
 
-            res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "MOVIMENTACAO_FIND_ERROR",
                 resource: "produto_movimentacao",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.id
             }, "Erro ao buscar movimentação por ID");
 
@@ -84,26 +122,44 @@ class MovimentacoesController {
         try {
             const result = await MovimentacoesService.findbyDap(
                 req.params.dap,
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit
+            );
+            const hateoas = Hateoas(
+                result.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "movimentacoes",
+                ["",
+                    result.result[0].ID,
+                    convertString(result.result[0].NOME),
+                    `dap/${result.result[0].DAP}`,
+                    `produto/${convertString(result.result[0].PRODUTO)}`,
+                    `data/${result.result[0].DATA_MOVIMENTACAO.toISOString().split('T')[0]}`,
+                    `data/intervalo/2025-01-10/2025-05-05`,
+                ]
             );
 
             req.log.info({
                 event: "MOVIMENTACAO_FIND",
                 resource: "produto_movimentacao",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.dap
             }, "Movimentação consultada por DAP");
 
-            res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "MOVIMENTACAO_FIND_ERROR",
                 resource: "produto_movimentacao",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.dap
             }, "Erro ao buscar movimentação por DAP");
 
@@ -120,26 +176,44 @@ class MovimentacoesController {
         try {
             const result = await MovimentacoesService.findbyProduto(
                 req.params.produto,
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit
+            );
+            const hateoas = Hateoas(
+                result.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "movimentacoes",
+                ["",
+                    result.result[0].ID,
+                    convertString(result.result[0].NOME),
+                    `dap/${result.result[0].DAP}`,
+                    `produto/${convertString(result.result[0].PRODUTO)}`,
+                    `data/${result.result[0].DATA_MOVIMENTACAO.toISOString().split('T')[0]}`,
+                    `data/intervalo/2025-01-10/2025-05-05`,
+                ]
             );
 
             req.log.info({
                 event: "MOVIMENTACAO_FIND",
                 resource: "produto_movimentacao",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.produto
             }, "Movimentação consultada por produto");
 
-            res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "MOVIMENTACAO_FIND_ERROR",
                 resource: "produto_movimentacao",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.produto
             }, "Erro ao buscar movimentação por produto");
 
@@ -156,26 +230,44 @@ class MovimentacoesController {
         try {
             const result = await MovimentacoesService.findbyData(
                 req.params.data,
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit
+            );
+            const hateoas = Hateoas(
+                result.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "movimentacoes",
+                ["",
+                    result.result[0].ID,
+                    convertString(result.result[0].NOME),
+                    `dap/${result.result[0].DAP}`,
+                    `produto/${convertString(result.result[0].PRODUTO)}`,
+                    `data/${result.result[0].DATA_MOVIMENTACAO.toISOString().split('T')[0]}`,
+                    `data/intervalo/2025-01-10/2025-05-05`,
+                ]
             );
 
             req.log.info({
                 event: "MOVIMENTACAO_FIND",
                 resource: "produto_movimentacao",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.data
             }, "Movimentação consultada por data");
-            
-            res.status(200).json(result);
+
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "MOVIMENTACAO_FIND_ERROR",
                 resource: "produto_movimentacao",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.data
             }, "Erro ao buscvar movimentação por data");
 
@@ -193,29 +285,47 @@ class MovimentacoesController {
             const result = await MovimentacoesService.findByInicioFim(
                 req.params.inicio,
                 req.params.fim,
-                req.user,
+                req.session.user,
                 req.query.page,
                 req.query.limit
+            );
+            const hateoas = Hateoas(
+                result.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "movimentacoes",
+                ["",
+                    result.result[0].ID,
+                    convertString(result.result[0].NOME),
+                    `dap/${result.result[0].DAP}`,
+                    `produto/${convertString(result.result[0].PRODUTO)}`,
+                    `data/${result.result[0].DATA_MOVIMENTACAO.toISOString().split('T')[0]}`,
+                    `data/intervalo/2025-01-10/2025-05-05`,
+                ]
             );
 
             req.log.info({
                 event: "MOVIMENTACAO_FIND",
                 resource: "produto_movimentacao",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: {
                     inicio: req.params.inicio,
                     fim: req.params.fim
                 }
             }, "Movimentação consultada por um intervalo de datas");
 
-            res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "MOVIMENTACAO_FIND_ERROR",
                 resource: "produto_movimentacao",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: {
                     inicio: req.params.inicio,
                     fim: req.params.fim
@@ -235,14 +345,14 @@ class MovimentacoesController {
         try {
             const result = await MovimentacoesService.createMovimentacao(
                 req.body,
-                req.user
+                req.session.user
             );
 
             req.log.info({
                 event: "MOVIMENTACAO_CREATE",
                 resource: "produto_movimentacao",
                 action: "create",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
             }, "Movimentação criada");
 
             res.status(201).json(result);
@@ -251,7 +361,7 @@ class MovimentacoesController {
                 event: "MOVIMENTACAO_CREATE_ERROR",
                 resource: "produto_movimentacao",
                 action: "create",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
             }, "Erro ao criar movimentação");
 
             console.log(error);
@@ -268,14 +378,14 @@ class MovimentacoesController {
             const result = await MovimentacoesService.updateMovimentacao(
                 req.params.id,
                 req.body,
-                req.user
+                req.session.user
             );
 
             req.log.info({
                 event: "MOVIMENTACAO_UPDATE",
                 resource: "produto_movimentacao",
                 action: "update",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 targetId: req.params.id
             }, "Movimentação atualizada");
 
@@ -285,7 +395,7 @@ class MovimentacoesController {
                 event: "MOVIMENTACAO_UPDATE_ERROR",
                 resource: "produto_movimentacao",
                 action: "update",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 targetId: req.params.id
             }, "Erro ao atualizar movimentação");
 
@@ -302,14 +412,14 @@ class MovimentacoesController {
         try {
             const result = await MovimentacoesService.deleteMovimentacao(
                 req.params.id,
-                req.user
+                req.session.user
             );
 
             req.log.info({
                 event: "MOVIMENTACAO_DELETE",
                 resource: "produto_movimentacao",
                 action: "delete",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 targetId: req.params.id
             }, "Movimentação excluída");
 
@@ -319,7 +429,7 @@ class MovimentacoesController {
                 event: "MOVIMENTACAO_DELETE_ERROR",
                 resource: "produto_movimentacao",
                 action: "delete",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 targetId: req.params.id
             }, "Erro ao apagar movimentação");
 
