@@ -6,7 +6,7 @@ const Erros = require("../errors/Errors");
  * Subistitudo aprimorado do BaseService, melhorando a performace e a logica
  */
 class baseScop {
-    async permissions(session, actions) {
+    async permissions(session, page, limit, actions) {
         const permissions = {
             1: ["admin"],
             2: ["secretaria", session.secretaria],
@@ -22,20 +22,24 @@ class baseScop {
 
         const level = permission[0];
         const value = permission[1];
-
+        
         if (typeof (actions[level]) !== "function") {
-            throw new Error("Permissão inválida");
+            throw new Erros("Permissão inválida", 403);
         };
-
-        return actions[level](value);
+        
+        if (value == undefined) {
+            return actions[level](page, limit);
+        } else {
+            return actions[level](value, page, limit);
+        };
     };
 
-    async getAll(session, actions) {
-        return this.permissions(session, actions);
+    async getAll(session, page, limit, actions) {
+        return this.permissions(session, page, limit, actions);
     };
 
-    async getFind(session, actions) {
-        return this.permissions(session, actions);
+    async getFind(session, page, limit, actions) {
+        return this.permissions(session, page, limit, actions);
     };
 
     async update(id, user, session, fieldSession, fieldUser, method) {

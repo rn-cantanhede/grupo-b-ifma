@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const pagination = require("../../../middleware/pagination");
 const CategoriasController = require("../categorias.controller");
 
 /**
@@ -9,9 +10,9 @@ const CategoriasController = require("../categorias.controller");
  */
 
 // Retorna todas as categorias cadastradas.
-router.get("/", CategoriasController.AllCategorias);
+router.get("/", pagination, CategoriasController.AllCategorias);
 
 // Busca uma categoria específica por ID ou Nome.
-router.get("/:value", CategoriasController.findCategoria);
+router.get("/:value", pagination, CategoriasController.findCategoria);
 
 module.exports = router;

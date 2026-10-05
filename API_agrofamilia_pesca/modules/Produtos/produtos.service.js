@@ -19,12 +19,12 @@ class ProdutosService {
      * Retorna a lista completa de produtos.
      */
 
-    async findAllProdutos(session) {
+    async findAllProdutos(session, page, limit) {
         if (!ProdutosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return baseScope.getAll(session, {
+        return baseScope.getAll(session, page, limit, {
             admin: ProdutosRepository.findAllProdutos,
             secretaria: ProdutosRepository.findAllProdutos,
             associacao: ProdutosRepository.findAllProdutos,
@@ -36,15 +36,17 @@ class ProdutosService {
      * Busca um produto pelo ID ou pelo nome.
      */
 
-    async find(value, session) {
+    async find(value, session, page, limit) {
         if (!ProdutosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 findByIdName(
                     value,
+                    page, 
+                    limit,
                     ProdutosRepository.findById,
                     ProdutosRepository.findByName
                 ),
@@ -52,6 +54,8 @@ class ProdutosService {
             secretaria: () =>
                 findByIdName(
                     value,
+                    page, 
+                    limit,
                     ProdutosRepository.findById,
                     ProdutosRepository.findByName
                 ),
@@ -59,12 +63,16 @@ class ProdutosService {
             associacao: () =>
                 findByIdName(
                     value,
+                    page, 
+                    limit,
                     ProdutosRepository.findById,
                     ProdutosRepository.findByName
                 ),
             usuario: () =>
                 findByIdName(
                     value,
+                    page, 
+                    limit,
                     ProdutosRepository.findById,
                     ProdutosRepository.findByName
                 ),
@@ -86,7 +94,7 @@ class ProdutosService {
     async createProduto(produto, user) {
         const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
 
-        if (!ProdutosPolicy.canPost(user, targetUser)) {
+        if (!ProdutosPolicy.canPost(user, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -127,11 +135,10 @@ class ProdutosService {
             login: user.login,
             nivel: user.nivel,
             secretaria: user.secretaria,
-            associacao: targetUser.ID_ASSOCIACAO
+            associacao: targetUser.result.ID_ASSOCIACAO
         };
 
-
-        if (!ProdutosPolicy.canUpdate(Alluser, targetUser)) {
+        if (!ProdutosPolicy.canUpdate(Alluser, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -163,11 +170,11 @@ class ProdutosService {
             login: user.login,
             nivel: user.nivel,
             secretaria: user.secretaria,
-            associacao: targetUser.ID_ASSOCIACAO
+            associacao: targetUser.result.ID_ASSOCIACAO
         };
 
 
-        if (!ProdutosPolicy.canUpdate(Alluser, targetUser)) {
+        if (!ProdutosPolicy.canUpdate(Alluser, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -177,7 +184,7 @@ class ProdutosService {
         if (!idProduto) {
             throw new Erros("ID não existe", 404);
         };
-
+        
         // Remove definitivamente
         return await ProdutosRepository.deleteProduto(id);
     };

@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const pagination = require("../../../middleware/pagination");
 const SecretariasController = require("../secretarias.controller");
 
 /**
@@ -9,20 +10,20 @@ const SecretariasController = require("../secretarias.controller");
  */
 
 //Lista todas as secretarias cadastradas no sistema.
-router.get("/", SecretariasController.AllSecretarias);
+router.get("/", pagination, SecretariasController.AllSecretarias);
 
 /**
  * Recupera uma secretaria com base em um identificador genérico,
  * permitindo busca tanto por ID quanto por nome.
  */
 
-router.get("/:value", SecretariasController.findSecretarias);
+router.get("/:value", pagination, SecretariasController.findSecretarias);
 
 //Recupera secretarias filtradas pelo estado.
-router.get("/estado/:estado", SecretariasController.findEstadoSecretarias);
+router.get("/estado/:estado", pagination, SecretariasController.findEstadoSecretarias);
 
 //Recupera secretarias filtradas pela cidade.
-router.get("/cidade/:cidade", SecretariasController.findCidadeSecretarias);
+router.get("/cidade/:cidade", pagination, SecretariasController.findCidadeSecretarias);
 
 /**
  *  

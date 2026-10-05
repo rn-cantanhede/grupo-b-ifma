@@ -1,6 +1,6 @@
 // Importa as funções utilitárias responsáveis pelas operações básicas no banco de dados.
 // padronizando as operações de CRUD na aplicação.
-const { findAll, findBy, findByInterval, insertData, updateData, deleteData, findWithScope } = require("../../shared/Utils/dbUtils");
+const { findAll, findBy, findByInterval, insertData, updateData, deleteData, findWithScope, findByIntervalWithScope } = require("../../shared/Utils/dbUtils");
 const table = "pessoa";
 const view = "view_pessoas";
 
@@ -17,94 +17,185 @@ class PessoasRepository {
      * Retorna a lista completa de pessoas.
      */
 
-    findAllPessoas() {
-        return findAll(view);
+    async findAllPessoas(page, limit) {
+        const find = await findAll(view, page, limit);
+
+        if (!find) {
+            return findAll(table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Busca uma pessoa pelo ID.
      */
 
-    findById(id) {
-        return findBy("ID", id, false, view);
+    async findById(id, page, limit) {
+        const find = await findBy("ID", id, false, view, page, limit);
+
+        if (!find) {
+            return findBy("ID", id, false, table, page, limit);
+        };
+
+        return find;
     };
 
-    findId(id) {
-        return findBy("ID", id, false, table);
+    async findId(id) {
+        const find = await findBy("ID", id, false, table, 1, 1);
+
+        if (!find) {
+            return findBy("ID", id, false, table, 1, 1);
+        };
+
+        return find;
     };
 
     /**
      * Busca pessoas pelo id da secretaria.
      */
-    findByIdSecretaria(id) {
-        return findBy("ID_SECRETARIA", id, true, view);
+    async findByIdSecretaria(id) {
+        const find = await findBy("ID_SECRETARIA", id, true, view, 1, 1);
+
+        if (!find) {
+            return findBy("ID_SECRETARIA", id, true, table, 1, 1);
+        };
+
+        return find;
     };
 
     /**
      * Busca pessoas pelo id da associação.
      */
-    findByIdAssociacaao(id) {
-        return findBy("ID_ASSOCIACAO", id, false, view);
+    async findByIdAssociacaao(id) {
+        const find = await findBy("ID_ASSOCIACAO", id, false, view, 1, 1);
+
+        if (!find) {
+            return findBy("ID_ASSOCIACAO", id, false, table, 1, 1);
+        };
+
+        return find;
     };
 
     /**
      * Busca pessoas pelo nome.
      */
 
-    findByName(name) {
-        return findBy("NOME", name, true, view);
+    async findByName(name, page, limit) {
+        const find = await findBy("NOME", name, true, view, page, limit);
+
+        if (!find) {
+            return findBy("NOME", name, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Busca pessoas filtrando pelo gênero.
      */
 
-    findbyGenero(genero) {
-        return findBy("GENERO", genero, true, view);
+    async findbyGenero(genero, page, limit) {
+        const find = await findBy("GENERO", genero, true, view, page, limit);
+
+        if (!find) {
+            return findBy("GENERO", genero, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Busca pessoas pela data de nascimento.
      */
 
-    findbyData(data) {
-        return findBy("DATA_NASCIMENTO", data, true, view);
+    async findbyData(data, page, limit) {
+        const find = await findBy("DATA_NASCIMENTO", data, true, view, page, limit);
+
+        if (!find) {
+            return findBy("DATA_NASCIMENTO", data, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Busca pessoas dentro de um intervalo de datas de nascimento.
      */
 
-    findByInicioFim(inicio, fim) {
-        return findByInterval("DATA_NASCIMENTO", inicio, fim, view);
+    async findByInicioFim(inicio, fim, page, limit) {
+        const find = await findByInterval("DATA_NASCIMENTO", inicio, fim, view, page, limit);
+
+        if (!find) {
+            return findByInterval("DATA_NASCIMENTO", inicio, fim, table, page, limit);
+        };
+
+        return find;
     };
-    
+
     /**
      * Consulta pelo ID na view_usuarios limitando por escopo.
      */
-    findByIdScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    async findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo NOME na view_usuarios limitando por escopo.
      */
-    findByNameScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    async findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo GENERO na view_usuarios limitando por escopo.
      */
-    findByGeneroScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    async findByGeneroScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo DATA na view_usuarios limitando por escopo.
      */
-    findByDataScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    async findByDataScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
+    };
+
+    /**
+     * Consulta pelo intervalo dos anos de ascimento na view_usuarios limitando por escopo.
+     */
+    async findByInicioFimScope(sessionID, sessionField, field, inicio, fim, page, limit) {
+        const find = await findByIntervalWithScope(sessionID, sessionField, field, inicio, fim, true, view, page, limit);
+
+        if (!find) {
+            return findByIntervalWithScope(sessionID, sessionField, field, inicio, fim, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -118,7 +209,7 @@ class PessoasRepository {
     /**
      * Atualiza os dados de uma pessoa existente.
      */
-    
+
     updatePessoa(id, pessoa) {
         return updateData(id, pessoa, table);
     };

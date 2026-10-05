@@ -10,23 +10,23 @@ const Erros = require("../shared/errors/Errors");
  */
 module.exports = function authorize(nivel) {
     return (req, res, next) => {
-        if (!req.user || typeof req.user.nivel !== "number") {
+        if (!req.session.user || typeof req.session.user.nivel !== "number") {
             req.log.warn({
                 event: "AUTH_ERROR",
                 resource: "authentication",
-                action: "login",
-                usuarioId: req.user.id,
+                action: "authorize",
+                usuarioId: req.session.user.id,
             }, "Usuário não autenticado");
 
             return next(new Erros("Usuário não autenticado", 401));
         };
 
-        if (req.user.nivel > nivel) {
+        if (req.session.user.nivel > nivel) {
             req.log.error({
                 event: "AUTHORIZATION_DENIED",
                 resource: "authorization",
-                action: "login",
-                usuarioId: req.user.id,
+                action: "authorize",
+                usuarioId: req.session.user.id,
             }, "Sem permissão");
 
             return next(new Erros("Sem permissão", 403));
@@ -35,8 +35,8 @@ module.exports = function authorize(nivel) {
         req.log.info({
             event: "AUTHORIZATION",
             resource: "authorization",
-            action: "login",
-            usuarioId: req.user.id,
+            action: "authorize",
+            usuarioId: req.session.user.id,
         }, "Usuário autorizado");
 
         return next();

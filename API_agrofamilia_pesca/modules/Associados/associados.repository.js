@@ -1,7 +1,8 @@
 // Importa as funções utilitárias responsáveis pelas operações básicas no banco de dados.
 // padronizando as operações de CRUD na aplicação.
-const { findAll, findBy, findByInterval, insertData, updateData, deleteData, findWithScope } = require("../../shared/Utils/dbUtils");
-const table = "view_pessoas";
+const { findAll, findBy, findByInterval, insertData, updateData, deleteData, findWithScope, findByIntervalWithScope } = require("../../shared/Utils/dbUtils");
+const table = "associado";
+const view = "view_pessoas";
 
 /**
  * Repositório responsável pelas operações de acesso a dados
@@ -17,164 +18,285 @@ class AssociadosRepository {
      * Retorna todos os registros da view de associados.
      */
 
-    findAllAssociados() {
-        return findAll(table);
+    async findAllAssociados(page, limit) {
+        const find = await findAll(view, page, limit);
+
+        if (!find) {
+            return findAll(table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta associado pelo ID na view principal.
      */
 
-    findById(id) {
-        return findBy("ID", id, false, table);
+    async findById(id, page, limit) {
+        const find = await findBy("ID", id, false, view, page, limit);
+
+        if (!find) {
+            return findBy("ID", id, false, table, page, limit);
+        };
+
+        return find;
     };
 
-    findId(id) {
-        return findBy("ID", id, false, "view_associados");
+    findId(id, page, limit) {
+        return findBy("ID", id, false, "view_associados", page, limit);
     };
-    
+
     /**
      * Busca pessoas pelo id da secretaria.
      */
-    findByIdSecretaria(id) {
-        return findBy("ID_SECRETARIA", id, false, table);
+    async findByIdSecretaria(id, page, limit) {
+        const find = await findBy("ID_SECRETARIA", id, true, view, page, limit);
+
+        if (!find) {
+            return findBy("ID_SECRETARIA", id, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Busca pessoas pelo id da pessoa.
      */
 
-    findByIdPessoa(id) {
-        return findBy("ID_PESSOA", id, false, table);
+    async findByIdPessoa(id, page, limit) {
+        const find = await findBy("ID_PESSOA", id, false, view, page, limit);
+
+        if (!find) {
+            return findBy("ID_PESSOA", id, false, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta associado pelo ID na tabela principal.
      */
 
-    findByIdDelete(id) {
-        return findBy("ID", id, false, "associado");
+    findByIdDelete(id, page, limit) {
+        return findBy("ID", id, false, table, page, limit);
     };
 
     /**
      * Consulta associados por nome, retornando múltiplos resultados.
      */
 
-    findByName(name) {
-        return findBy("NOME", name, true, table);
+    async findByName(name, page, limit) {
+        const find = await findBy("NOME", name, true, view, page, limit);
+
+        if (!find) {
+            return findBy("NOME", name, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta associado pelo CAF.
      */
 
-    findbyCaf(caf) {
-        return findBy("CAF", caf, false, table);
+    async findbyCaf(caf, page, limit) {
+        const find = await findBy("CAF", caf, false, view, page, limit);
+
+        if (!find) {
+            return findBy("CAF", caf, false, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta associado pelo DAP.
      */
 
-    findbyDap(dap) {
-        return findBy("DAP", dap, false, table);
+    async findbyDap(dap, page, limit) {
+        const find = await findBy("DAP", dap, false, view, page, limit);
+
+        if (!find) {
+            return findBy("DAP", dap, false, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Lista associados filtrando por associação.
      */
 
-    findbyAssociacao(associacao) {
-        return findBy("ASSOCIACAO", associacao, true, table);
+    async findbyAssociacao(associacao, page, limit) {
+        const find = await findBy("ASSOCIACAO", associacao, true, view, page, limit);
+
+        if (!find) {
+            return findBy("ASSOCIACAO", associacao, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Lista associados filtrando por id da associação.
      */
 
-    findbyIdAssociacao(id) {
-        return findBy("ID_ASSOCIACAO", id, false, table);
+    async findbyIdAssociacao(id, page, limit) {
+        const find = await findBy("ID_ASSOCIACAO", id, true, view, page, limit);
+
+        if (!find) {
+            return findBy("ID_ASSOCIACAO", id, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Lista associados filtrando por secretaria.
      */
-    findbySecretaria(secretaria) {
-        return findBy("SECRETARIA", secretaria, false, table);
+    async findbySecretaria(secretaria, page, limit) {
+        const find = await findBy("SECRETARIA", secretaria, true, view, page, limit);
+
+        if (!find) {
+            return findBy("SECRETARIA", secretaria, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Lista associados filtrando pelo ID da secretaria.
      */
-    findbyIdSecretaria(id) {
-        return findBy("ID_SECRETARIA", id, true, table);
+    async findbyIdSecretaria(id, page, limit) {
+        const find = await findBy("ID_SECRETARIA", id, true, view, page, limit);
+
+        if (!find) {
+            return findBy("ID_SECRETARIA", id, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta associados pela data de validade do CAF.
      */
 
-    findbyDataCaf(data) {
-        return findBy("VALIDADE_CAF", data, true, table);
+    async findbyDataCaf(data, page, limit) {
+        const find = await findBy("VALIDADE_CAF", data, true, view, page, limit);
+
+        if (!find) {
+            return findBy("VALIDADE_CAF", data, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta registros pela validade do CAF dentro de um intervalo.
      */
 
-    findByInicioFimCaf(inicio, fim) {
-        return findByInterval("VALIDADE_CAF", inicio, fim, table);
+    async findByInicioFimCaf(inicio, fim, page, limit) {
+        const find = await findByInterval("VALIDADE_CAF", inicio, fim, view, page, limit);
+
+        if (!find) {
+            return findByInterval("VALIDADE_CAF", inicio, fim, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta ID na tabela pessoa.
      */
 
-    findID_PESSOA(id) {
-        return findBy("ID", id, false, "pessoa");
+    findID_PESSOA(id, page, limit) {
+        return findBy("ID", id, false, "pessoa", page, limit);
     };
 
     /**
      * Consulta ID na tabela associacao.
      */
 
-    findID_ASSOCIACAO(id) {
-        return findBy("ID", id, false, "associacao");
+    findID_ASSOCIACAO(id, page, limit) {
+        return findBy("ID", id, false, "associacao", page, limit);
     };
 
-     /**
-     * Consulta pelo ID limitando por escopo.
-     */
-    findByIdScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    /**
+    * Consulta pelo ID limitando por escopo.
+    */
+    async findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo NOME limitando por escopo.
      */
-    findByNameScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    async findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo caf limitando por escopo.
      */
-    findByCafScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    async findByCafScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo caf limitando por escopo.
      */
-    findByDapScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    async findByDapScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pela validade do caf limitando por escopo.
      */
-    findByDataCafScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, table);
+    async findByDataCafScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, true, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, true, table, page, limit);
+        };
+
+        return find;
+    };
+
+    /**
+     * Consulta pelo intervalo das datas de movimentação na view_pessoas limitando por escopo.
+     */
+    async findByInicioFimCafScope(sessionID, sessionField, field, inicio, fim, page, limit) {
+        const find = await findByIntervalWithScope(sessionID, sessionField, field, inicio, fim, true, view, page, limit);
+
+        if (!find) {
+            return findByIntervalWithScope(sessionID, sessionField, field, inicio, fim, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -182,7 +304,7 @@ class AssociadosRepository {
      */
 
     createAssociado(associado) {
-        return insertData(associado, "associado");
+        return insertData(associado, table);
     };
 
     /**
@@ -190,7 +312,7 @@ class AssociadosRepository {
      */
 
     updateAssociado(id, associado) {
-        return updateData(id, associado, "associado");
+        return updateData(id, associado, table);
     };
 
     /**
@@ -198,7 +320,7 @@ class AssociadosRepository {
      */
 
     deleteAssociado(id) {
-        return deleteData(id, "associado");
+        return deleteData(id, table);
     };
 };
 

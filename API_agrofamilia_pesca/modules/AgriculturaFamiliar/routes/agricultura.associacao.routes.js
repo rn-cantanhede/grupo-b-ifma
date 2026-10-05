@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const pagination = require("../../../middleware/pagination");
 const AgriculturaFamiliarController = require("../agricultura-familiar.controller");
 
 /**
@@ -14,19 +15,19 @@ const AgriculturaFamiliarController = require("../agricultura-familiar.controlle
  */
 
 // Retorna todos os registros de agricultura familiar.
-router.get("/", AgriculturaFamiliarController.AllAgriculturaFamiliar);
+router.get("/", pagination, AgriculturaFamiliarController.AllAgriculturaFamiliar);
 
 // Busca registros por ID ou nome,
-router.get("/:value", AgriculturaFamiliarController.findAgriculturaFamiliar);
+router.get("/:value", pagination, AgriculturaFamiliarController.findAgriculturaFamiliar);
 
 // Busca registros pelo número do CAF.
-router.get("/caf/:caf", AgriculturaFamiliarController.findCafAgriculturaFamiliar);
+router.get("/caf/:caf", pagination, AgriculturaFamiliarController.findCafAgriculturaFamiliar);
 
 // Busca registros pelo número da DAP.
-router.get("/dap/:dap", AgriculturaFamiliarController.findDapAgriculturaFamiliar);
+router.get("/dap/:dap", pagination, AgriculturaFamiliarController.findDapAgriculturaFamiliar);
 
 // Busca registros vinculados a um programa específico.
-router.get("/programa/:programa", AgriculturaFamiliarController.findProgramaAgriculturaFamiliar);
+router.get("/programa/:programa", pagination, AgriculturaFamiliarController.findProgramaAgriculturaFamiliar);
 
 /**
  *  

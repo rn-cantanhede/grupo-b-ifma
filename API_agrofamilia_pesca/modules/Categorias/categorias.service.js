@@ -3,7 +3,7 @@ const CategoriasPolicy = require("./policies/categorias.policy");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const associadosRepository = require("../Associados/associados.repository");
 const CategoriasRepository = require("./categorias.repository");
-const { findByIdName, VerifyNivel } = require("../../shared/Utils/findUtils");
+const { findByIdName } = require("../../shared/Utils/findUtils");
 
 /**
  * Camada de serviço responsável pela regra de negócio
@@ -20,25 +20,27 @@ class CategoriasService {
      * Retorna todas as categorias cadastradas.
      */
 
-    async findAllCategorias(user) {
-        if (!CategoriasPolicy.canGet(user)) {
+    async findAllCategorias(session, page, limit) {
+        if (!CategoriasPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return await CategoriasRepository.findAllCategorias();
+        return await CategoriasRepository.findAllCategorias(page, limit);
     };
 
     /**
      * Busca uma categoria por ID ou Nome.
      */
 
-    async find(value, user) {
-        if (!CategoriasPolicy.canGet(user)) {
+    async find(value, session, page, limit) {
+        if (!CategoriasPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         return await findByIdName(
             value,
+            page, 
+            limit,
             CategoriasRepository.findById,
             CategoriasRepository.findByName
         );
@@ -58,7 +60,7 @@ class CategoriasService {
     async createCategoria(data, user) {
         const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
 
-        if (!CategoriasPolicy.canPost(user, targetUser)) {
+        if (!CategoriasPolicy.canPost(user, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -86,7 +88,7 @@ class CategoriasService {
     async updateCategoria(id, categoria, user) {
         const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
 
-        if (!CategoriasPolicy.canPost(user, targetUser)) {
+        if (!CategoriasPolicy.canPost(user, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -114,7 +116,7 @@ class CategoriasService {
     async deleteCategoria(id, user) {
         const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
 
-        if (!CategoriasPolicy.canPost(user, targetUser)) {
+        if (!CategoriasPolicy.canPost(user, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
 

@@ -16,23 +16,23 @@ class CategoriasRepository {
     /**
      * Retorna todas as categorias cadastradas.
      */
-    findAllCategorias() {
-        return findAll(table);
+    findAllCategorias(page, limit) {
+        return findAll(table, page, limit);
     };
 
     /**
      * Busca uma categoria pelo seu identificador único (ID).
      */
-    findById(id) {
-        return findBy("ID", id, false, table);
+    findById(id, page, limit) {
+        return findBy("ID", id, false, table, page, limit);
     };
 
     /**
      * Busca categorias pelo nome.
      */
 
-    findByName(name) {
-        return findBy("NOME", name, true, table);
+    findByName(name, page, limit) {
+        return findBy("NOME", name, true, table, page, limit);
     };
 
     /**

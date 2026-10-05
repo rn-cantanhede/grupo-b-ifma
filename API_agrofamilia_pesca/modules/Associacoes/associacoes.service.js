@@ -20,12 +20,12 @@ class AssociacoesService {
     /**
      * Retorna todas as associações cadastradas.
      */
-    async findAllAssociacoes(user) {
-        if (!AssociacoesPolicy.canGet(user)) {
+    async findAllAssociacoes(session, page, limit) {
+        if (!AssociacoesPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return baseScope.getAll(user, {
+        return baseScope.getAll(session, page, limit, {
             admin: AssociacoesRepository.findAllAssociacoes,
             secretaria: AssociacoesRepository.findbyIdSecretaria,
             associacao: AssociacoesRepository.findById,
@@ -36,17 +36,19 @@ class AssociacoesService {
     /**
      * Busca uma associação por ID ou por nome.
      */
-    async find(value, session) {
+    async find(value, session, page, limit) {
         if (!AssociacoesPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 findByIdName(
                     value,
+                    page, 
+                    limit,
                     AssociacoesRepository.findById,
                     AssociacoesRepository.findByName
                 ),
@@ -58,6 +60,8 @@ class AssociacoesService {
                     "ID",
                     "NOME",
                     value,
+                    page, 
+                    limit,
                     AssociacoesRepository.findByIdScope,
                     AssociacoesRepository.findByNameScope
                 ),
@@ -69,6 +73,8 @@ class AssociacoesService {
                     "ID",
                     "NOME",
                     value,
+                    page, 
+                    limit,
                     AssociacoesRepository.findByIdScope,
                     AssociacoesRepository.findByNameScope
                 ),
@@ -78,17 +84,19 @@ class AssociacoesService {
     /**
      * Busca associações vinculadas a uma categoria específica.
      */
-    async findByCategoria(categoria, session) {
+    async findByCategoria(categoria, session, page, limit) {
         if (!AssociacoesPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 find(
-                    categoria,
+                    categoria, 
+                    page, 
+                    limit,
                     AssociacoesRepository.findbyCategoria
                 ),
 
@@ -99,6 +107,8 @@ class AssociacoesService {
                     "CATEGORIA",
                     "CATEGORIA",
                     categoria,
+                    page, 
+                    limit,
                     AssociacoesRepository.findByCategoriaScope
                 ),
 
@@ -109,6 +119,8 @@ class AssociacoesService {
                     "CATEGORIA",
                     "CATEGORIA",
                     categoria,
+                    page, 
+                    limit,
                     AssociacoesRepository.findByCategoriaScope
                 ),
         });
@@ -117,17 +129,19 @@ class AssociacoesService {
     /**
      * Busca associações vinculadas a uma secretaria específica.
      */
-    async findbySecretaria(secretaria, session) {
+    async findbySecretaria(secretaria, session, page, limit) {
         if (!AssociacoesPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 findByIdName(
                     secretaria,
+                    page, 
+                    limit,
                     AssociacoesRepository.findbyIdSecretaria,
                     AssociacoesRepository.findbySecretaria
                 ),
@@ -203,10 +217,10 @@ class AssociacoesService {
             login: user.login,
             nivel: user.nivel,
             secretaria: user.secretaria,
-            associacao: targetUser?.ID_ASSOCIACAO
+            associacao: targetUser.result.ID_ASSOCIACAO
         };
 
-        if (!AssociacoesPolicy.canUpdate(Alluser, idAssociacao)) {
+        if (!AssociacoesPolicy.canUpdate(Alluser, idAssociacao.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -250,10 +264,10 @@ class AssociacoesService {
             login: user.login,
             nivel: user.nivel,
             secretaria: user.secretaria,
-            associacao: targetUser?.ID_ASSOCIACAO
+            associacao: targetUser.result.ID_ASSOCIACAO
         };
 
-        if (!AssociacoesPolicy.canUpdate(Alluser, idAssociacao)) {
+        if (!AssociacoesPolicy.canUpdate(Alluser, idAssociacao.result)) {
             throw new Erros("Acesso negado", 403);
         };
 

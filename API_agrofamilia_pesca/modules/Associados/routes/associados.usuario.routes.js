@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const pagination = require("../../../middleware/pagination");
 const AssociadosController = require("../associados.controller");
 
 /**
@@ -9,6 +10,6 @@ const AssociadosController = require("../associados.controller");
  */
 
 // Retorna todos os associados cadastrados.
-router.get("/", AssociadosController.AllAssociados);
+router.get("/", pagination, AssociadosController.AllAssociados);
 
 module.exports = router;

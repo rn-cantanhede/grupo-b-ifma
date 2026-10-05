@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const pagination = require("../../../middleware/pagination");
 const AssociacoesController = require("../associacoes.controller");
 
 /**
@@ -12,18 +13,18 @@ const AssociacoesController = require("../associacoes.controller");
  * Apenas o admin tem acesso a todas as associações.
  * O resto das rotas seguem a mesma logica.
  */
-router.get("/", AssociacoesController.AllAssociacoes);
+router.get("/", pagination, AssociacoesController.AllAssociacoes);
 
 
 //Rota para buscar uma associação específica.
-router.get("/:value", AssociacoesController.findAssociacao);
+router.get("/:value", pagination, AssociacoesController.findAssociacao);
 
 
 // Rota para buscar associações por categoria.
-router.get("/categoria/:categoria", AssociacoesController.findCategoriaAssociacao);
+router.get("/categoria/:categoria", pagination, AssociacoesController.findCategoriaAssociacao);
 
 // Rota para buscar associações por secretaria.
-router.get("/secretaria/:secretaria", AssociacoesController.findSecretariaAssociacao);
+router.get("/secretaria/:secretaria", pagination, AssociacoesController.findSecretariaAssociacao);
 
 /**
  *  

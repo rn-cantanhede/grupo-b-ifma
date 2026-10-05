@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const pagination = require("../../../middleware/pagination");
 const PessoasController = require("../pessoas.controller");
 
 /**
@@ -12,19 +13,19 @@ const PessoasController = require("../pessoas.controller");
  * Apenas o admin tem acesso a todas as pessoas.
  * O resto das rotas seguem a mesma logica.
  */
-router.get("/", PessoasController.AllPessoas);
+router.get("/", pagination, PessoasController.AllPessoas);
 
 //Rota responsável por buscar uma pessoa pelo ID ou nome.
-router.get("/:value", PessoasController.findPessoa);
+router.get("/:value", pagination, PessoasController.findPessoa);
 
 //Rota responsável por listar pessoas filtrando pelo gênero.
-router.get("/genero/:genero", PessoasController.findGeneroPessoa);
+router.get("/genero/:genero", pagination, PessoasController.findGeneroPessoa);
 
 //Rota responsável por listar pessoas filtrando pela data de nascimento.
-router.get("/data/:data", PessoasController.findDataPessoa);
+router.get("/data/:data", pagination, PessoasController.findDataPessoa);
 
 //Rota responsável por listar pessoas dentro de um intervalo de datas.
-router.get("/data/intervalo/:inicio/:fim", PessoasController.findInicioFimPessoa);
+router.get("/data/intervalo/:inicio/:fim", pagination, PessoasController.findInicioFimPessoa);
 
 /**
  *  

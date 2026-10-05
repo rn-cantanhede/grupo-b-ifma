@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const pagination = require("../../../middleware/pagination");
 const LocalizacaoBeneficiadoController = require("../localizacao-beneficiado.controller");
 
 /**
@@ -9,14 +10,14 @@ const LocalizacaoBeneficiadoController = require("../localizacao-beneficiado.con
  */
 
 // Retorna todas as localizações beneficiadas.
-router.get("/", LocalizacaoBeneficiadoController.AllLocalizacoes);
+router.get("/", pagination, LocalizacaoBeneficiadoController.AllLocalizacoes);
 
 // Busca uma localização beneficiada por ID ou Nome.
-router.get("/:value", LocalizacaoBeneficiadoController.findLocalizacao);
+router.get("/:value", pagination, LocalizacaoBeneficiadoController.findLocalizacao);
 
 // Lista localizações beneficiadas filtrando
 // pelo nome da associação vinculada.
-router.get("/associacao/:associacao", LocalizacaoBeneficiadoController.findAssociacao);
+router.get("/associacao/:associacao", pagination, LocalizacaoBeneficiadoController.findAssociacao);
 
 /**
  *  

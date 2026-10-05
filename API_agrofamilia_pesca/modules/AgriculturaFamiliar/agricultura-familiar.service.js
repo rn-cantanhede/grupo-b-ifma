@@ -1,5 +1,4 @@
 const Erros = require("../../shared/errors/Errors");
-const BaseService = require("../../shared/base/BaseService");
 const AgriculturaPolicy = require("./policies/agricultura.policy");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const associadosRepository = require("../Associados/associados.repository");
@@ -20,12 +19,12 @@ class AgriculturaFamiliarService {
     /**
      * Retorna todos os registros de agricultura familiar.
      */
-    async findAllAgriculturaFamiliar(session) {
+    async findAllAgriculturaFamiliar(session, page, limit) {
         if (!AgriculturaPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return baseScope.getAll(session, {
+        return baseScope.getAll(session, page, limit, {
             admin: AgriculturaFamiliarRepository.findAllAgriculturaFamiliar,
             secretaria: AgriculturaFamiliarRepository.findByIdSecretaria,
             associacao: AgriculturaFamiliarRepository.findByIdAssociacao,
@@ -36,17 +35,19 @@ class AgriculturaFamiliarService {
     /**
      * Busca um registro por ID ou por nome.
      */
-    async find(value, session) {
+    async find(value, session, page, limit) {
         if (!AgriculturaPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 findByIdName(
                     value,
+                    page, 
+                    limit,
                     AgriculturaFamiliarRepository.findById,
                     AgriculturaFamiliarRepository.findByName
                 ),
@@ -58,6 +59,8 @@ class AgriculturaFamiliarService {
                     "ID",
                     "NOME",
                     value,
+                    page, 
+                    limit,
                     AgriculturaFamiliarRepository.findByIdScope,
                     AgriculturaFamiliarRepository.findByNameScope
                 ),
@@ -69,6 +72,8 @@ class AgriculturaFamiliarService {
                     "ID",
                     "NOME",
                     value,
+                    page, 
+                    limit,
                     AgriculturaFamiliarRepository.findByIdScope,
                     AgriculturaFamiliarRepository.findByNameScope
                 ),
@@ -78,17 +83,19 @@ class AgriculturaFamiliarService {
     /**
      * Busca registros pelo número do CAF.
      */
-    async findbyCaf(caf, session) {
+    async findbyCaf(caf, session, page, limit) {
         if (!AgriculturaPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 find(
                     caf,
+                    page, 
+                    limit,
                     AgriculturaFamiliarRepository.findbyCaf
                 ),
 
@@ -99,6 +106,8 @@ class AgriculturaFamiliarService {
                     "CAF",
                     "CAF",
                     caf,
+                    page, 
+                    limit,
                     AgriculturaFamiliarRepository.findByCafScope
                 ),
 
@@ -109,6 +118,8 @@ class AgriculturaFamiliarService {
                     "CAF",
                     "CAF",
                     caf,
+                    page, 
+                    limit,
                     AgriculturaFamiliarRepository.findByCafScope
                 ),
         });
@@ -117,17 +128,19 @@ class AgriculturaFamiliarService {
     /**
      * Busca registros pelo número da DAP.
      */
-    async findbyDap(dap, session) {
+    async findbyDap(dap, session, page, limit) {
         if (!AgriculturaPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 find(
                     dap,
+                    page, 
+                    limit,
                     AgriculturaFamiliarRepository.findbyDap
                 ),
 
@@ -138,6 +151,8 @@ class AgriculturaFamiliarService {
                     "DAP",
                     "DAP",
                     dap,
+                    page, 
+                    limit,
                     AgriculturaFamiliarRepository.findByDapScope
                 ),
 
@@ -148,6 +163,8 @@ class AgriculturaFamiliarService {
                     "DAP",
                     "DAP",
                     dap,
+                    page, 
+                    limit,
                     AgriculturaFamiliarRepository.findByDapScope
                 ),
         });
@@ -156,17 +173,19 @@ class AgriculturaFamiliarService {
     /**
      * Busca registros vinculados a um programa específico.
      */
-    async findbyPrograma(programa, session) {
+    async findbyPrograma(programa, session, page, limit) {
         if (!AgriculturaPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 find(
                     programa,
+                    page, 
+                    limit,
                     AgriculturaFamiliarRepository.findbyPrograma
                 ),
 
@@ -177,6 +196,8 @@ class AgriculturaFamiliarService {
                     "PROGRAMA",
                     "PROGRAMA",
                     programa,
+                    page, 
+                    limit,
                     AgriculturaFamiliarRepository.findByProgramaScope
                 ),
 
@@ -187,6 +208,8 @@ class AgriculturaFamiliarService {
                     "PROGRAMA",
                     "PROGRAMA",
                     programa,
+                    page, 
+                    limit,
                     AgriculturaFamiliarRepository.findByProgramaScope
                 ),
         });
@@ -257,10 +280,10 @@ class AgriculturaFamiliarService {
             login: user.login,
             nivel: user.nivel,
             secretaria: user.secretaria,
-            associacao: targetUser?.ID_ASSOCIACAO
+            associacao: targetUser.result.ID_ASSOCIACAO
         };
 
-        if (!AgriculturaPolicy.canUpdate(Alluser, idAgri)) {
+        if (!AgriculturaPolicy.canUpdate(Alluser, idAgri.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -304,10 +327,10 @@ class AgriculturaFamiliarService {
             login: user.login,
             nivel: user.nivel,
             secretaria: user.secretaria,
-            associacao: targetUser?.ID_ASSOCIACAO
+            associacao: targetUser.result.ID_ASSOCIACAO
         };
 
-        if (!AgriculturaPolicy.canDelete(Alluser, idAgri)) {
+        if (!AgriculturaPolicy.canDelete(Alluser, idAgri.result)) {
             throw new Erros("Acesso negado", 403);
         };
 

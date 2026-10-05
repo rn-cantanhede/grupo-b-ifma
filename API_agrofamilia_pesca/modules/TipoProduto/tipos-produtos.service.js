@@ -1,6 +1,5 @@
 const Erros = require("../../shared/errors/Errors");
 const TiposProdutosPolicy = require("./policies/tipos-produtos.policy");
-const BaseService = require("../../shared/base/BaseService");
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const TiposProdutosRepository = require("./tipos-produtos.repository");
 const { findByIdName } = require("../../shared/Utils/findUtils");
@@ -20,12 +19,12 @@ class TiposProdutosService {
     /**
      * Retorna todos os tipos de produto cadastrados com filtro de escopo.
      */
-    async findallTipoProduto(session) {
+    async findallTipoProduto(session, page, limit) {
         if (!TiposProdutosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return baseScope.getAll(session, {
+        return baseScope.getAll(session, page, limit, {
             admin: TiposProdutosRepository.findallTipoProduto,
             secretaria: TiposProdutosRepository.findallTipoProduto,
             associacao: TiposProdutosRepository.findallTipoProduto,
@@ -36,15 +35,17 @@ class TiposProdutosService {
     /**
      * Busca tipo de produto por ID ou Nome.
      */
-    async find(value, session) {
+    async find(value, session, page, limit) {
         if (!TiposProdutosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 findByIdName(
-                    value,
+                    value, 
+                    page, 
+                    limit,
                     TiposProdutosRepository.findById,
                     TiposProdutosRepository.findByName
                 ),
@@ -52,6 +53,8 @@ class TiposProdutosService {
             secretaria: () =>
                 findByIdName(
                     value,
+                    page, 
+                    limit,
                     TiposProdutosRepository.findById,
                     TiposProdutosRepository.findByName
                 ),
@@ -59,12 +62,16 @@ class TiposProdutosService {
             associacao: () =>
                 findByIdName(
                     value,
+                    page, 
+                    limit,
                     TiposProdutosRepository.findById,
                     TiposProdutosRepository.findByName
                 ),
             usuario: () =>
                 findByIdName(
                     value,
+                    page, 
+                    limit,
                     TiposProdutosRepository.findById,
                     TiposProdutosRepository.findByName
                 ),
@@ -77,14 +84,13 @@ class TiposProdutosService {
     async insertCategoria(data, user) {
 
         const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
-
-        if (!TiposProdutosPolicy.canPost(user, targetUser)) {
+        if (!TiposProdutosPolicy.canPost(user, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
-
+        
         const validations = [];
         await validationsUtils.validate(data, validations);
-
+        
         return await TiposProdutosRepository.insertCategoria(data);
     };
 
@@ -94,7 +100,7 @@ class TiposProdutosService {
     async updateCategoria(id, data, user) {
         const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
 
-        if (!TiposProdutosPolicy.canUpdate(user, targetUser)) {
+        if (!TiposProdutosPolicy.canUpdate(user, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
 
@@ -110,7 +116,7 @@ class TiposProdutosService {
     async deleteTipoProduto(id, user) {
         const targetUser = await associadosRepository.findByIdSecretaria(user.secretaria);
 
-        if (!TiposProdutosPolicy.canDelete(user, targetUser)) {
+        if (!TiposProdutosPolicy.canDelete(user, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
 

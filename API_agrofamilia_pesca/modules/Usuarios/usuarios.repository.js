@@ -16,15 +16,27 @@ class UsuariosRepository {
     /**
      * Retorna todas os usuarios cadastradas.
      */
-    findAllUsuarios() {
-        return findAll(view);
+    async findAllUsuarios(page, limit) {
+        const find = await findAll(view, page, limit);
+
+        if (!find) {
+            return findAll(table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta usuario pelo ID.
      */
-    findById(id) {
-        return findBy("ID", id, true, view);
+    async findById(id, page, limit) {
+        const find = await findBy("ID", id, false, view, page, limit);
+
+        if (!find) {
+            return findBy("ID", id, false, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
@@ -38,85 +50,157 @@ class UsuariosRepository {
      * Consulta usuario pelo nome.
      * Retorna múltiplos resultados.
      */
-    findByName(name) {
-        return findBy("NOME", name, true, view);
+    async findByName(name, page, limit) {
+        const find = await findBy("NOME", name, true, view, page, limit);
+
+        if (!find) {
+            return findBy("NOME", name, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Lista usuarios filtrando pelo nivel.
      */
-    findByNivel(nivel) {
-        return findBy("NIVEL", nivel, true, view);
+    async findByNivel(nivel, page, limit) {
+        const find = await findBy("NIVEL", nivel, false, view, page, limit);
+
+        if (!find) {
+            return findBy("NIVEL", nivel, false, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Lista usuarios filtrando pela secretaria.
      */
-    findBySecretaria(secretaria) {
-        return findBy("SECRETARIA", secretaria, true, view);
+    async findBySecretaria(secretaria, page, limit) {
+        const find = await findBy("SECRETARIA", secretaria, true, view, page, limit);
+
+        if (!find) {
+            return findBy("SECRETARIA", secretaria, true, table, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta usuarios pelo ID da secretaria.
      */
-    findByIdSecretaria(id) {
-        return findBy("ID_SECRETARIA", id, true, view);
+    async findByIdSecretaria(id) {
+        const find = await findBy("ID_SECRETARIA", id, false, view);
+
+        if (!find) {
+            return findBy("ID_SECRETARIA", id, false, table);
+        };
+
+        return find;
     };
 
     /**
      * Consulta usuarios pelo ID da pessoa.
      */
-    findByIdPessoa(id) {
-        return findBy("ID_PESSOA", id, true, view);
+    async findByIdPessoa(id) {
+        const find = await findBy("ID_PESSOA", id, false, view);
+
+        if (!find) {
+            return findBy("ID_PESSOA", id, false, table);
+        };
+
+        return find;
     };
 
     /**
      * Consulta usuarios pelo Id da associaçao.
      */
-    findByIdAssociacao(id) {
-        return findBy("ID_ASSOCIACAO", id, true, view);
+    async findByIdAssociacao(id) {
+        const find = await findBy("ID_ASSOCIACAO", id, false, view);
+
+        if (!find) {
+            return findBy("ID_ASSOCIACAO", id, false, table);
+        };
+
+        return find;
     };
 
     /**
      * Consulta usuarios pela associaçao.
      */
-    findByAssociacao(associacao) {
-        return findBy("ASSOCIACAO", associacao, true, view);
+    async findByAssociacao(associacao) {
+        const find = await findBy("ASSOCIACAO", associacao, true, view);
+
+        if (!find) {
+            return findBy("ASSOCIACAO", associacao, true, table);
+        };
+
+        return find;
     };
 
     /**
      * Consulta usuarios pelo Login na view_usuarios.
      */
-    findByLogin(login) {
-        return findBy("LOGIN", login, true, view);
+    async findByLogin(login, page, limit) {
+        const find = await findBy("LOGIN", login, true, view, page, limit);
+
+        if (!find) {
+            return findBy("LOGIN", login, true, view, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo ID na view_usuarios limitando por escopo.
      */
-    findByIdScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    async findByIdScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, false, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, false, view, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo NOME na view_usuarios limitando por escopo.
      */
-    findByNameScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    async findByNameScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, false, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, false, view, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo nivel na view_usuarios limitando por escopo.
      */
-    findByNivelScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    async findByNivelScope(sessionID, sessionField, fieldID, value, page, limit) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, false, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, false, view, page, limit);
+        };
+
+        return find;
     };
 
     /**
      * Consulta pelo Login na view_usuarios limitando por escopo.
      */
-    findByLoginScope(sessionID, sessionField, fieldID, value) {
-        return findWithScope(sessionID, sessionField, fieldID, value, true, view);
+    async findByLoginScope(sessionID, sessionField, fieldID, value, page, limit,) {
+        const find = await findWithScope(sessionID, sessionField, fieldID, value, false, view, page, limit);
+
+        if (!find) {
+            return findWithScope(sessionID, sessionField, fieldID, value, false, view, page, limit);
+        };
+
+        return find;
     };
 
 
@@ -164,6 +248,48 @@ class UsuariosRepository {
      */
     login(login) {
         return loginDB(login);
+    };
+
+    /**
+     * Consulta sessão pelo ID na tabela sessoes.
+     */
+    findSession(sessionID) {
+        return findBy("ID", sessionID, false, "SESSOES", 1, 1);
+    };
+
+    /**
+     * Consulta sessão pelo REFRESH_TOKEN_HASH na tabela sessoes.
+     */
+    findSessionRefreshToken(refreshToken) {
+        return findBy("REFRESH_TOKEN_HASH", refreshToken, false, "SESSOES", 1, 1);
+    };
+
+    /**
+     * Consulta sessão pelo ID_PESSOA na tabela sessoes.
+     */
+    findSessionByIdPessoa(id) {
+        return findBy("ID_PESSOA", id, false, "SESSOES", 1, 1);
+    };
+
+    /**
+     * Insere uma nova sessão.
+     */
+    createSession(session) {
+        return insertData(session, "SESSOES");
+    };
+
+    /**
+     * Atualiza uma sessão existente.
+     */
+    updateSession(id, session) {
+        return updateData(id, session, "SESSOES");
+    };
+
+    /**
+     * Remove uma sessão existente.
+     */
+    deleteSession(id) {
+        return deleteData(id, "SESSOES");
     };
 };
 

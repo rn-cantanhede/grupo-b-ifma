@@ -1,3 +1,5 @@
+const { convertString } = require("../../shared/Utils/findUtils");
+const Hateoas = require("../../shared/Utils/hateoas");
 const AssociadosService = require("./associados.service");
 
 /**
@@ -13,22 +15,45 @@ class AssociadosController {
 
     async AllAssociados(req, res) {
         try {
-            const view = await AssociadosService.findAllAssociados(req.user);
+            const view = await AssociadosService.findAllAssociados(
+                req.session.user,
+                req.query.page,
+                req.query.limit
+            );
+            const hateoas = Hateoas(
+                view.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "associados",
+                ["",
+                    view.result[0].ID,
+                    convertString(view.result[0].NOME),
+                    `caf/${view.result[0].CAF}`,
+                    `dap/${view.result[0].DAP}`,
+                    `associacao/${convertString(view.result[0].ASSOCIACAO)}`,
+                    `data/${view.result[0].VALIDADE_CAF.toISOString().split('T')[0]}`,
+                    `data/intervalo/2025-10-10/2026-05-20`,
+                ]
+            );
 
             req.log.info({
                 event: "ASSOCIADO_LIST",
                 resource: "associado",
                 action: "list",
-                usuarioID: req.user.id
+                usuarioID: req.session.user.id
             }, "Listagem dos associados");
 
-            return res.status(200).json(view);
+            return res.status(200).json({
+                result: view.result,
+                total: view.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "ASSOCIADO_LIST_ERROR",
                 resource: "associado",
                 action: "list",
-                usuarioID: req.user.id
+                usuarioID: req.session.user.id
             }, "Erro ao listar os associados");
 
             console.log(error);
@@ -44,24 +69,66 @@ class AssociadosController {
         try {
             const result = await AssociadosService.find(
                 req.params.value,
-                req.user
+                req.session.user,
+                req.query.page,
+                req.query.limit
             );
+            let hateoas;
+
+            if (!Array.isArray(result.result)) {
+                hateoas = Hateoas(
+                    result.result.ID,
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "associados",
+                    ["",
+                        result.result.ID,
+                        convertString(result.result.NOME),
+                        `caf/${result.result.CAF}`,
+                        `dap/${result.result.DAP}`,
+                        `associacao/${convertString(result.result.ASSOCIACAO)}`,
+                        `data/${result.result.VALIDADE_CAF.toISOString().split('T')[0]}`,
+                        `data/intervalo/2025-10-10/2026-05-20`,
+                    ]
+                );
+
+            } else {
+                hateoas = Hateoas(
+                    result.result[0].ID,
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "associados",
+                    ["",
+                        result.result[0].ID,
+                        convertString(result.result[0].NOME),
+                        `caf/${result.result[0].CAF}`,
+                        `dap/${result.result[0].DAP}`,
+                        `associacao/${convertString(result.result[0].ASSOCIACAO)}`,
+                        `data/${result.result[0].VALIDADE_CAF.toISOString().split('T')[0]}`,
+                        `data/intervalo/2025-10-10/2026-05-20`,
+                    ]
+                );
+            };
 
             req.log.info({
                 event: "ASSOCIADO_FIND",
                 resource: "associado",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.value
             }, "Associado consultado por id ou nome");
 
-            res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "ASSOCIADO_FIND_ERROR",
                 resource: "associado",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.value
             }, "Erro ao buscar associado por id ou nome");
 
@@ -78,24 +145,45 @@ class AssociadosController {
         try {
             const result = await AssociadosService.findbyCaf(
                 req.params.caf,
-                req.user
+                req.session.user,
+                req.query.page,
+                req.query.limit
+            );
+            const hateoas = Hateoas(
+                result.result.ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "associados",
+                ["",
+                    result.result.ID,
+                    convertString(result.result.NOME),
+                    `caf/${result.result.CAF}`,
+                    `dap/${result.result.DAP}`,
+                    `associacao/${convertString(result.result.ASSOCIACAO)}`,
+                    `data/${result.result.VALIDADE_CAF.toISOString().split('T')[0]}`,
+                    `data/intervalo/2025-10-10/2026-05-20`,
+                ]
             );
 
             req.log.info({
                 event: "ASSOCIADO_FIND",
                 resource: "associado",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.caf
             }, "Associado consultado por CAF");
 
-            res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "ASSOCIADO_FIND_ERROR",
                 resource: "associado",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.caf
             }, "Erro ao buscar associado por CAF");
 
@@ -112,24 +200,45 @@ class AssociadosController {
         try {
             const result = await AssociadosService.findbyDap(
                 req.params.dap,
-                req.user
+                req.session.user,
+                req.query.page,
+                req.query.limit
+            );
+            const hateoas = Hateoas(
+                result.result.ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "associados",
+                ["",
+                    result.result.ID,
+                    convertString(result.result.NOME),
+                    `caf/${result.result.CAF}`,
+                    `dap/${result.result.DAP}`,
+                    `associacao/${convertString(result.result.ASSOCIACAO)}`,
+                    `data/${result.result.VALIDADE_CAF.toISOString().split('T')[0]}`,
+                    `data/intervalo/2025-10-10/2026-05-20`,
+                ]
             );
 
             req.log.info({
                 event: "ASSOCIADO_FIND",
                 resource: "associado",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.dap
             }, "Associado consultado por DAP");
 
-            res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "ASSOCIADO_FIND_ERROR",
                 resource: "associado",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.dap
             }, "Erro ao buscar associado por DAP");
 
@@ -146,24 +255,45 @@ class AssociadosController {
         try {
             const result = await AssociadosService.findbyAssociacao(
                 req.params.associacao,
-                req.user
+                req.session.user,
+                req.query.page,
+                req.query.limit
+            );
+            const hateoas = Hateoas(
+                result.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "associados",
+                ["",
+                    result.result[0].ID,
+                    convertString(result.result[0].NOME),
+                    `caf/${result.result[0].CAF}`,
+                    `dap/${result.result[0].DAP}`,
+                    `associacao/${convertString(result.result[0].ASSOCIACAO)}`,
+                    `data/${result.result[0].VALIDADE_CAF.toISOString().split('T')[0]}`,
+                    `data/intervalo/2025-10-10/2026-05-20`,
+                ]
             );
 
             req.log.info({
                 event: "ASSOCIADO_FIND",
                 resource: "associado",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.associacao
             }, "Associado consultado por associação");
 
-            res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "ASSOCIADO_FIND_ERROR",
                 resource: "associado",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.dap
             }, "Erro ao buscar associado por associação");
 
@@ -180,24 +310,45 @@ class AssociadosController {
         try {
             const result = await AssociadosService.findbyData(
                 req.params.data,
-                req.user
+                req.session.user,
+                req.query.page,
+                req.query.limit
+            );
+            const hateoas = Hateoas(
+                result.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "associados",
+                ["",
+                    result.result[0].ID,
+                    convertString(result.result[0].NOME),
+                    `caf/${result.result[0].CAF}`,
+                    `dap/${result.result[0].DAP}`,
+                    `associacao/${convertString(result.result[0].ASSOCIACAO)}`,
+                    `data/${result.result[0].VALIDADE_CAF.toISOString().split('T')[0]}`,
+                    `data/intervalo/2025-10-10/2026-05-20`,
+                ]
             );
 
             req.log.info({
                 event: "ASSOCIADO_FIND",
                 resource: "associado",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.data
             }, "Associado consultado por data de validade do CAF");
 
-            res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "ASSOCIADO_FIND_ERROR",
                 resource: "associado",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: req.params.data
             }, "Erro ao buscar associado por data de validade do CAF");
 
@@ -215,27 +366,48 @@ class AssociadosController {
             const result = await AssociadosService.findByInicioFim(
                 req.params.inicio,
                 req.params.fim,
-                req.user
+                req.session.user,
+                req.query.page,
+                req.query.limit
+            );
+            const hateoas = Hateoas(
+                result.result[0].ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "associados",
+                ["",
+                    result.result[0].ID,
+                    convertString(result.result[0].NOME),
+                    `caf/${result.result[0].CAF}`,
+                    `dap/${result.result[0].DAP}`,
+                    `associacao/${convertString(result.result[0].ASSOCIACAO)}`,
+                    `data/${result.result[0].VALIDADE_CAF.toISOString().split('T')[0]}`,
+                    `data/intervalo/2025-10-10/2026-05-20`,
+                ]
             );
 
             req.log.info({
                 event: "ASSOCIADO_FIND",
                 resource: "associado",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: {
                     inicio: req.params.inicio,
                     fim: req.params.fim
                 }
             }, "Associado consultado por intervalo de validade do CAF");
 
-            res.status(200).json(result);
+            return res.status(200).json({
+                result: result.result,
+                total: result.total,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "ASSOCIADO_FIND_ERROR",
                 resource: "associado",
                 action: "find",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 target: {
                     inicio: req.params.inicio,
                     fim: req.params.fim
@@ -253,27 +425,51 @@ class AssociadosController {
 
     async createAssociado(req, res, next) {
         try {
-            const result = await AssociadosService.createAssociado(
+            await AssociadosService.createAssociado(
                 req.body,
-                req.user
+                req.session.user
+            );
+            const find = await AssociadosService.find(
+                req.body.ID_PESSOA,
+                req.session.user,
+                1,
+                1
+            );
+            const hateoas = Hateoas(
+                find.result.ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "associados",
+                ["",
+                    find.result.ID,
+                    convertString(find.result.NOME),
+                    `caf/${find.result.CAF}`,
+                    `dap/${find.result.DAP}`,
+                    `associacao/${convertString(find.result.ASSOCIACAO)}`,
+                    `data/${find.result.VALIDADE_CAF.toISOString().split('T')[0]}`,
+                    `data/intervalo/2025-10-10/2026-05-20`,
+                ]
             );
 
             req.log.info({
                 event: "ASSOCIADO_CREATE",
                 resource: "associado",
                 action: "create",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
             }, "Associado criado");
 
-            res.status(201).json(result);
+            res.status(201).json({
+                result: find.result,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "ASSOCIADO_CREATE_ERROR",
                 resource: "associado",
                 action: "create",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
             }, "Erro ao criar associado");
-            
+
             console.log(error);
             return next(error);
         };
@@ -285,27 +481,51 @@ class AssociadosController {
 
     async updateAssociado(req, res, next) {
         try {
-            const result = await AssociadosService.updateAssociado(
+            await AssociadosService.updateAssociado(
                 req.params.id,
                 req.body,
-                req.user
+                req.session.user
+            );
+            const find = await AssociadosService.find(
+                req.params.id,
+                req.session.user,
+                1,
+                1
+            );
+            const hateoas = Hateoas(
+                find.result.ID,
+                process.env.URL,
+                req.session.user.nivel,
+                "associados",
+                ["",
+                    find.result.ID,
+                    convertString(find.result.NOME),
+                    `caf/${find.result.CAF}`,
+                    `dap/${find.result.DAP}`,
+                    `associacao/${convertString(find.result.ASSOCIACAO)}`,
+                    `data/${find.result.VALIDADE_CAF.toISOString().split('T')[0]}`,
+                    `data/intervalo/2025-10-10/2026-05-20`,
+                ]
             );
 
             req.log.info({
                 event: "ASSOCIADO_UPDATE",
                 resource: "associado",
                 action: "update",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 targetId: req.params.id
             }, "Associado atualizado");
 
-            res.status(200).json(result);
+            res.status(200).json({
+                result: find.result,
+                hateoas: hateoas
+            });
         } catch (error) {
             req.log.error({
                 event: "ASSOCIADO_UPDATE_ERROR",
                 resource: "associado",
                 action: "update",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 targetId: req.params.id
             }, "Erro ao atualizar associado");
 
@@ -322,24 +542,37 @@ class AssociadosController {
         try {
             const result = await AssociadosService.deleteAssociado(
                 req.params.id,
-                req.user
+                req.session.user
+            );
+            const hateoas = Hateoas(
+                "",
+                process.env.URL,
+                req.session.user.nivel,
+                "categorias",
+                [""]
             );
 
             req.log.info({
                 event: "ASSOCIADO_DELETE",
                 resource: "associado",
                 action: "delete",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 targetId: req.params.id
             }, "Associado excluído");
 
-            res.status(200).json(result);
+            res.status(200).json({
+                result: result,
+                hateoas: {
+                    GET: hateoas.GET,
+                    POST: hateoas.POST
+                }
+            });
         } catch (error) {
             req.log.error({
                 event: "ASSOCIADO_DELETE_ERROR",
                 resource: "associado",
                 action: "delete",
-                usuarioId: req.user.id,
+                usuarioId: req.session.user.id,
                 targetId: req.params.id
             }, "Erro ao apagar associado");
 

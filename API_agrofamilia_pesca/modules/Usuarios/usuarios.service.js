@@ -1,12 +1,13 @@
 const Erros = require("../../shared/errors/Errors");
 const UsuarioPolicy = require("./policies/usuario.policy");
-const BaseService = require("../../shared/base/BaseService");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const crypto = require('crypto');
 const validationsUtils = require("../../shared/Utils/validationsUtils");
 const UsuariosRepository = require("./usuarios.repository");
 const { findByIdName, find, findByScope } = require("../../shared/Utils/findUtils");
 const baseScope = require("../../shared/base/baseScope");
+const authToken = require("../../shared/Utils/authToken");
 
 const secret = process.env.JWT_SECRET;
 
@@ -23,12 +24,12 @@ class UsuariosService {
     /**
      * Retorna todos os usuários cadastrados, filtrados pelo escopo do usuário.
      */
-    async findAllUsuarios(user) {
-        if (!UsuarioPolicy.canGet(user)) {
+    async findAllUsuarios(session, page, limit) {
+        if (!UsuarioPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return baseScope.getAll(user, {
+        return baseScope.getAll(session, page, limit, {
             admin: UsuariosRepository.findAllUsuarios,
             secretaria: UsuariosRepository.findByIdSecretaria,
             associacao: UsuariosRepository.findByIdAssociacao,
@@ -39,17 +40,17 @@ class UsuariosService {
     /**
      * Busca usuário por ID ou Nome, respeitando a visibilidade do usuário.
      */
-    async find(value, session) {
+    async find(value, session, page, limit) {
         if (!UsuarioPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 findByIdName(
-                    value,
+                    value, page, limit,
                     UsuariosRepository.findById,
                     UsuariosRepository.findByName
                 ),
@@ -61,6 +62,8 @@ class UsuariosService {
                     "ID",
                     "NOME",
                     value,
+                    page,
+                    limit,
                     UsuariosRepository.findByIdScope,
                     UsuariosRepository.findByNameScope
                 ),
@@ -72,6 +75,8 @@ class UsuariosService {
                     "ID",
                     "NOME",
                     value,
+                    page,
+                    limit,
                     UsuariosRepository.findByIdScope,
                     UsuariosRepository.findByNameScope
                 ),
@@ -81,17 +86,17 @@ class UsuariosService {
     /**
      * Lista usuários filtrando pelo nível.
      */
-    async findByNivel(nivel, session) {
+    async findByNivel(nivel, session, page, limit) {
         if (!UsuarioPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID_PESSOA"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 find(
-                    nivel,
+                    nivel, page, limit,
                     UsuariosRepository.findByNivel
                 ),
 
@@ -102,6 +107,8 @@ class UsuariosService {
                     "ID",
                     "NIVEL",
                     nivel,
+                    page,
+                    limit,
                     UsuariosRepository.findByNivelScope
                 ),
 
@@ -112,6 +119,8 @@ class UsuariosService {
                     "ID",
                     "NIVEL",
                     nivel,
+                    page,
+                    limit,
                     UsuariosRepository.findByNivelScope
                 ),
         });
@@ -120,14 +129,14 @@ class UsuariosService {
     /**
      * Lista usuários filtrando pela secretaria.
      */
-    async findBySecretaria(secretaria, session) {
+    async findBySecretaria(secretaria, session, page, limit) {
         if (!UsuarioPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () => findByIdName(
-                secretaria,
+                secretaria, page, limit,
                 UsuariosRepository.findByIdSecretaria,
                 UsuariosRepository.findBySecretaria
             ),
@@ -137,17 +146,17 @@ class UsuariosService {
     /**
      * Busca usuário pelo login.
      */
-    async findByLogin(login, session) {
+    async findByLogin(login, session, page, limit) {
         if (!UsuarioPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
 
         const sessionField = ["ID_SECRETARIA", "ID_ASSOCIACAO", "ID_PESSOA"];
 
-        return baseScope.getFind(session, {
+        return baseScope.getFind(session, page, limit, {
             admin: () =>
                 find(
-                    login,
+                    login, page, limit,
                     UsuariosRepository.findByLogin
                 ),
 
@@ -158,6 +167,8 @@ class UsuariosService {
                     "ID",
                     "LOGIN",
                     login,
+                    page,
+                    limit,
                     UsuariosRepository.findByLoginScope
                 ),
 
@@ -168,6 +179,8 @@ class UsuariosService {
                     "ID",
                     "LOGIN",
                     login,
+                    page,
+                    limit,
                     UsuariosRepository.findByLoginScope
                 ),
         });
@@ -301,22 +314,21 @@ class UsuariosService {
         };
 
         // Compara LOGIN e SENHA com o database
-        if (filterLogin.LOGIN === user.LOGIN &&
-            bcrypt.compareSync(filterLogin.SENHA, user.SENHA)) {
+        if (filterLogin.LOGIN === user.result.LOGIN &&
+            bcrypt.compareSync(filterLogin.SENHA, user.result.SENHA)) {
             throw new Erros("SENHA ou LOGIN precisam ser diferente da anterior", 403);
         };
 
         // Compara a SENHA. Se diferente do database cria o hash
-        if (!bcrypt.compareSync(filterLogin.SENHA, user.SENHA)) {
+        if (!bcrypt.compareSync(filterLogin.SENHA, user.result.LOGIN)) {
             // Gera hash e atualiza no banco
             const salt = bcrypt.genSaltSync(10);
             const hashedPassword = bcrypt.hashSync(filterLogin.SENHA, salt);
             filterLogin.SENHA = hashedPassword;
         } else {
-            filterLogin.SENHA = user.SENHA
+            filterLogin.SENHA = user.result.LOGIN
         };
 
-        console.log(filterLogin);
         return baseScope.update(
             id, filterLogin, session,
             "secretaria", "ID_SECRETARIA",
@@ -338,7 +350,7 @@ class UsuariosService {
         const {
             ID_PESSOA, NIVEL, LOGIN, SENHA,
             ...filterUser
-        } = user;
+        } = user.result;
 
         return baseScope.delete(
             id, filterUser, session,
@@ -360,14 +372,17 @@ class UsuariosService {
      * }
      * 
      */
-    async login(data) {
+    async login(data, refreshToken, headers, ip) {
         const user = await UsuariosRepository.login(data);
+        const {
+            LOGIN, SENHA, NIVEL,
+            ...session
+        } = user;
 
         //Verifica dados do login
         if (!user) {
             throw new Erros('Login ou senha inválidos', 401);
         };
-
 
         // Caso já está em hash
         if (typeof user.SENHA === "string" && user.SENHA.startsWith("$2")) {
@@ -387,15 +402,59 @@ class UsuariosService {
             await UsuariosRepository.updateUsuario(user.ID, ({ SENHA: hashedPassword }));
         };
 
-        const token = jwt.sign({
+        const findSession = await UsuariosRepository.findSessionByIdPessoa(user.ID_PESSOA);
+
+        const reqUser = {
             id: user.ID_PESSOA,
             login: user.LOGIN,
             nivel: user.NIVEL,
             secretaria: user.ID_SECRETARIA,
             associacao: user.ID_ASSOCIACAO
-        }, secret, { expiresIn: '7d' });
+        };
 
-        return token;
+        if (findSession.result.REVOGADO != null) {
+            await UsuariosRepository.deleteSession(findSession.result.ID);
+            const refresh = await authToken.createRefreshToken(session, ip);
+            await UsuariosRepository.createSession(refresh.sessao);
+            const token = await authToken.createToken(refresh.sessao, refresh.refreshToken);
+
+            return {
+                reqUser,
+                token
+            };
+        };
+
+        // Se não existir sessão, cria-se uma nova
+        if (!findSession) {
+            const refresh = await authToken.createRefreshToken(session, ip);
+            await UsuariosRepository.createSession(refresh.sessao);
+            const token = await authToken.createToken(refresh.sessao, refresh.refreshToken);
+
+            return {
+                reqUser,
+                token
+            };
+        };
+
+        // Se ocorrer perda do refreshToken no session, atualiza a sessão com um novo refreshToken
+        if (!refreshToken) {
+            const refresh = await authToken.createRefreshToken(session, ip);
+            await UsuariosRepository.updateSession(refresh.sessao.ID_PESSOA, refresh.sessao);
+            const token = await authToken.createToken(refresh.sessao, refresh.refreshToken);
+
+            return {
+                reqUser,
+                token
+            };
+        };
+
+        //gera o token se ouver o refreshToken
+        const token = await authToken.createToken(findSession.result, refreshToken);
+
+        return {
+            reqUser,
+            token
+        };
     };
 };
 

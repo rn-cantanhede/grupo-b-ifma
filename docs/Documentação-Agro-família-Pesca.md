@@ -76,6 +76,9 @@ Abstrai o acesso ao banco de dados, encapsulando consultas SQL e operações CRU
 * **Responsabilidade**:  
   * Isolar o SQL da lógica de negócio  
   * Utilizar tabelas e views conforme o contexto
+  * Disponibilizar consultas alternativas quando uma view não puder ser utilizada
+
+Determinados repositories possuem mecanismos de **fallback para consultas baseadas em views**. Quando uma view não estiver disponível ou não puder ser utilizada em determinada operação, o repository pode executar uma consulta alternativa equivalente, aumentando a resiliência da camada de persistência.
 
 #### **4.2.4 Camada Compartilhada (Shared)**
 
@@ -109,15 +112,37 @@ O mecanismo é aplicado de forma transversal aos endpoints que realizam consulta
 
 Quando aplicável, o escopo **own** restringe a consulta aos registros pertencentes ao próprio usuário.
 
+### **4.2.6 Paginação das Consultas**
+
+A API utiliza **paginação** nas consultas que retornam conjuntos de registros, com validação dos parâmetros por middleware e suporte na camada de persistência.
+
+A paginação foi incorporada aos métodos compartilhados de consulta e expandida para os principais módulos da aplicação. A implementação limita a quantidade de registros processados e retornados em cada requisição, reduzindo o consumo de recursos em consultas com grandes volumes de dados.
+
+A paginação também foi integrada ao mecanismo de escopo, permitindo que consultas paginadas mantenham as restrições de acesso aplicadas pelo **BaseScope**.
+
+### **4.2.7 Padronização de Respostas com HATEOAS**
+
+A API passou a utilizar **HATEOAS (Hypermedia as the Engine of Application State)** para padronizar a disponibilização de links de navegação nas respostas.
+
+A implementação foi integrada aos controllers e aos diferentes módulos da API, permitindo que as respostas forneçam informações de navegação relacionadas aos recursos disponíveis.
+
+A geração dos links foi padronizada para reduzir inconsistências entre endpoints e facilitar o consumo da API por clientes externos.
+
 ## **5\. Controle de Acesso e Segurança**
 
 ### **5.1 Autenticação**
 
-O sistema utiliza **JWT (JSON Web Tokens)** para autenticação stateless.
+O sistema utiliza **JWT (JSON Web Tokens)** para autenticação, associado a um mecanismo de **gerenciamento persistente de sessões**.
 
-* Tokens com validade de **7 dias**  
-* Payload inclui informações essenciais para autorização  
-* Senhas armazenadas com **bcrypt (salt rounds \= 10\)**
+* Tokens de acesso com validade de **7 dias**
+* Utilização de **access token** e **refresh token**
+* Registro e controle das sessões no banco de dados
+* Verificação de sessões inexistentes, expiradas ou revogadas
+* Validação de inconsistências entre os dados da sessão e os dados utilizados pelo token
+* Controle de cookies de autenticação conforme o ambiente
+* Senhas armazenadas com **bcrypt (salt rounds = 10)**
+
+A persistência das sessões permite que a aplicação controle a validade dos tokens e realize sua revogação sem depender exclusivamente das informações presentes no JWT.
 
 ### **5.1.1 Tratamento de Senhas Legadas**
 
@@ -130,6 +155,26 @@ Caso a senha esteja armazenada em **texto simples**, o sistema realiza a autenti
 Quando a senha já se encontra criptografada, o processo de autenticação **ocorre normalmente**. Dessa forma, garante-se **compatibilidade** com dados legados ao mesmo tempo em que **se eleva gradualmente o nível de segurança** do sistema.
 
 Essa solução demonstra um equilíbrio entre usabilidade, segurança e manutenção de sistemas legados, sendo especialmente adequada para contextos institucionais e governamentais, nos quais a migração imediata de todas as credenciais pode não ser viável.
+
+### **5.1.2 Gerenciamento de Sessões e Tokens**
+
+O gerenciamento de autenticação utiliza uma estrutura persistente de sessões para acompanhar os tokens emitidos pela aplicação.
+
+A sessão pode ser **revogada**, permitindo invalidar o acesso mesmo quando o token ainda estiver dentro de sua validade original. O mecanismo também contempla a reutilização do refresh token enquanto ele permanecer válido, de acordo com as regras do fluxo de autenticação.
+
+A aplicação realiza verificações para identificar sessões inexistentes, expiradas ou revogadas, além de inconsistências entre as informações da sessão e os dados utilizados na geração do token.
+
+As informações de autenticação são mantidas em cookies configurados de acordo com o ambiente de execução, com tratamento específico para o ambiente de produção.
+
+### **5.1.3 Persistência Opcional de Sessões com Redis**
+
+A aplicação possui integração opcional com **Redis** através de `connect-redis` e do cliente `redis`, permitindo utilizar armazenamento externo para as sessões.
+
+O uso do Redis depende da configuração da variável de ambiente `REDIS_URL` e da disponibilidade de um servidor Redis. A biblioteca `redis` utilizada pela aplicação é apenas o cliente de comunicação e não fornece o servidor Redis.
+
+Quando a integração não estiver habilitada, a aplicação pode continuar utilizando o mecanismo de armazenamento de sessão configurado localmente.
+
+Essa possibilidade facilita cenários em que a aplicação precise compartilhar sessões entre diferentes instâncias do servidor.
 
 ### **5.2 Autorização (RBAC)**
 
@@ -179,6 +224,14 @@ O mecanismo permite registrar eventos e requisições de forma padronizada, faci
 
 Os logs são armazenados em diretório próprio, que não é versionado no repositório.
 
+### **5.6 Testes Automatizados e Integração Contínua**
+
+O projeto utiliza **Jest** para testes automatizados e **Supertest** para testes das rotas e da integração HTTP.
+
+Os testes abrangem middlewares de autenticação e autorização, paginação, tratamento de erros e operações compartilhadas da camada de persistência, incluindo consultas, inserções, atualizações, exclusões e autenticação no banco de dados.
+
+O projeto também possui um workflow de **Integração Contínua (CI)** para executar as verificações automatizadas durante o desenvolvimento, contribuindo para a identificação antecipada de regressões.
+
 ## **6\. Diagrama Conceitual (Descrição)**
 
 ### **6.1 Diagrama de Arquitetura (Descrição Textual)**
@@ -188,6 +241,10 @@ Cliente
    ↓
 
 Router
+
+   ↓
+
+Middleware de paginação / autenticação
 
    ↓
 
@@ -217,6 +274,7 @@ Banco de Dados (MySQL)
 
 * Pessoa  
 * Usuário  
+* Sessão  
 * Secretaria  
 * Associação  
 * Associado  
@@ -363,6 +421,17 @@ Registra a produção ou movimentação de um associado.
 * QUANTIDADE  
 * DATA\_MOVIMENTACAO
 
+### **7.3.9 Sessão**
+
+Representa o registro persistente de uma sessão de autenticação, permitindo acompanhar e controlar os tokens emitidos para os usuários.
+
+**Finalidades principais**:
+
+* Controlar a validade das sessões;
+* Permitir revogação de sessões;
+* Apoiar a validação dos tokens de acesso e refresh tokens;
+* Manter o estado de autenticação necessário para os fluxos de login e logout.
+
 ### **7.4 Relacionamentos Entre Entidades**
 
 Os principais relacionamentos do banco de dados são:
@@ -397,6 +466,14 @@ Dessa forma, as **views** organizam e simplificam consultas complexas, enquanto 
 * view\_movimentacoes
 
 As views são utilizadas exclusivamente para operações de **leitura**, enquanto operações de escrita são realizadas diretamente nas tabelas.
+
+### **7.5.1 Fallback nas Consultas dos Repositories**
+
+Para aumentar a resiliência da camada de persistência, determinados repositories possuem uma estratégia de **fallback** para consultas que normalmente utilizam views.
+
+Quando uma view não estiver disponível ou não puder ser utilizada, o repository pode executar uma consulta alternativa equivalente, mantendo o acesso ao dado encapsulado na camada de persistência.
+
+Essa estratégia foi aplicada a módulos como Usuários, Produtos, Programas, Movimentações, Pessoas, Associações, Associados, Agricultura Familiar e Localização de Beneficiados.
 
 ### **7.6 Integridade e Consistência dos Dados**
 
@@ -439,7 +516,8 @@ Responsável pela autenticação, autorização e controle de acesso.
 
 * usuario  
 * pessoa  
-* secretaria
+* secretaria  
+* sessoes
 
 **Views**:
 
@@ -576,6 +654,8 @@ Do ponto de vista acadêmico, o projeto atende plenamente aos objetivos proposto
 * Camadas adicionais de auditoria e monitoramento.
 
 Dessa forma, o **Agro Família Pesca** não apenas resolve um problema real do domínio da agricultura familiar e pesca artesanal, como também se consolida como um projeto tecnicamente consistente, academicamente válido e **alinhado às boas práticas profissionais** de desenvolvimento de software.
+
+A evolução recente da API também incorporou mecanismos de **paginação**, **HATEOAS**, **testes automatizados**, **integração contínua**, **persistência de sessões** e **fallback nos repositories**, ampliando a capacidade de manutenção, observabilidade e evolução da aplicação.
 
 ### **8.1 Considerações Acadêmicas Finais**
 
