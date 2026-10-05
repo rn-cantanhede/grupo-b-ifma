@@ -21,6 +21,8 @@ Para a correta execução e manutenção do sistema, são necessários os seguin
 * Gerenciador de pacotes NPM ou Yarn
 
 * Ferramentas de teste de API, como Insomnia ou Postman
+* Jest e Supertest para execução dos testes automatizados do projeto
+* Redis Server somente quando a persistência externa de sessões estiver habilitada
 
 ### **2.2 Requisitos de Ambiente**
 
@@ -47,6 +49,16 @@ Os dados iniciais são gerenciados através de **Knex Seeds**.
 As migrations e seeds permitem reproduzir e controlar a evolução do banco de dados sem depender da execução manual de scripts SQL. 
 
 As **views** utilizadas pela aplicação são criadas e mantidas de acordo com a estrutura definida para o banco.
+
+### **4.1 Persistência de Sessões com Redis (Opcional)**
+
+A API possui suporte opcional à utilização do **Redis** para armazenamento externo das sessões.
+
+Para habilitar essa integração, é necessário disponibilizar um servidor Redis e configurar a variável de ambiente `REDIS_URL`. A dependência `redis` instalada no projeto atua como cliente e não substitui a instalação do servidor Redis.
+
+A integração utiliza `connect-redis` para conectar o armazenamento de sessões ao Redis. Quando o Redis não estiver configurado, a aplicação pode continuar utilizando o mecanismo de armazenamento de sessão configurado localmente.
+
+Em ambientes Windows, o servidor Redis pode ser executado, conforme o ambiente escolhido, através de **WSL**, **Docker** ou uma implementação compatível. Em Linux, pode ser utilizado o servidor Redis nativo; em macOS, uma instalação via Homebrew é uma alternativa.
 
 ## **5\. Execução da Aplicação**
 
@@ -84,11 +96,21 @@ O sistema adota uma arquitetura monolítica modular baseada no padrão Layered A
 
 * **BaseScope**: Responsável pela aplicação dos filtros de escopo diretamente nas consultas ao banco de dados. O **BaseScope** substitui a abordagem anterior em que os dados eram consultados e filtrados posteriormente pelo **BaseService**. Essa mudança reduz o volume de dados retornados e processados pela aplicação.
 
+* **Paginação**: As consultas que retornam conjuntos de registros utilizam mecanismos de paginação validados por middleware e suportados pela camada de persistência. A paginação também pode ser combinada com o controle de escopo.
+
+* **HATEOAS**: As respostas da API podem incluir links de navegação relacionados aos recursos retornados, seguindo uma padronização centralizada nos controllers e utilitários responsáveis pela geração desses links.
+
+* **Fallback nos Repositories**: Determinados repositories possuem consultas alternativas para operações originalmente baseadas em views. O fallback é utilizado quando uma view não estiver disponível ou não puder ser utilizada.
+
 Esse padrão garante clareza, manutenibilidade e segurança no desenvolvimento.
 
 ## **8\. Autenticação e Segurança**
 
-O sistema utiliza autenticação baseada em **JWT (JSON Web Token)**, permitindo sessões stateless e seguras. Os tokens possuem validade de sete dias e carregam informações essenciais para autorização, como nível de acesso e vínculo institucional.
+O sistema utiliza autenticação baseada em **JWT (JSON Web Token)** associada ao gerenciamento persistente de sessões. Os tokens de acesso possuem validade de sete dias e carregam informações essenciais para autorização, como nível de acesso e vínculo institucional.
+
+A autenticação também utiliza **access token** e **refresh token**, com registro das sessões no banco de dados. As sessões podem ser verificadas quanto à existência, validade e revogação, permitindo invalidar o acesso mesmo quando o token ainda estiver dentro de sua validade original.
+
+O fluxo de autenticação também contempla o gerenciamento dos cookies de sessão conforme o ambiente de execução.
 
 As senhas são armazenadas de forma criptografada utilizando bcrypt, com uso de salt para aumentar a segurança.
 
@@ -162,6 +184,24 @@ A API utiliza múltiplos mecanismos complementares:
   *    Pino  
   *    Pino HTTP
 
+### **8.5 Testes Automatizados e Integração Contínua**
+
+O projeto utiliza **Jest** para testes automatizados e **Supertest** para testes de integração HTTP.
+
+Entre os componentes testados estão:
+
+* Middleware de autenticação;
+* Middleware de autorização;
+* Validação de paginação;
+* Tratamento centralizado de erros;
+* Rate limiter de login;
+* Operações compartilhadas do DBUtils;
+* Consultas com e sem escopo;
+* Operações de inserção, atualização e exclusão;
+* Fluxo de autenticação no banco de dados.
+
+O projeto também possui um workflow de **CI** para execução automatizada das verificações e testes durante o desenvolvimento.
+
 ## **9\. Controle de Acesso e Escopo**
 
 O sistema utiliza dois mecanismos complementares:
@@ -212,11 +252,15 @@ Essa abordagem proporciona:
 
 A arquitetura adotada permite evolução gradual do sistema, possibilitando a adição de novos módulos, integração com sistemas externos, geração de relatórios e dashboards analíticos, sem impacto significativo na base existente.
 
-A separação entre camadas e o uso de abstrações facilitam a manutenção corretiva e evolutiva do projeto.
+A separação entre camadas e o uso de abstrações facilitam a manutenção corretiva e evolutiva do projeto. A introdução de paginação, HATEOAS, testes automatizados, CI, gerenciamento persistente de sessões e fallback nos repositories amplia essa capacidade de evolução sem concentrar responsabilidades em uma única camada.
 
 ## **12\. Rotas da API e Payloads**
 
 Esta seção descreve as principais rotas expostas pela API Agro Família Pesca, bem como os formatos de payload utilizados nas requisições e respostas. Todas as rotas seguem os princípios REST e utilizam JSON como formato de comunicação.
+
+As consultas que retornam conjuntos de registros podem utilizar **paginação**, aplicada por middleware e processada pela camada de persistência. Quando aplicável, a paginação é combinada com o controle de escopo para manter as restrições de acesso do usuário.
+
+As respostas também podem utilizar **HATEOAS**, disponibilizando links de navegação relacionados aos recursos retornados. A geração desses links é padronizada pela API e integrada aos controllers dos módulos.
 
 ### **12.1 Autenticação**
 
@@ -269,6 +313,10 @@ Responsável por autenticar o usuário no sistema e gerar o token JWT que será 
   * Secretaria vinculada
 
 * O Controller é responsável pelo fluxo HTTP. A autorização é determinada pelas **Policies**, enquanto o controle de escopo dos dados é aplicado pelo **BaseScope** durante a construção das consultas.
+
+* A sessão de autenticação é controlada pelo servidor e pode ser revogada. O refresh token pode ser reutilizado enquanto permanecer válido de acordo com as regras do fluxo de autenticação.
+
+* Quando configurado, o armazenamento de sessões pode utilizar Redis através de `connect-redis`.
 
 ### **12.2 Módulo Usuários**
 
@@ -496,6 +544,10 @@ Registra a produção dos associados.
 * O acesso às rotas é controlado por nível de usuário e escopo institucional.
 
 * As respostas seguem o padrão JSON.
+
+* Consultas com grandes conjuntos de registros utilizam paginação quando suportado pelo endpoint.
+
+* As respostas que utilizam HATEOAS podem incluir links de navegação para recursos relacionados.
 
 * Erros são tratados de forma centralizada pelo middleware de erro.
 
