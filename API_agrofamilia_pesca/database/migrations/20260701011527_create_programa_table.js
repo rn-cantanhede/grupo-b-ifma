@@ -12,11 +12,19 @@ exports.up = function (knex) {
         table.string("ORIGEM_RECURSO", 255);
         table.decimal("VLR_REPASSE", 15,2);
         table.integer("ID_SECRETARIA").unsigned();
+        table.integer("ID_ASSOCIACAO").unsigned();
 
         table
             .foreign("ID_SECRETARIA")
             .references("ID")
             .inTable("SECRETARIA")
+            .onUpdate("CASCADE")
+            .onDelete("RESTRICT");
+
+        table
+            .foreign("ID_ASSOCIACAO")
+            .references("ID")
+            .inTable("ASSOCIACAO")
             .onUpdate("CASCADE")
             .onDelete("RESTRICT");
     });
