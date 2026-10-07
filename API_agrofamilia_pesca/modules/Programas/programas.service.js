@@ -24,13 +24,10 @@ class ProgramasService {
             throw new Erros("Acesso negado", 403);
         };
 
-        //provisorio
-        session.associacao = session.secretaria;
-
         return baseScope.getAll(session, page, limit, {
             admin: ProgramasRepository.findAllProgramas,
             secretaria: ProgramasRepository.findbyIdSecretaria,
-            associacao: ProgramasRepository.findbyIdSecretaria,
+            associacao: ProgramasRepository.findbyIdAssociacao,
             usuario: ProgramasRepository.findById
         });
     };

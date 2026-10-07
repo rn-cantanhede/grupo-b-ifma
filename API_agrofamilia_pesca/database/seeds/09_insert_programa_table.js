@@ -15,6 +15,7 @@ exports.seed = async function(knex) {
       ORIGEM_RECURSO: "Governo Estadual",
       VLR_REPASSE: 150000.00,
       ID_SECRETARIA: 1,
+      ID_ASSOCIACAO: 3
     },
     {
       NOME: "Projeto Pescar Mais", 
@@ -24,6 +25,7 @@ exports.seed = async function(knex) {
       ORIGEM_RECURSO: "Governo Federal",
       VLR_REPASSE: 200000.00,
       ID_SECRETARIA: 4,
+      ID_ASSOCIACAO: 1
     },
     {
       NOME: "Programa Fruta Boa", 
@@ -33,6 +35,7 @@ exports.seed = async function(knex) {
       ORIGEM_RECURSO: "Parceria Público-Privada",
       VLR_REPASSE: 120000.00,
       ID_SECRETARIA: 1,
+      ID_ASSOCIACAO: 5
     },
     {
       NOME: "Horta Viva", 
@@ -42,6 +45,7 @@ exports.seed = async function(knex) {
       ORIGEM_RECURSO: "Prefeitura de Pinheiro",
       VLR_REPASSE: 90000.00,
       ID_SECRETARIA: 5,
+      ID_ASSOCIACAO: 4
     },
     {
       NOME: "Aquicultura Sustentável", 
@@ -50,7 +54,8 @@ exports.seed = async function(knex) {
       DATA_FIM: "2026-11-01",
       ORIGEM_RECURSO: "Banco do Nordeste",
       VLR_REPASSE: 175000.00,
-      ID_SECRETARIA: 1,
+      ID_SECRETARIA: 3,
+      ID_ASSOCIACAO: 2
     },
   ]);
 };
