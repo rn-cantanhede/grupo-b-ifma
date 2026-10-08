@@ -19,20 +19,37 @@ class PessoasController {
                 req.query.page,
                 req.query.limit
             );
+            let hateoas;
 
-            const hateoas = Hateoas(
-                pessoas.result[0].ID,
-                process.env.URL,
-                req.session.user.nivel,
-                "pessoas",
-                ["",
+            if (!Array.isArray(pessoas.result)) {
+                hateoas = Hateoas(
                     pessoas.result[0].ID,
-                    convertString(pessoas.result[0].NOME),
-                    `genero/${pessoas.result[0].GENERO}`,
-                    `data/${pessoas.result[0].DATA_NASCIMENTO.toISOString().split('T')[0]}`,
-                    `data/intervalo/1980-03-15/1995-05-05`,
-                ]
-            );
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "pessoas",
+                    ["",
+                        pessoas.result.ID,
+                        convertString(pessoas.result.NOME),
+                        `genero/${pessoas.result.GENERO}`,
+                        `data/${pessoas.result.DATA_NASCIMENTO.toISOString().split('T')[0]}`,
+                        `data/intervalo/1980-03-15/1995-05-05`,
+                    ]
+                )
+            } else {
+                hateoas = Hateoas(
+                    pessoas.result[0].ID,
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "pessoas",
+                    ["",
+                        pessoas.result[0].ID,
+                        convertString(pessoas.result[0].NOME),
+                        `genero/${pessoas.result[0].GENERO}`,
+                        `data/${pessoas.result[0].DATA_NASCIMENTO.toISOString().split('T')[0]}`,
+                        `data/intervalo/1980-03-15/1995-05-05`,
+                    ]
+                );
+            };
 
             req.log.info({
                 event: "PESSOA_LIST",

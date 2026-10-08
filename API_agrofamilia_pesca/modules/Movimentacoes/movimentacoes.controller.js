@@ -20,20 +20,37 @@ class MovimentacoesController {
                 req.query.page,
                 req.query.limit
             );
-            const hateoas = Hateoas(
-                movimentacoes.result[0].ID,
-                process.env.URL,
-                req.session.user.nivel,
-                "movimentacoes",
-                ["",
+            let hateoas;
+
+            if (!Array.isArray(movimentacoes.result)) {
+                hateoas = Hateoas(
                     movimentacoes.result[0].ID,
-                    convertString(movimentacoes.result[0].NOME),
-                    `dap/${movimentacoes.result[0].DAP}`,
-                    `produto/${convertString(movimentacoes.result[0].PRODUTO)}`,
-                    `data/${movimentacoes.result[0].DATA_MOVIMENTACAO.toISOString().split('T')[0]}`,
-                    `data/intervalo/2025-01-10/2025-05-05`,
-                ]
-            );
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "movimentacoes",
+                    ["",
+                        movimentacoes.result.ID,
+                        `dap/${movimentacoes.result.DAP}`,
+                        `produto/${convertString(movimentacoes.result.PRODUTO)}`,
+                        `data/${movimentacoes.result.DATA_MOVIMENTACAO.toISOString().split('T')[0]}`,
+                        `data/intervalo/2025-01-10/2025-05-05`,
+                    ]
+                )
+            } else {
+                hateoas = Hateoas(
+                    movimentacoes.result[0].ID,
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "movimentacoes",
+                    ["",
+                        movimentacoes.result[0].ID,
+                        `dap/${movimentacoes.result[0].DAP}`,
+                        `produto/${convertString(movimentacoes.result[0].PRODUTO)}`,
+                        `data/${movimentacoes.result[0].DATA_MOVIMENTACAO.toISOString().split('T')[0]}`,
+                        `data/intervalo/2025-01-10/2025-05-05`,
+                    ]
+                );
+            };
 
             req.log.info({
                 event: "MOVIMENTACAO_LIST",
@@ -78,11 +95,10 @@ class MovimentacoesController {
                 req.session.user.nivel,
                 "movimentacoes",
                 ["",
-                    result.result.ID,
-                    convertString(result.result.NOME),
-                    `dap/${result.result.DAP}`,
-                    `produto/${convertString(result.result.PRODUTO)}`,
-                    `data/${result.result.DATA_MOVIMENTACAO.toISOString().split('T')[0]}`,
+                    result.result[0].ID,
+                    `dap/${result.result[0].DAP}`,
+                    `produto/${convertString(result.result[0].PRODUTO)}`,
+                    `data/${result.result[0].DATA_MOVIMENTACAO.toISOString().split('T')[0]}`,
                     `data/intervalo/2025-01-10/2025-05-05`,
                 ]
             );

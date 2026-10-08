@@ -20,10 +20,26 @@ class TipoProdutoController {
                 req.query.page || 1,
                 req.query.limit || 10
             );
-            const hateoas = Hateoas("id", process.env.URL, req.session.user.nivel, "tipo-produto",
-                ["", "id", "nome", "nivel/nivel", "secretaria/secretaria", "login/login"]
-            );
+            let hateoas;
 
+            if (!Array.isArray(tipos.result)) {
+                hateoas = Hateoas(
+                    tipos.result.ID, process.env.URL, req.session.user.nivel, "usuarios",
+                    ["",
+                        tipos.result.ID,
+                        convertString(tipos.result.NOME)
+                    ]
+                );
+            } else {
+                hateoas = Hateoas(
+                    tipos.result[0].ID, process.env.URL, req.session.user.nivel, "usuarios",
+                    ["",
+                        tipos.result[0].ID,
+                        convertString(tipos.result[0].NOME)
+                    ]
+                );
+            };
+            
             req.log.info({
                 event: "TIPO_LIST",
                 resource: "tipo-produto",

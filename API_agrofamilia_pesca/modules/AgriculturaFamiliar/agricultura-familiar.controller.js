@@ -19,19 +19,37 @@ class AgriculturaFamiliarController {
                 req.query.page,
                 req.query.limit,
             );
-            const hateoas = Hateoas(
-                result.result[0].ID,
-                process.env.URL,
-                req.session.user.nivel,
-                "agricultura-familiar",
-                ["",
+            let hateoas;
+
+            if (!Array.isArray(result.result)) {
+                hateoas = Hateoas(
+                    result.result.ID,
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "agricultura-familiar",
+                    ["",
+                        result.result.ID,
+                        convertString(result.result.NOME),
+                        `caf/${result.result.CAF}`,
+                        `dap/${result.result.DAP}`,
+                        `programa/${convertString(result.result.PROGRAMA)}`,
+                    ]
+                )
+            } else {
+                hateoas = Hateoas(
                     result.result[0].ID,
-                    convertString(result.result[0].NOME),
-                    `caf/${result.result[0].CAF}`,
-                    `dap/${result.result[0].DAP}`,
-                    `programa/${convertString(result.result[0].PROGRAMA)}`,
-                ]
-            );
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "agricultura-familiar",
+                    ["",
+                        result.result[0].ID,
+                        convertString(result.result[0].NOME),
+                        `caf/${result.result[0].CAF}`,
+                        `dap/${result.result[0].DAP}`,
+                        `programa/${convertString(result.result[0].PROGRAMA)}`,
+                    ]
+                );
+            };
 
             req.log.info({
                 event: "AGRICULTURA_LIST",
