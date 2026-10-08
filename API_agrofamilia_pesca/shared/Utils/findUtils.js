@@ -70,7 +70,6 @@ async function findByScope(sessionID, sessionField, fieldID, fieldName,
     value, page, limit, method
 ) {
     if (!NumberOrString(value)) {
-        const stringConverted = convertString(value);
         const result = await method(sessionID, sessionField, fieldID, value, page, limit);
 
         if (result == "" || result == undefined) {
@@ -80,7 +79,8 @@ async function findByScope(sessionID, sessionField, fieldID, fieldName,
         return result;
     };
 
-    const result = await method(sessionID, sessionField, fieldName, value, page, limit);
+    const stringConverted = convertString(value);
+    const result = await method(sessionID, sessionField, fieldName, stringConverted, page, limit);
     if (result == "" || result == undefined) {
         throw new Erros("Não encontrado", 404);
     };
