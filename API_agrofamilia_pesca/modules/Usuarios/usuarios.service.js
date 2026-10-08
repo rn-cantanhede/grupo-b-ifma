@@ -104,7 +104,7 @@ class UsuariosService {
                 findByScope(
                     id,
                     sessionField[0],
-                    "ID",
+                    "NIVEL",
                     "NIVEL",
                     nivel,
                     page,
@@ -116,7 +116,7 @@ class UsuariosService {
                 findByScope(
                     id,
                     sessionField[1],
-                    "ID",
+                    "NIVEL",
                     "NIVEL",
                     nivel,
                     page,
