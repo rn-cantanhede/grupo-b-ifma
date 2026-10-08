@@ -19,18 +19,35 @@ class AssociacoesController {
                 req.query.page,
                 req.query.limit
             );
-            const hateoas = Hateoas(
-                associacoes.result[0].ID,
-                process.env.URL,
-                req.session.user.nivel,
-                "associacoes",
-                ["",
+            let hateoas;
+
+            if (!Array.isArray(associacoes.result)) {
+                hateoas = Hateoas(
+                    associacoes.result.ID,
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "associacoes",
+                    ["",
+                        associacoes.result.ID,
+                        convertString(associacoes.result.NOME),
+                        `categoria/${convertString(associacoes.result.CATEGORIA)}`,
+                        `secretaria/${convertString(associacoes.result.SECRETARIA)}`,
+                    ]
+                )
+            } else {
+                hateoas = Hateoas(
                     associacoes.result[0].ID,
-                    convertString(associacoes.result[0].NOME),
-                    `categoria/${convertString(associacoes.result[0].CATEGORIA)}`,
-                    `secretaria/${convertString(associacoes.result[0].SECRETARIA)}`,
-                ]
-            );
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "associacoes",
+                    ["",
+                        associacoes.result[0].ID,
+                        convertString(associacoes.result[0].NOME),
+                        `categoria/${convertString(associacoes.result[0].CATEGORIA)}`,
+                        `secretaria/${convertString(associacoes.result[0].SECRETARIA)}`,
+                    ]
+                );
+            };
 
             req.log.info({
                 event: "ASSOCIACAO_LIST",

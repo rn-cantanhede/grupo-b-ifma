@@ -19,17 +19,29 @@ class UsuariosController {
                 req.query.page || 1,
                 req.query.limit || 10
             );
-            const hateoas = Hateoas(
-                view.result[0].ID, process.env.URL, req.session.user.nivel, "usuarios",
-                [
-                    "", 
-                    view.result[0].ID, 
-                    convertString(view.result[0].NOME), 
-                    `nivel/${view.result[0].NIVEL}`, 
-                    `secretaria/${convertString(view.result[0].SECRETARIA)}`, 
-                    `login/${view.result[0].LOGIN}`
-                ]
-            );
+            let hateoas;
+
+            if (!Array.isArray(view.result)) {
+                hateoas = Hateoas(
+                    view.result.ID, process.env.URL, req.session.user.nivel, "usuarios",
+                    [
+                        "", view.result.ID, convertString(view.result.NOME),
+                        `nivel/${view.result.NIVEL}`,
+                        `secretaria/${convertString(view.result.SECRETARIA)}`,
+                        `login/${view.result.LOGIN}`
+                    ]
+                );
+            } else {
+                hateoas = Hateoas(
+                    view.result[0].ID, process.env.URL, req.session.user.nivel, "usuarios",
+                    [
+                        "", view.result[0].ID, convertString(view.result[0].NOME),
+                        `nivel/${view.result[0].NIVEL}`,
+                        `secretaria/${convertString(view.result[0].SECRETARIA)}`,
+                        `login/${view.result[0].LOGIN}`
+                    ]
+                );
+            };
 
             req.log.info({
                 event: "USER_LIST",

@@ -19,16 +19,25 @@ class ProdutosController {
                 req.query.page,
                 req.query.limit
             );
-            const hateoas = Hateoas(
-                produtos.result[0].ID,
-                process.env.URL,
-                req.session.user.nivel,
-                "produtos",
-                ["",
-                    produtos.result[0].ID,
-                    convertString(produtos.result[0].NOME),
-                ]
-            );
+            let hateoas;
+
+            if (!Array.isArray(produtos.result)) {
+                hateoas = Hateoas(
+                    produtos.result.ID, process.env.URL, req.session.user.nivel, "usuarios",
+                    ["",
+                        produtos.result.ID,
+                        convertString(produtos.result.NOME),
+                    ]
+                )
+            } else {
+                hateoas = Hateoas(
+                    produtos.result[0].ID, process.env.URL, req.session.user.nivel, "usuarios",
+                    ["",
+                        produtos.result[0].ID,
+                        convertString(produtos.result[0].NOME),
+                    ]
+                );
+            };
 
             req.log.info({
                 event: "PRODUTO_LIST",

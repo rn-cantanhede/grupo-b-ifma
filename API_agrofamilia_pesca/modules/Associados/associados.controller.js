@@ -20,21 +20,41 @@ class AssociadosController {
                 req.query.page,
                 req.query.limit
             );
-            const hateoas = Hateoas(
-                view.result[0].ID,
-                process.env.URL,
-                req.session.user.nivel,
-                "associados",
-                ["",
+            let hateoas;
+
+            if (!Array.isArray(view.result)) {
+                hateoas = Hateoas(
+                    view.result.ID,
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "associados",
+                    ["",
+                        view.result.ID,
+                        convertString(view.result.NOME),
+                        `caf/${view.result.CAF}`,
+                        `dap/${view.result.DAP}`,
+                        `associacao/${convertString(view.result.ASSOCIACAO)}`,
+                        `data/${view.result.VALIDADE_CAF.toISOString().split('T')[0]}`,
+                        `data/intervalo/2025-10-10/2026-05-20`,
+                    ]
+                )
+            } else {
+                hateoas = Hateoas(
                     view.result[0].ID,
-                    convertString(view.result[0].NOME),
-                    `caf/${view.result[0].CAF}`,
-                    `dap/${view.result[0].DAP}`,
-                    `associacao/${convertString(view.result[0].ASSOCIACAO)}`,
-                    `data/${view.result[0].VALIDADE_CAF.toISOString().split('T')[0]}`,
-                    `data/intervalo/2025-10-10/2026-05-20`,
-                ]
-            );
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "associados",
+                    ["",
+                        view.result[0].ID,
+                        convertString(view.result[0].NOME),
+                        `caf/${view.result[0].CAF}`,
+                        `dap/${view.result[0].DAP}`,
+                        `associacao/${convertString(view.result[0].ASSOCIACAO)}`,
+                        `data/${view.result[0].VALIDADE_CAF.toISOString().split('T')[0]}`,
+                        `data/intervalo/2025-10-10/2026-05-20`,
+                    ]
+                );
+            };
 
             req.log.info({
                 event: "ASSOCIADO_LIST",

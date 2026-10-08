@@ -20,16 +20,31 @@ class CategoriasController {
                 req.query.page,
                 req.query.limit
             );
-            const hateoas = Hateoas(
-                categorias.result[0].ID,
-                process.env.URL,
-                req.session.user.nivel,
-                "categorias",
-                ["",
+            let hateoas;
+
+            if (!Array.isArray(categorias.result)) {
+                hateoas = Hateoas(
+                    categorias.result.ID,
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "categorias",
+                    ["",
+                        categorias.result.ID,
+                        convertString(categorias.result.NOME)
+                    ]
+                )
+            } else {
+                hateoas = Hateoas(
                     categorias.result[0].ID,
-                    convertString(categorias.result[0].NOME)
-                ]
-            );
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "categorias",
+                    ["",
+                        categorias.result[0].ID,
+                        convertString(categorias.result[0].NOME)
+                    ]
+                );
+            };
 
             req.log.info({
                 event: "CATEGORIA_LIST",
