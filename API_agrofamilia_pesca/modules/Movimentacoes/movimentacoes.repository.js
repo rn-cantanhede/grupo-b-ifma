@@ -79,14 +79,14 @@ class MovimentacoesRepository {
     };
 
     /**
-     * Busca uma movimentação específica pelo ID_PESSO na view.
+     * Busca uma movimentação específica pelo ID_ASSOCIADO na view.
      */
 
     async findByIdAssociado(id, page, limit) {
-        const find = await findBy("ID_ASSOCIADO", id, false, view, page, limit);
+        const find = await findBy("ID_ASSOCIADO", id, true, view, page, limit);
 
         if (!find) {
-            return findBy("ID_ASSOCIADO", id, false, table, page, limit);
+            return findBy("ID_ASSOCIADO", id, false, true, page, limit);
         };
 
         return find;
