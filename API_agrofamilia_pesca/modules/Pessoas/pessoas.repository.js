@@ -68,10 +68,10 @@ class PessoasRepository {
      * Busca pessoas pelo id da associação.
      */
     async findByIdAssociacaao(id) {
-        const find = await findBy("ID_ASSOCIACAO", id, false, view, 1, 1);
+        const find = await findBy("ID_ASSOCIACAO", id, true, view, 1, 1);
 
         if (!find) {
-            return findBy("ID_ASSOCIACAO", id, false, table, 1, 1);
+            return findBy("ID_ASSOCIACAO", id, true, table, 1, 1);
         };
 
         return find;
