@@ -25,7 +25,7 @@ class ProgramasController {
 
             if (!Array.isArray(programas.result)) {
                 hateoas = Hateoas(
-                    programas.result.ID, process.env.URL, req.session.user.nivel, "usuarios",
+                    programas.result.ID, process.env.URL, req.session.user.nivel, "programas",
                     [
                         "", programas.result.ID, convertString(programas.result.NOME),
                         `secretaria/${convertString(programas.result.SECRETARIA)}`,
@@ -37,7 +37,7 @@ class ProgramasController {
                 );
             } else {
                 hateoas = Hateoas(
-                    programas.result[0].ID, process.env.URL, req.session.user.nivel, "usuarios",
+                    programas.result[0].ID, process.env.URL, req.session.user.nivel, "programas",
                     [
                         "", programas.result[0].ID,
                         convertString(programas.result[0].NOME),
@@ -323,7 +323,7 @@ class ProgramasController {
     async findDataInicioPrograma(req, res, next) {
         try {
             const result = await ProgramasService.findbyDataInicio(
-                req.params.data,
+                convertString(req.params.data),
                 req.session.user,
                 req.query.page,
                 req.query.limit
@@ -378,7 +378,7 @@ class ProgramasController {
     async findDataFimPrograma(req, res, next) {
         try {
             const result = await ProgramasService.findbyDataFim(
-                req.params.data,
+                convertString(req.params.data),
                 req.session.user,
                 req.query.page,
                 req.query.limit
@@ -553,7 +553,7 @@ class ProgramasController {
                 req.params.id,
                 req.session.user
             );
-            const hateoas = Hateoas("", process.env.URL, req.session.user.nivel, "usuarios",
+            const hateoas = Hateoas("", process.env.URL, req.session.user.nivel, "programas",
                 ""
             );
 
