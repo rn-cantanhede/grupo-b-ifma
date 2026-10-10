@@ -21,21 +21,34 @@ class ProgramasController {
                 req.query.page,
                 req.query.limit
             );
-            const hateoas = Hateoas(
-                programas.result[0].ID,
-                process.env.URL,
-                req.session.user.nivel,
-                "programas",
-                ["",
-                    programas.result[0].ID,
-                    convertString(programas.result[0].NOME),
-                    `secretaria/${convertString(programas.result[0].SECRETARIA)}`,
-                    `estado/${programas.result[0].ESTADO}`,
-                    `recurso/${convertString(programas.result[0].ORIGEM_RECURSO)}`,
-                    `data-inicio/${programas.result[0].DATA_INICIO.toISOString().split('T')[0]}`,
-                    `data-fim/${programas.result[0].DATA_FIM.toISOString().split('T')[0]}`,
-                ]
-            );
+            let hateoas;
+
+            if (!Array.isArray(programas.result)) {
+                hateoas = Hateoas(
+                    programas.result.ID, process.env.URL, req.session.user.nivel, "programas",
+                    [
+                        "", programas.result.ID, convertString(programas.result.NOME),
+                        `secretaria/${convertString(programas.result.SECRETARIA)}`,
+                        `estado/${programas.result.ESTADO}`,
+                        `recurso/${convertString(programas.result.ORIGEM_RECURSO)}`,
+                        `data-inicio/${programas.result.DATA_INICIO.toISOString().split('T')[0]}`,
+                        `data-fim/${programas.result.DATA_FIM.toISOString().split('T')[0]}`,
+                    ]
+                );
+            } else {
+                hateoas = Hateoas(
+                    programas.result[0].ID, process.env.URL, req.session.user.nivel, "programas",
+                    [
+                        "", programas.result[0].ID,
+                        convertString(programas.result[0].NOME),
+                        `secretaria/${convertString(programas.result[0].SECRETARIA)}`,
+                        `estado/${programas.result[0].ESTADO}`,
+                        `recurso/${convertString(programas.result[0].ORIGEM_RECURSO)}`,
+                        `data-inicio/${programas.result[0].DATA_INICIO.toISOString().split('T')[0]}`,
+                        `data-fim/${programas.result[0].DATA_FIM.toISOString().split('T')[0]}`,
+                    ]
+                );
+            };
 
             req.log.info({
                 event: "PROGRAMA_LIST",
@@ -310,7 +323,7 @@ class ProgramasController {
     async findDataInicioPrograma(req, res, next) {
         try {
             const result = await ProgramasService.findbyDataInicio(
-                req.params.data,
+                convertString(req.params.data),
                 req.session.user,
                 req.query.page,
                 req.query.limit
@@ -365,7 +378,7 @@ class ProgramasController {
     async findDataFimPrograma(req, res, next) {
         try {
             const result = await ProgramasService.findbyDataFim(
-                req.params.data,
+                convertString(req.params.data),
                 req.session.user,
                 req.query.page,
                 req.query.limit
@@ -540,7 +553,7 @@ class ProgramasController {
                 req.params.id,
                 req.session.user
             );
-            const hateoas = Hateoas("", process.env.URL, req.session.user.nivel, "usuarios",
+            const hateoas = Hateoas("", process.env.URL, req.session.user.nivel, "programas",
                 ""
             );
 

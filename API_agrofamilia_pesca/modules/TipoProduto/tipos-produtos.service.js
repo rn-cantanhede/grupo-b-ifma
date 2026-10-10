@@ -23,13 +23,7 @@ class TiposProdutosService {
         if (!TiposProdutosPolicy.canGet(session)) {
             throw new Erros("Acesso negado", 403);
         };
-
-        return baseScope.getAll(session, page, limit, {
-            admin: TiposProdutosRepository.findallTipoProduto,
-            secretaria: TiposProdutosRepository.findallTipoProduto,
-            associacao: TiposProdutosRepository.findallTipoProduto,
-            usuario: TiposProdutosRepository.findallTipoProduto,
-        });
+        return await TiposProdutosRepository.findallTipoProduto(page, limit);
     };
 
     /**
@@ -40,42 +34,13 @@ class TiposProdutosService {
             throw new Erros("Acesso negado", 403);
         };
 
-        return baseScope.getFind(session, page, limit, {
-            admin: () =>
-                findByIdName(
-                    value, 
-                    page, 
-                    limit,
-                    TiposProdutosRepository.findById,
-                    TiposProdutosRepository.findByName
-                ),
-
-            secretaria: () =>
-                findByIdName(
-                    value,
-                    page, 
-                    limit,
-                    TiposProdutosRepository.findById,
-                    TiposProdutosRepository.findByName
-                ),
-
-            associacao: () =>
-                findByIdName(
-                    value,
-                    page, 
-                    limit,
-                    TiposProdutosRepository.findById,
-                    TiposProdutosRepository.findByName
-                ),
-            usuario: () =>
-                findByIdName(
-                    value,
-                    page, 
-                    limit,
-                    TiposProdutosRepository.findById,
-                    TiposProdutosRepository.findByName
-                ),
-        });
+        return await findByIdName(
+            value,
+            page,
+            limit,
+            TiposProdutosRepository.findById,
+            TiposProdutosRepository.findByName
+        );
     };
 
     /**
@@ -87,10 +52,10 @@ class TiposProdutosService {
         if (!TiposProdutosPolicy.canPost(user, targetUser.result)) {
             throw new Erros("Acesso negado", 403);
         };
-        
+
         const validations = [];
         await validationsUtils.validate(data, validations);
-        
+
         return await TiposProdutosRepository.insertCategoria(data);
     };
 

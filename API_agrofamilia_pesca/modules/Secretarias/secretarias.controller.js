@@ -20,18 +20,27 @@ class SecretariasController {
                 req.query.page,
                 req.query.limit
             );
-            const hateoas = Hateoas(
-                secretarias.result[0].ID,
-                process.env.URL,
-                req.session.user.nivel,
-                "secretarias",
-                ["",
-                    secretarias.result[0].ID,
-                    convertString(secretarias.result[0].NOME),
-                    `estado/${secretarias.result[0].ESTADO}`,
-                    `cidade/${convertString(secretarias.result[0].CIDADE)}`,
-                ]
-            );
+            let hateoas;
+
+            if (!Array.isArray(secretarias.result)) {
+                hateoas = Hateoas(
+                    secretarias.result.ID, process.env.URL, req.session.user.nivel, "usuarios",
+                    [
+                        "", secretarias.result.ID, convertString(secretarias.result.NOME),
+                        `estado/${secretarias.result[0].ESTADO}`,
+                        `cidade/${convertString(secretarias.result[0].CIDADE)}`
+                    ]
+                );
+            } else {
+                hateoas = Hateoas(
+                    secretarias.result[0].ID, process.env.URL, req.session.user.nivel, "usuarios",
+                    [
+                        "", secretarias.result[0].ID, convertString(secretarias.result[0].NOME),
+                        `estado/${secretarias.result[0].ESTADO}`,
+                        `cidade/${convertString(secretarias.result[0].CIDADE)}`
+                    ]
+                );
+            };
 
             req.log.info({
                 event: "SECRETARIA_LIST",

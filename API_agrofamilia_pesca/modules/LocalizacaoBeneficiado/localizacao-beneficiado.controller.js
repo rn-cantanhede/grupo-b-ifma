@@ -23,17 +23,33 @@ class LocalizacaoBeneficiadoController {
                 req.query.page,
                 req.query.limit
             );
-            const hateoas = Hateoas(
-                localizacoes.result[0].ID,
-                process.env.URL,
-                req.session.user.nivel,
-                "localizacao-beneficiado",
-                ["",
+            let hateoas;
+
+            if (!Array.isArray(localizacoes.result)) {
+                hateoas = Hateoas(
+                    localizacoes.result.ID,
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "localizacao-beneficiado",
+                    ["",
+                        localizacoes.result.ID,
+                        convertString(localizacoes.result.NOME),
+                        `associacao/${convertString(localizacoes.result.ASSOCIACAO)}`,
+                    ]
+                )
+            } else {
+                hateoas = Hateoas(
                     localizacoes.result[0].ID,
-                    convertString(localizacoes.result[0].NOME),
-                    `associacao/${convertString(localizacoes.result[0].ASSOCIACAO)}`,
-                ]
-            );
+                    process.env.URL,
+                    req.session.user.nivel,
+                    "localizacao-beneficiado",
+                    ["",
+                        localizacoes.result[0].ID,
+                        convertString(localizacoes.result[0].NOME),
+                        `associacao/${convertString(localizacoes.result[0].ASSOCIACAO)}`,
+                    ]
+                );
+            };
 
             req.log.info({
                 event: "LOCALIZACAO_LIST",

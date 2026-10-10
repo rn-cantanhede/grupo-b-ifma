@@ -145,7 +145,7 @@ class UsuariosRepository {
         const find = await findBy("LOGIN", login, true, view, page, limit);
 
         if (!find) {
-            return findBy("LOGIN", login, true, view, page, limit);
+            return findBy("LOGIN", login, true, table, page, limit);
         };
 
         return find;
@@ -158,7 +158,7 @@ class UsuariosRepository {
         const find = await findWithScope(sessionID, sessionField, fieldID, value, false, view, page, limit);
 
         if (!find) {
-            return findWithScope(sessionID, sessionField, fieldID, value, false, view, page, limit);
+            return findWithScope(sessionID, sessionField, fieldID, value, false, table, page, limit);
         };
 
         return find;
@@ -171,7 +171,7 @@ class UsuariosRepository {
         const find = await findWithScope(sessionID, sessionField, fieldID, value, false, view, page, limit);
 
         if (!find) {
-            return findWithScope(sessionID, sessionField, fieldID, value, false, view, page, limit);
+            return findWithScope(sessionID, sessionField, fieldID, value, false, table, page, limit);
         };
 
         return find;
@@ -184,7 +184,7 @@ class UsuariosRepository {
         const find = await findWithScope(sessionID, sessionField, fieldID, value, false, view, page, limit);
 
         if (!find) {
-            return findWithScope(sessionID, sessionField, fieldID, value, false, view, page, limit);
+            return findWithScope(sessionID, sessionField, fieldID, value, false, table, page, limit);
         };
 
         return find;
@@ -197,7 +197,7 @@ class UsuariosRepository {
         const find = await findWithScope(sessionID, sessionField, fieldID, value, false, view, page, limit);
 
         if (!find) {
-            return findWithScope(sessionID, sessionField, fieldID, value, false, view, page, limit);
+            return findWithScope(sessionID, sessionField, fieldID, value, false, table, page, limit);
         };
 
         return find;
